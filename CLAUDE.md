@@ -131,6 +131,37 @@ The text ramp looks long, but each step is a distinct value the concept actually
 they were kept faithful rather than collapsed, so pixel-matching the design doesn't require
 arbitrary hexes.
 
+**Contrast is enforced, not assumed.** `npm run check:contrast` audits every
+foreground/background pair the UI actually uses against WCAG AA and exits non-zero on a
+failure. Run it after touching any colour token. Several of the concept's values failed and
+were adjusted — see §6.1.
+
+**Two Blade gotchas** that cost real debugging time here:
+
+- Never name a `@foreach` variable `$component`. Blade reserves it inside a component's
+  slot, and a nested `<x-…>` tag reassigns it mid-loop.
+- Tailwind v4 puts the important modifier at the **end** (`py-12!`), not the start. The v3
+  `!py-12` form silently compiles to nothing. Prefer a component prop over `!` either way.
+
+Tailwind only sees literal class strings, so `bg-{{ $token }}` never compiles. For genuinely
+dynamic colour, set the CSS variable inline: `style="background: var(--color-{{ $token }})"`.
+
+### 6.1 Deviations from the approved concept
+
+Three changes were made to meet the accessibility requirement in brief §7. All are small,
+and all are reversible if the client prefers exact fidelity — but the design would then ship
+knowingly failing AA.
+
+| Concept | Changed to | Why |
+|---|---|---|
+| Caption grey `#8a97a8`, placeholder `#9aa6b5` | `#63707f` / `#667487` | 2.97:1 and 2.47:1 on white — well under the 4.5:1 needed for small text |
+| Red eyebrows on dark navy `#e0231c` | `#ff5a4d` on dark, `#c41d17` on light | Brand red is 3.33:1 on `radix-dark`; both replacements clear 4.5:1 |
+| Button border `#d3d9e2` | `line-control` `#8090a1` | 1.42:1 — a control's visible boundary needs 3:1 (WCAG 1.4.11) |
+
+Side effect worth knowing: the compliant greys sit close together, so the hierarchy below
+`muted` is now carried by size and weight rather than lightness. There is no lighter grey
+that stays legible on white.
+
 **Type:** Archivo (600/700/800/900) for headings — `font-display`, tracking `tracking-display`.
 IBM Plex Sans (400/500/600) for body — `font-sans`. IBM Plex Mono (500/600) for eyebrows and
 labels — `font-mono`, uppercase, `tracking-eyebrow`, 10–11px.
@@ -196,7 +227,11 @@ composer dev        # serve + queue + logs + vite, all at once
 composer test       # config:clear then php artisan test
 vendor/bin/pint     # format before committing
 npm run build       # production assets; also re-downloads fonts if vite.config.js changed
+npm run check:contrast  # WCAG AA audit of the colour tokens — run after touching colours
+npm run build:maps      # regenerate the homepage SVG maps (output is committed)
 ```
+
+`/styleguide` renders every component live. It is registered outside production only.
 
 ## 10. Where things live
 
@@ -204,8 +239,12 @@ npm run build       # production assets; also re-downloads fonts if vite.config.
 app/Models/                 Eloquent models
 app/Livewire/               Livewire components (public + Admin/ subfolder)
 app/Http/Controllers/       Thin controllers for public pages
-resources/views/layouts/    Base layouts (public, admin)
-resources/views/components/ Blade components — the design system
+app/Support/Content/        Phase 1 content scaffold — the seam Phase 4 replaces
+resources/views/components/layouts/  Base layouts (<x-layouts.public>)
+resources/views/components/ui/       Design system components
+resources/views/components/site/     Header, footer, quick actions
+resources/views/components/map/      GENERATED — see npm run build:maps
+scripts/                    Build-time tooling (maps, contrast audit)
 resources/views/pages/      Public page templates
 resources/css/app.css       Tailwind v4 theme tokens
 design_handoff/             Client brief + approved design concept (reference, not built code)
