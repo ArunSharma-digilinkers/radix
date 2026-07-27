@@ -8,7 +8,7 @@ Companion to `CLAUDE.md`. That file says *how* we work; this one says *what* we 
 | Phase | Title | Status |
 |---|---|---|
 | 0 | Foundation & repo setup | ☑ |
-| 1 | Design system & homepage shell | ☐ |
+| 1 | Design system & homepage shell | ☑ |
 | 2 | Content schema & models | ☐ |
 | 3 | Auth, RBAC & admin panel | ☐ |
 | 4 | Public pages, CMS-driven | ☐ |
@@ -71,12 +71,28 @@ Translate the approved *Editorial Red* concept into reusable Blade, mobile-first
 - `/styleguide` route (non-production) rendering every component for review
 - Data comes from a single `HomePageData` class of hardcoded arrays — one seam to replace
 
-**Exit:** homepage pixel-faithful to the concept on desktop, coherent and fast on mobile,
-reviewable by the client. No database involved.
+**Exit:** homepage faithful to the concept on desktop, coherent and fast on mobile,
+reviewable by the client. No database involved. ✅
+
+**Delivered beyond the original list:**
+
+- `npm run check:contrast` — WCAG AA audit of every colour pair, wired to fail loudly.
+  It found seven failures in the concept palette; see CLAUDE.md §6.1 for what changed.
+- `npm run build:maps` — the concept's two maps fetched d3 + topojson + a world atlas from
+  three CDNs at runtime inside iframes. They are now pre-rendered to inline SVG at build
+  time: no runtime JS, no external requests, 49KB raw / 17KB gzipped.
+- Concept media optimised from 13MB to 1.1MB and marked as placeholder pending §11 assets.
 
 **Note:** the handoff is desktop-only and covers the homepage alone. Mobile layouts and the
-About / product-detail concepts are pending from the design side; we derive them from tokens
-in the meantime and reconcile when they arrive.
+About / product-detail concepts are pending from the design side; we derived them from tokens
+in the meantime and will reconcile when they arrive.
+
+**Known gaps carried forward:**
+
+- The two factory videos are the concept's originals (2.3MB). No `ffmpeg` was available to
+  re-encode to a web profile — folded into Phase 6.
+- Links point at on-page anchors. Real routes arrive in Phase 4; buttons without a
+  destination render as `<button>` rather than dead `<a href="#">`.
 
 ---
 

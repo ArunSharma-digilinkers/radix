@@ -25,31 +25,48 @@
     --font-display: 'Archivo', ui-sans-serif, system-ui, sans-serif;
     --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 
-    /* Brand ---------------------------------------------------------------- */
-    --color-radix-red: #e0231c;
-    --color-radix-red-deep: #c41d17; /* hover / pressed */
+    /* Brand ----------------------------------------------------------------
+     | Three reds, because one cannot be legible everywhere. Verified by
+     | `npm run check:contrast` — change a value there and the build tells you.
+     */
+    --color-radix-red: #e0231c; /* fills: CTAs, badges, large numerals */
+    --color-radix-red-deep: #c41d17; /* hover/pressed, and red *small text* on light */
+    --color-radix-red-on-dark: #ff5a4d; /* red small text on --color-radix-dark */
     --color-radix-dark: #12233b;
     --color-radix-dark-2: #1b2f4d; /* insets within dark sections */
 
-    /* Text ramp, darkest to lightest --------------------------------------- */
+    /* Text ramp, darkest to lightest ----------------------------------------
+     | The concept's caption greys (#8a97a8 / #9aa6b5) fail WCAG AA on white,
+     | so they are darkened here. Hierarchy below `muted` is carried by size
+     | and weight rather than lightness — there is no lighter grey that stays
+     | legible at 4.5:1.
+     */
     --color-ink: #16202e; /* headings, primary body */
     --color-ink-soft: #2c3a4d; /* pull-quote body */
     --color-nav: #42506b; /* nav links */
     --color-lead: #4a5768; /* hero and section lead paragraphs */
     --color-muted: #5c6a7e; /* secondary body */
-    --color-meta: #8a97a8; /* captions, bylines, timestamps */
-    --color-placeholder: #9aa6b5; /* unfilled form values */
-    --color-on-dark: #eef2f7; /* text on --color-radix-dark */
+    --color-meta: #63707f; /* captions, bylines, timestamps */
+    --color-placeholder: #667487; /* unfilled form values */
+    --color-on-dark: #eef2f7; /* primary text on --color-radix-dark */
+    --color-on-dark-muted: #a8b4c4; /* secondary text on dark — use instead of opacity */
 
     /* Surfaces ------------------------------------------------------------- */
     --color-surface: #f7f8fa; /* alternating section background */
     --color-surface-raised: #fbfbfc; /* finder panel */
     --color-surface-sunken: #f4f6f9; /* product thumbnail wells */
 
-    /* Lines ---------------------------------------------------------------- */
+    /* Lines ------------------------------------------------------------------
+     | `hairline`, `line` and `line-strong` are decorative only — dividers and
+     | rules that carry no meaning. Anything that forms the visible boundary of
+     | an interactive control (button outlines, input underlines) must use
+     | `line-control`, which meets the 3:1 non-text contrast requirement. The
+     | concept's #d3d9e2 button border sits at 1.42:1 and cannot be used there.
+     */
     --color-hairline: #eef1f5; /* section dividers, list rules */
-    --color-line: #e0e5ec; /* input underlines, ghost buttons */
-    --color-line-strong: #d3d9e2; /* secondary button borders */
+    --color-line: #e0e5ec; /* decorative borders, inactive underlines */
+    --color-line-strong: #d3d9e2; /* heavier decorative rules */
+    --color-line-control: #8090a1; /* borders of interactive controls */
 
     /* Third party ---------------------------------------------------------- */
     --color-whatsapp: #25d366;
@@ -81,11 +98,65 @@
         outline: 2px solid var(--color-radix-red);
         outline-offset: 2px;
     }
+
+    /* Keeps Alpine-controlled panels hidden until Alpine initialises. */
+    [x-cloak] {
+        display: none !important;
+    }
 }
 
-/* Scroll-reveal. The concept animates sections in on scroll; the JS that
-   observes [data-rev] lands in Phase 1. Motion is opt-out here so the
-   preference is honoured no matter how that JS is written. */
+/*
+ | Scroll reveal.
+ |
+ | Sections are only hidden once JS has set data-rev="out" — see resources/js/app.js.
+ | A bare [data-rev] stays fully visible, so if the script never runs, the page still
+ | renders normally instead of going blank.
+ */
+[data-rev='out'] {
+    opacity: 0;
+    transform: translateY(26px);
+}
+
+[data-rev='in'] {
+    opacity: 1;
+    transform: none;
+    transition:
+        opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Pulsing ring on the map pins and the WhatsApp button. */
+@keyframes radix-ping {
+    0% {
+        transform: scale(1);
+        opacity: 0.55;
+    }
+    100% {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+.radix-map__ping {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: radix-ping 2.4s ease-out infinite;
+}
+
+@keyframes radix-pulse {
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgb(37 211 102 / 0.5);
+    }
+    70% {
+        box-shadow: 0 0 0 13px rgb(37 211 102 / 0);
+    }
+}
+
+.radix-pulse {
+    animation: radix-pulse 2.4s infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

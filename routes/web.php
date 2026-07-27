@@ -10,3 +10,13 @@ use Illuminate\Support\Facades\Route;
  */
 
 Route::view('/', 'pages.home')->name('home');
+
+/*
+ | Living style guide (brief §9).
+ |
+ | Kept out of production so it is never indexed and never leaks internal notes;
+ | it is a build tool, not a page of the site.
+ */
+if (! app()->isProduction()) {
+    Route::view('/styleguide', 'pages.styleguide')->name('styleguide');
+}
