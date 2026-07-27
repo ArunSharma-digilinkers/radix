@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #e9edf2; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  @keyframes drift { to { background-position: 120px 120px; } }
+  @keyframes sweep { 0% { transform: translateX(-130%); } 55%, 100% { transform: translateX(360%); } }
+  @keyframes wapulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(37,211,102,.5); } 70% { box-shadow: 0 0 0 13px rgba(37,211,102,0); } }
+</style>
+</helmet>
+
+<section style="font-family:'IBM Plex Sans',sans-serif;color:#16202e">
+  <div>
+
+    <!-- ============ 1a ============ -->
+    <div id="home" style="width:100%">
+      <div style="--acc:#2f6bff;--onacc:#ffffff;--dark:#0d1117;--dark2:#161d29;background:#fff;position:relative;font-family:'IBM Plex Sans',sans-serif">
+        
+        <!-- nav -->
+        <div style="background:var(--dark);color:#eef2f7;display:flex;align-items:center;justify-content:space-between;padding:15px 28px">
+          <img src="uploads/logo1.png" alt="Radix — Fit it & Forget it" style="height:42px;width:auto">
+          <div style="display:flex;gap:19px;font-size:13.5px;color:rgba(238,242,247,.82)"><span>Products</span><span>Solar Systems</span><span>Infrastructure</span><span>Export</span><span>Dealers</span><span>About</span><span>Blog</span></div>
+          <div style="display:flex;gap:10px;align-items:center"><span style="border:1px solid rgba(255,255,255,.25);padding:8px 12px;border-radius:8px;font-size:13px">Contact</span><span style="background:var(--acc);color:var(--onacc);font-weight:600;padding:9px 14px;border-radius:8px;font-size:13px">Enquire Now</span></div>
+        </div>
+        <!-- hero -->
+        <div style="position:relative;height:508px;background:var(--dark);overflow:hidden">
+          <video src="uploads/factory-hero.mp4" autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></video>
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,27,45,.5),rgba(15,27,45,.85))"></div>
+          <div style="position:absolute;top:0;bottom:0;width:140px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent);animation:sweep 7s ease-in-out infinite"></div>
+          <div style="position:relative;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;padding:0 60px">
+            <span style="border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:6px 14px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.85)">▶ Factory walkthrough video loop · autoplay · muted</span>
+            <h1 style="font-family:'Archivo',sans-serif;font-weight:800;font-size:52px;line-height:1.03;letter-spacing:-.02em;max-width:820px;margin:20px 0 0">Precision power, engineered for 25 years.</h1>
+            <p style="max-width:600px;font-size:16.5px;line-height:1.55;color:rgba(255,255,255,.82);margin:18px 0 0">Inverter, automotive and solar batteries, a new lithium line and complete solar systems — from a 650-distributor manufacturer trusted by 10 lakh+ customers.</p>
+            <div style="display:flex;gap:14px;margin-top:26px"><span style="background:var(--acc);color:var(--onacc);font-weight:700;padding:14px 22px;border-radius:10px;font-size:14.5px">Find Your Battery</span><span style="border:1px solid rgba(255,255,255,.4);color:#fff;font-weight:600;padding:14px 22px;border-radius:10px;font-size:14.5px">Talk to Sales</span></div>
+            <div style="display:flex;gap:9px;align-items:center;margin-top:30px;font-family:'IBM Plex Mono',monospace;font-size:11px"><span style="color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase">Now showing</span><span style="background:var(--acc);color:var(--onacc);padding:5px 11px;border-radius:16px;font-weight:600">Inverter Lithium</span><span style="border:1px solid rgba(255,255,255,.25);padding:5px 11px;border-radius:16px;color:rgba(255,255,255,.7)">Solar Systems</span><span style="border:1px solid rgba(255,255,255,.25);padding:5px 11px;border-radius:16px;color:rgba(255,255,255,.7)">E-Rickshaw</span></div>
+          </div>
+        </div>
+        <!-- trust -->
+        <div data-rev style="background:#fff;display:grid;grid-template-columns:repeat(4,1fr);border-top:3px solid var(--acc)">
+          <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+            <div style="padding:22px 24px;border-right:1px solid #eef1f5;text-align:center">
+              <div style="font-family:'Archivo',sans-serif;font-weight:800;font-size:32px;color:#16202e;letter-spacing:-.01em">{{ s.v }}</div>
+              <div style="font-size:12.5px;color:#5c6a7e;margin-top:2px">{{ s.l }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <!-- finder -->
+        <div data-rev style="background:#f5f7fa;padding:34px 56px">
+          <div style="max-width:1060px;margin:0 auto;display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap">
+            <div style="flex:1 1 100%;margin-bottom:2px"><div style="font-family:'Archivo',sans-serif;font-weight:800;font-size:22px;color:#16202e">Find Your Battery</div><div style="font-size:13px;color:#5c6a7e;margin-top:2px">Answer three quick questions to see the right Radix product.</div></div>
+            <div style="flex:1 1 200px"><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8a97a8;margin-bottom:6px">Category</div><div style="background:#fff;border:1px solid #e5eaf1;border-radius:10px;padding:13px 14px;font-size:14px;color:#16202e;display:flex;justify-content:space-between">Inverter <span style="color:#9aa6b5">▾</span></div></div>
+            <div style="flex:1 1 200px"><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8a97a8;margin-bottom:6px">Application</div><div style="background:#fff;border:1px solid #e5eaf1;border-radius:10px;padding:13px 14px;font-size:14px;color:#9aa6b5;display:flex;justify-content:space-between">Home / office <span>▾</span></div></div>
+            <div style="flex:1 1 200px"><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8a97a8;margin-bottom:6px">Backup needed</div><div style="background:#fff;border:1px solid #e5eaf1;border-radius:10px;padding:13px 14px;font-size:14px;color:#9aa6b5;display:flex;justify-content:space-between">4–6 hours <span>▾</span></div></div>
+            <div style="background:var(--acc);color:var(--onacc);font-weight:700;padding:14px 22px;border-radius:10px;font-size:14px">Show results</div>
+          </div>
+        </div>
+        <!-- products: 4-col cards -->
+        <div data-rev style="background:#fff;padding:60px 56px">
+          <div style="max-width:1060px;margin:0 auto">
+            <div style="font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.14em;font-size:11px;color:var(--acc)">Our range</div>
+            <h2 style="font-family:'Archivo',sans-serif;font-weight:800;font-size:32px;letter-spacing:-.01em;margin:12px 0 28px;color:#16202e">Eight product lines, one standard.</h2>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px">
+              <sc-for list="{{ products }}" as="p">
+                <div style="border:1px solid #e5eaf1;border-radius:14px;overflow:hidden;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease" style-hover="transform:translateY(-5px);box-shadow:0 16px 34px rgba(15,27,45,.13);border-color:var(--acc)">
+                  <div style="height:130px;background:#f4f6f9;display:flex;align-items:center;justify-content:center;padding:12px"><sc-if value="{{ p.img }}"><img data-src="{{ p.img }}" alt="{{ p.n }}" style="max-height:100%;max-width:100%;object-fit:contain"></sc-if></div>
+                  <div style="padding:16px">
+                    <div style="font-family:'Archivo',sans-serif;font-weight:700;font-size:15px;color:#16202e">{{ p.n }}</div>
+                    <div style="font-size:12.5px;line-height:1.45;color:#5c6a7e;margin:6px 0 12px">{{ p.p }}</div>
+                    <div style="color:var(--acc);font-weight:600;font-size:13px">View specs →</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <dc-import name="RadixLowerTech" hint-size="100%,2600px"></dc-import>
+        <div style="position:fixed;right:22px;bottom:22px;z-index:50;display:flex;flex-direction:column;gap:10px;align-items:flex-end"><span style="background:var(--acc);color:var(--onacc);font-weight:700;padding:12px 18px;border-radius:24px;font-size:13px;box-shadow:0 10px 24px rgba(0,0,0,.2)">Enquire Now</span><span style="width:52px;height:52px;border-radius:50%;background:#25d366;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:13px;animation:wapulse 2.4s infinite">WA</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  componentDidMount() {
+    const force = v => {
+      v.defaultMuted = true; v.muted = true; v.volume = 0; v.loop = true;
+      v.setAttribute('muted', ''); v.setAttribute('loop', '');
+      try { const p = v.play(); if (p) p.catch(() => {}); } catch (e) {}
+    };
+    const apply = () => document.querySelectorAll('video').forEach(v => {
+      v.muted = true; v.volume = 0; v.loop = true;
+      if (v.dataset.vbound) return;
+      v.dataset.vbound = '1';
+      force(v);
+      v.addEventListener('ended', () => { try { v.currentTime = 0; v.play(); } catch (e) {} });
+      ['loadedmetadata', 'loadeddata', 'play', 'playing', 'volumechange'].forEach(ev =>
+        v.addEventListener(ev, () => { if (!v.muted || v.volume > 0) force(v); }));
+    });
+    const hydrate = () => document.querySelectorAll('img[data-src]').forEach(i => { const s = i.dataset.src; if (s && !s.includes('{{') && i.src !== s) i.src = s; });
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'none'; io.unobserve(e.target); } }), { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    const arm = () => document.querySelectorAll('[data-rev]:not([data-armed])').forEach(el => { el.setAttribute('data-armed', '1'); el.style.opacity = '0'; el.style.transform = 'translateY(26px)'; el.style.transition = 'opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1)'; io.observe(el); });
+    const run = () => { apply(); hydrate(); arm(); };
+    run();
+    [100, 400, 1000, 2500].forEach(t => setTimeout(run, t));
+  }
+  renderVals() {
+    return {
+      stats: [
+        { v: '25+', l: 'Years manufacturing' },
+        { v: '650+', l: 'Distributors' },
+        { v: '10L+', l: 'Customers served' },
+        { v: '5+', l: 'Export countries' }
+      ],
+      products: [
+        { i: '01', n: 'Inverter Batteries', p: 'Long-backup tubular power for home & office.', img: 'uploads/inverter1.png' },
+        { i: '02', n: 'Automotive Batteries', p: 'Reliable cranking power for cars & trucks.', img: 'uploads/car.png' },
+        { i: '03', n: 'Solar Batteries', p: 'Deep-cycle C10 storage for solar setups.', img: 'uploads/solar1.png' },
+        { i: '04', n: 'Solar Power Systems', p: 'Complete panel-to-inverter solar solutions.', img: 'uploads/solar1.png' },
+        { i: '05', n: 'E-Rickshaw Batteries', p: 'Durable traction power for daily earnings.', img: 'uploads/e-rickshaw.png' },
+        { i: '06', n: 'Bike Batteries', p: 'Compact, maintenance-free two-wheeler power.', img: 'uploads/bike2.png' },
+        { i: '07', n: 'E-Rickshaw Lithium', p: 'Lightweight, fast-charging next-gen traction.', img: 'uploads/e-rickshaw.png' },
+        { i: '08', n: 'Inverter Lithium', p: 'High-cycle lithium backup with longer life.', img: 'uploads/inverter2.png' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

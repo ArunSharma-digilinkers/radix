@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>@keyframes ping { 0% { transform: scale(1); opacity: .55; } 100% { transform: scale(2.8); opacity: 0; } }</style>
+</helmet>
+<div style="--acc:#e0231c;--onacc:#ffffff;--dark:#12233b;--dark2:#1b2f4d;font-family:'IBM Plex Sans',sans-serif;color:#16202e">
+
+<!-- SOLAR — editorial narrative + component list -->
+<section data-rev style="background:var(--dark);color:#eef2f7;padding:74px 56px">
+  <div style="max-width:1060px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center">
+    <div>
+      <div style="font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.16em;font-size:11px;color:var(--acc)">The complete solution</div>
+      <h2 style="font-family:'Archivo',sans-serif;font-weight:900;font-size:44px;line-height:1.02;letter-spacing:-.02em;margin:14px 0 16px">Solar, sold as one system.</h2>
+      <p style="font-size:16px;line-height:1.65;color:rgba(238,242,247,.75);margin:0 0 26px">Panel, battery, inverter and charge controller — matched and warrantied together, not four parts you have to reconcile yourself.</p>
+      <div style="border-radius:16px;overflow:hidden;height:240px;box-shadow:0 20px 46px rgba(0,0,0,.28)"><img src="uploads/solar-array.jpg" alt="Radix solar power generating system" style="width:100%;height:100%;object-fit:cover"></div>
+    </div>
+    <div>
+      <sc-for list="{{ solar }}" as="s" hint-placeholder-count="4">
+        <div style="display:flex;align-items:baseline;gap:18px;padding:20px 0;border-top:1px solid rgba(255,255,255,.14)">
+          <span style="font-family:'Archivo',sans-serif;font-weight:900;font-size:26px;color:var(--acc);width:44px">{{ s.i }}</span>
+          <div style="flex:1"><div style="font-family:'Archivo',sans-serif;font-weight:700;font-size:19px">{{ s.n }}</div><div style="font-size:13.5px;color:rgba(238,242,247,.6);margin-top:3px">{{ s.s }}</div></div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- WHY — big-number editorial list -->
+<section data-rev style="background:#ffffff;padding:74px 56px">
+  <div style="max-width:1060px;margin:0 auto">
+    <div style="font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.16em;font-size:11px;color:var(--acc)">Why Radix</div>
+    <h2 style="font-family:'Archivo',sans-serif;font-weight:900;font-size:40px;letter-spacing:-.02em;margin:12px 0 34px;color:var(--dark)">Built like a national brand.</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 56px">
+      <sc-for list="{{ why }}" as="w" hint-placeholder-count="4">
+        <div style="display:flex;gap:22px;padding:26px 0;border-top:2px solid #16202e">
+          <div style="font-family:'Archivo',sans-serif;font-weight:900;font-size:38px;color:var(--acc);line-height:.9;letter-spacing:-.03em">{{ w.i }}</div>
+          <div><div style="font-family:'Archivo',sans-serif;font-weight:700;font-size:19px;color:#16202e;margin-bottom:6px">{{ w.t }}</div><div style="font-size:14px;line-height:1.6;color:#5c6a7e">{{ w.d }}</div></div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- INFRASTRUCTURE — prose left, big framed video right -->
+<section data-rev style="background:#f7f8fa;padding:74px 56px">
+  <div style="max-width:1060px;margin:0 auto;display:grid;grid-template-columns:.9fr 1.1fr;gap:48px;align-items:center">
+    <div>
+      <div style="font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.16em;font-size:11px;color:var(--acc)">Inside the factory</div>
+      <h2 style="font-family:'Archivo',sans-serif;font-weight:900;font-size:38px;line-height:1.05;letter-spacing:-.02em;margin:12px 0 16px;color:var(--dark)">See where the power is made.</h2>
+      <p style="font-size:15px;line-height:1.65;color:#5c6a7e;margin:0 0 22px">A walk through the production floor, QC lab and testing bays — the credibility a spec sheet alone can't give.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <sc-for list="{{ flow }}" as="f" hint-placeholder-count="4">
+          <span style="background:#fff;border:1px solid #e5eaf1;border-radius:22px;padding:9px 15px;font-size:13px;color:#16202e;font-weight:500">{{ f }}</span>
+        </sc-for>
+      </div>
+    </div>
+    <div style="position:relative;height:340px;border-radius:18px;overflow:hidden;box-shadow:0 26px 60px rgba(15,27,45,.2)">
+      <video src="uploads/factory-floor.mp4" autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></video>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,35,59,0) 60%,rgba(18,35,59,.4))"></div>
+      <div style="position:absolute;top:16px;left:16px;background:var(--acc);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:6px 12px;border-radius:6px">Live from the floor</div>
+    </div>
+  </div>
+</section>
+
+<!-- DEALERS — framed map left, editorial search right -->
+<section data-rev style="background:#ffffff;padding:74px 56px">
+  <div style="max-width:1060px;margin:0 auto;display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center">
+    <div style="position:relative;height:280px;border-radius:18px;border:1px solid #e5eaf1;background:#eef2f6;overflow:hidden;box-shadow:0 20px 46px rgba(15,27,45,.12)">
+      <iframe src="map.html?scope=india&mode=light&acc=e0231c" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>
+      <div style="position:absolute;bottom:14px;left:16px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#5c6a7e;background:#fff;padding:5px 10px;border-radius:6px;border:1px solid #e5eaf1">Dealer map · India</div>
+    </div>
+    <div>
+      <div style="font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.16em;font-size:11px;color:var(--acc)">650+ network</div>
+      <h2 style="font-family:'Archivo',sans-serif;font-weight:900;font-size:36px;line-height:1.05;letter-spacing:-.02em;margin:12px 0 14px;color:var(--dark)">Find your nearest dealer.</h2>
+      <p style="font-size:14.5px;line-height:1.6;color:#5c6a7e;margin:0 0 22px">Search by city or state and connect with a stocked Radix dealer near you.</p>
+      <div style="border-bottom:2px solid var(--acc);padding:0 2px 10px;display:flex;justify-content:space-between;font-size:16px;color:#9aa6b5">Enter city or PIN code… <span style="color:var(--acc);font-weight:700">Search →</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPORT — country list left, warm map right -->
+<section data-rev style="background:var(--dark);color:#eef2f7;padding:74px 56px">
+  <div style="max-width:1060px;margin:0 auto;display:grid;grid-template-columns:.9fr 1.1fr;gap:48px;align-items:center">
+    <div>
+      <div style="font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.16em;font-size:11px;color:var(--acc)">Export · B2B</div>
+      <h2 style="font-family:'Archivo',sans-serif;font-weight:900;font-size:38px;line-height:1.02;letter-spacing:-.02em;margin:12px 0 20px">Trusted across borders.</h2>
+      <div style="display:flex;flex-direction:column;gap:0;margin-bottom:24px">
+        <sc-for list="{{ countries }}" as="c" hint-placeholder-count="6">
+          <div style="font-family:'Archivo',sans-serif;font-weight:700;font-size:18px;padding:11px 0;border-top:1px solid rgba(255,255,255,.14);color:#eef2f7">{{ c }}</div>
+        </sc-for>
+      </div>
+      <div style="background:var(--acc);color:var(--onacc);font-weight:700;padding:13px 20px;border-radius:10px;font-size:14px;display:inline-block">Request an export quote →</div>
+    </div>
+    <div style="position:relative;height:300px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:var(--dark2);overflow:hidden">
+      <iframe src="map.html?scope=world&mode=dark&acc=e0231c" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>
+      <div style="position:absolute;bottom:14px;right:16px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6)">Served markets</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS — featured pull-quote + two below -->
+<section data-rev style="background:#f7f8fa;padding:74px 56px">
+  <div style="max-width:1060px;margin:0 auto">
+    <div style="background:#fff;border-radius:18px;padding:40px 44px;box-shadow:0 20px 46px rgba(15,27,45,.08);margin-bottom:20px">
+      <div style="font-family:'Archivo',sans-serif;font-weight:900;font-size:44px;color:var(--acc);line-height:0;height:22px">“</div>
+      <p style="font-family:'Archivo',sans-serif;font-weight:700;font-size:26px;line-height:1.35;letter-spacing:-.01em;color:var(--dark);margin:0 0 20px;max-width:820px">{{ featured.q }}</p>
+      <div style="display:flex;align-items:center;gap:14px"><div style="width:46px;height:46px;border-radius:50%;background:repeating-linear-gradient(135deg,#e7ebf1 0 8px,#f1f4f8 8px 16px)"></div><div><div style="font-family:'Archivo',sans-serif;font-weight:700;font-size:15px;color:#16202e">{{ featured.n }}</div><div style="font-size:13px;color:#8a97a8">{{ featured.r }}</div></div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <sc-for list="{{ rest }}" as="t" hint-placeholder-count="2">
+        <div style="background:#fff;border-radius:16px;padding:28px 26px">
+          <p style="font-size:15px;line-height:1.6;color:#2c3a4d;margin:0 0 16px">{{ t.q }}</p>
+          <div style="font-family:'Archivo',sans-serif;font-weight:700;font-size:14px;color:#16202e">{{ t.n }}</div>
+          <div style="font-size:12.5px;color:#8a97a8;margin-top:2px">{{ t.r }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- BLOG — featured + list -->
+<section data-rev style="background:#ffffff;padding:74px 56px">
+  <div style="max-width:1060px;margin:0 auto">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px">
+      <h2 style="font-family:'Archivo',sans-serif;font-weight:900;font-size:40px;letter-spacing:-.02em;margin:0;color:var(--dark)">From the Radix blog</h2>
+      <span style="color:var(--acc);font-weight:700;font-size:14px">View all posts →</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:36px;align-items:start">
+      <div>
+        <div style="height:300px;border-radius:16px;overflow:hidden;background:#eef1f5"><img src="uploads/post-lithium.jpg" alt="Featured article" style="width:100%;height:100%;object-fit:cover"></div>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--acc);display:block;margin-top:18px">{{ featuredPost.c }}</span>
+        <div style="font-family:'Archivo',sans-serif;font-weight:800;font-size:26px;line-height:1.2;letter-spacing:-.01em;margin:10px 0 10px;color:#16202e">{{ featuredPost.t }}</div>
+        <p style="font-size:14.5px;line-height:1.6;color:#5c6a7e;margin:0 0 8px">{{ featuredPost.e }}</p>
+        <div style="font-size:12.5px;color:#8a97a8">{{ featuredPost.m }}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0">
+        <sc-for list="{{ restPosts }}" as="b">
+          <div style="display:flex;gap:16px;padding:20px 0;border-top:1px solid #eef1f5">
+            <div style="width:96px;height:72px;flex:none;border-radius:10px;overflow:hidden;background:#eef1f5"><sc-if value="{{ b.img }}"><img data-src="{{ b.img }}" alt="{{ b.t }}" style="width:100%;height:100%;object-fit:cover"></sc-if></div>
+            <div><span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--acc)">{{ b.c }}</span><div style="font-family:'Archivo',sans-serif;font-weight:700;font-size:15px;line-height:1.3;margin:5px 0 6px;color:#16202e">{{ b.t }}</div><div style="font-size:11.5px;color:#8a97a8">{{ b.m }}</div></div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section data-rev style="background:var(--acc);padding:52px 56px">
+  <div style="max-width:1060px;margin:0 auto;text-align:center">
+    <h2 style="font-family:'Archivo',sans-serif;font-weight:900;font-size:34px;letter-spacing:-.02em;margin:0 0 8px;color:var(--onacc)">Ready to power up with Radix?</h2>
+    <p style="margin:0 0 22px;font-size:15px;color:var(--onacc);opacity:.9">Distributor enquiry, export quote or a battery for home — we reply within one business day.</p>
+    <div style="display:flex;gap:12px;justify-content:center">
+      <span style="background:#fff;color:var(--acc);font-weight:700;padding:14px 24px;border-radius:10px;font-size:14.5px">Enquire Now</span>
+      <span style="background:rgba(0,0,0,.16);color:var(--onacc);font-weight:600;padding:14px 24px;border-radius:10px;font-size:14.5px">Chat on WhatsApp</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer data-rev style="background:var(--dark);color:rgba(238,242,247,.7);padding:48px 56px 34px">
+  <div style="max-width:1060px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:30px">
+    <div>
+      <div style="margin-bottom:14px"><img src="uploads/logo1.png" alt="Radix — Fit it & Forget it" style="height:48px;width:auto"></div>
+      <p style="font-size:13px;line-height:1.6;max-width:260px;margin:0">Radix Power Solutions Pvt. Ltd. — 25 years of battery manufacturing. Inverter, automotive, solar, e-rickshaw &amp; lithium.</p>
+    </div>
+    <div><div style="color:#fff;font-family:'Archivo',sans-serif;font-weight:700;font-size:13px;margin-bottom:12px">Products</div><div style="display:flex;flex-direction:column;gap:8px;font-size:13px"><span>Inverter</span><span>Automotive</span><span>Solar Systems</span><span>Lithium</span></div></div>
+    <div><div style="color:#fff;font-family:'Archivo',sans-serif;font-weight:700;font-size:13px;margin-bottom:12px">Company</div><div style="display:flex;flex-direction:column;gap:8px;font-size:13px"><span>About</span><span>Infrastructure</span><span>Export</span><span>Careers</span></div></div>
+    <div><div style="color:#fff;font-family:'Archivo',sans-serif;font-weight:700;font-size:13px;margin-bottom:12px">Get in touch</div><div style="display:flex;flex-direction:column;gap:8px;font-size:13px"><span>Toll-free: 1800-XXX-XXXX</span><span>WhatsApp chat</span><span>Find a dealer</span></div></div>
+  </div>
+  <div style="max-width:1060px;margin:26px auto 0;padding-top:18px;border-top:1px solid rgba(255,255,255,.1);font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px"><span>© 2025 Radix Power Solutions Pvt. Ltd.</span><span>ISO · BIS certified · Made in India</span></div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1180,&quot;height&quot;:2400}}">
+class Component extends DCLogic {
+  componentDidMount() {
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'none'; io.unobserve(e.target); } }), { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    const run = () => {
+      document.querySelectorAll('video').forEach(v => { v.muted = true; v.volume = 0; v.loop = true; v.setAttribute('loop', ''); if (!v.dataset.lp) { v.dataset.lp = '1'; v.addEventListener('ended', () => { try { v.currentTime = 0; v.play(); } catch (e) {} }); } });
+      document.querySelectorAll('img[data-src]').forEach(i => { const s = i.dataset.src; if (s && !s.includes('{{') && i.src !== s) i.src = s; });
+      document.querySelectorAll('[data-rev]:not([data-armed])').forEach(el => { el.setAttribute('data-armed', '1'); el.style.opacity = '0'; el.style.transform = 'translateY(26px)'; el.style.transition = 'opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1)'; io.observe(el); });
+    };
+    run();
+    [200, 800, 2000].forEach(t => setTimeout(run, t));
+  }
+  renderVals() {
+    const testi = [
+      { q: 'Radix batteries move fast off my shelf and the warranty support is genuinely quick — the best margin brand I stock.', n: 'Rakesh Verma', r: 'Distributor, Lucknow' },
+      { q: 'Switched our e-rickshaw fleet to the lithium line — lighter, charges faster, and downtime dropped noticeably.', n: 'Imran Sheikh', r: 'Fleet Operator, Kanpur' },
+      { q: 'Full datasheets and certifications up front made our export approval painless.', n: 'Daniel Okoro', r: 'Import Partner, Lagos' }
+    ];
+    const blog = [
+      { c: 'Sustainability', t: 'Lithium vs lead-acid: what actually changes for you', e: 'A practical look at cost per cycle, weight and charge time — and when the switch pays off for fleets and homes alike.', m: 'Team Radix · Feb 2025' },
+      { c: 'Maintenance Tips', t: 'How to double the life of your inverter battery', m: 'Team Radix · Mar 2025', img: 'uploads/post-tips.jpg' },
+      { c: 'Company Updates', t: 'Inside our expanded solar systems line', m: 'Team Radix · Jan 2025', img: 'uploads/post-environment.jpg' }
+    ];
+    return {
+      solar: [
+        { i: '01', n: 'Solar Panel', s: '330–550 Wp mono PERC modules' },
+        { i: '02', n: 'Solar Battery', s: 'C10 tubular, 100–200 Ah' },
+        { i: '03', n: 'Solar Inverter', s: 'PCU 1–10 kVA, MPPT' },
+        { i: '04', n: 'Charge Controller', s: 'PWM / MPPT, 12–48 V' }
+      ],
+      why: [
+        { i: '01', t: '25 years of manufacturing', d: 'A quarter-century of in-house production, not rebadged imports.' },
+        { i: '02', t: '650+ distributor network', d: 'Stocked dealers across India mean service is always nearby.' },
+        { i: '03', t: 'ISO & BIS certified', d: 'Quality systems and testing that export buyers can verify.' },
+        { i: '04', t: 'Now with lithium', d: 'A new lithium line for e-rickshaw and inverter applications.' }
+      ],
+      flow: ['Raw material', 'Assembly', 'Testing', 'Dispatch'],
+      countries: ['Nigeria', 'UAE', 'Afghanistan', 'Nepal', 'Bhutan', 'Sri Lanka'],
+      featured: testi[0],
+      rest: testi.slice(1),
+      featuredPost: blog[0],
+      restPosts: blog.slice(1)
+    };
+  }
+}
+</script>
+</body>
+</html>

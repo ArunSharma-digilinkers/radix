@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js" integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js" integrity="sha384-Ukv1p/xTma6P4/2bY5KzWBw+ydSpXmhCMtyciIQVDJ1RmOxtCYNMF1uXT9T63H67" crossorigin="anonymous"></script>
+<style>
+  html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; }
+  #map { width: 100%; height: 100%; }
+  svg { width: 100%; height: 100%; display: block; }
+  .land { }
+  .pin-core { }
+  .pin-ring { transform-box: fill-box; transform-origin: center; animation: ping 2.4s ease-out infinite; }
+  @keyframes ping { 0% { transform: scale(1); opacity: .55; } 100% { transform: scale(3.4); opacity: 0; } }
+  .lbl { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+const P = new URLSearchParams(location.search);
+const scope = P.get('scope') || 'world';
+const mode = P.get('mode') || 'dark';
+const acc = '#' + (P.get('acc') || '2f6bff').replace('#', '');
+const LAND = mode === 'dark' ? 'rgba(255,255,255,0.10)' : '#d2dae4';
+const STROKE = mode === 'dark' ? 'rgba(255,255,255,0.20)' : '#b3becc';
+const LBL = mode === 'dark' ? 'rgba(255,255,255,0.7)' : '#5c6a7e';
+
+// served export markets + india origin
+const served = new Set([566, 784, 4, 524, 64, 144, 356]); // NG, AE, AF, NP, BT, LK, IN
+const worldPins = [
+  { n: 'India', c: [78.9, 22.5] },
+  { n: 'Nigeria', c: [8.7, 9.1] },
+  { n: 'UAE', c: [54.3, 24.3] },
+  { n: 'Afghanistan', c: [66, 34] },
+  { n: 'Nepal', c: [84.2, 28.2] },
+  { n: 'Bhutan', c: [90.4, 27.4] },
+  { n: 'Sri Lanka', c: [80.7, 7.9] }
+];
+const indiaCities = [
+  [77.2, 28.6], [80.9, 26.8], [80.3, 26.4], [72.8, 19.1], [72.6, 23.0],
+  [88.4, 22.6], [77.6, 13.0], [75.8, 26.9], [85.1, 25.6], [79.1, 21.1],
+  [78.5, 17.4], [76.3, 9.9], [83.0, 25.3], [74.9, 30.9]
+];
+
+const container = document.getElementById('map');
+let W = container.clientWidth || 600, H = container.clientHeight || 300;
+
+d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json').then(topo => {
+  const countries = topojson.feature(topo, topo.objects.countries).features;
+  draw(countries);
+  window.addEventListener('resize', () => {
+    W = container.clientWidth; H = container.clientHeight;
+    d3.select('#map svg').remove();
+    draw(countries);
+  });
+}).catch(e => { console.error('map load failed', e); });
+
+function draw(countries) {
+  const svg = d3.select('#map').append('svg').attr('viewBox', `0 0 ${W} ${H}`);
+  let projection, subject = { type: 'FeatureCollection', features: countries };
+  if (scope === 'india') {
+    const india = countries.filter(d => +d.id === 356);
+    subject = { type: 'FeatureCollection', features: india };
+    projection = d3.geoMercator().fitExtent([[18, 18], [W - 18, H - 18]], subject);
+  } else {
+    projection = d3.geoNaturalEarth1().fitExtent([[8, 8], [W - 8, H - 8]], subject);
+  }
+  const path = d3.geoPath(projection);
+
+  if (scope === 'india') {
+    svg.selectAll('path').data(subject.features).join('path')
+      .attr('d', path).attr('fill', acc).attr('fill-opacity', mode === 'dark' ? 0.22 : 0.16)
+      .attr('stroke', acc).attr('stroke-width', 1);
+    const g = svg.append('g');
+    indiaCities.forEach(c => {
+      const p = projection(c); if (!p) return;
+      g.append('circle').attr('class', 'pin-ring').attr('cx', p[0]).attr('cy', p[1]).attr('r', 4).attr('fill', acc);
+      g.append('circle').attr('cx', p[0]).attr('cy', p[1]).attr('r', 3.4).attr('fill', acc).attr('stroke', '#fff').attr('stroke-width', 1);
+    });
+  } else {
+    svg.selectAll('path').data(countries).join('path')
+      .attr('d', path)
+      .attr('fill', d => served.has(+d.id) ? acc : LAND)
+      .attr('fill-opacity', d => served.has(+d.id) ? (mode === 'dark' ? 0.85 : 0.9) : 1)
+      .attr('stroke', STROKE).attr('stroke-width', 0.5);
+    const g = svg.append('g');
+    worldPins.forEach(pin => {
+      const p = projection(pin.c); if (!p) return;
+      g.append('circle').attr('class', 'pin-ring').attr('cx', p[0]).attr('cy', p[1]).attr('r', 4.5).attr('fill', acc);
+      g.append('circle').attr('cx', p[0]).attr('cy', p[1]).attr('r', 4).attr('fill', acc).attr('stroke', '#fff').attr('stroke-width', 1.2);
+    });
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radix Power Solutions — Homepage Concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'IBM Plex Sans', sans-serif; background: #0d1117; color: #eef2f7; min-height: 100vh; display: flex; flex-direction: column; }
+  header { padding: 54px 40px 20px; max-width: 1080px; margin: 0 auto; width: 100%; }
+  .kick { font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: .16em; font-size: 11px; color: #2f6bff; }
+  h1 { font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 34px; letter-spacing: -.02em; margin: 12px 0 8px; }
+  p.sub { color: rgba(238,242,247,.7); font-size: 15px; line-height: 1.6; margin: 0; max-width: 640px; }
+  .grid { max-width: 1080px; margin: 24px auto 60px; width: 100%; padding: 0 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  a.card { text-decoration: none; color: inherit; border: 1px solid rgba(255,255,255,.12); border-radius: 16px; overflow: hidden; background: #161d29; transition: border-color .2s, transform .2s; display: block; }
+  a.card:hover { border-color: #2f6bff; transform: translateY(-3px); }
+  a.card.red:hover { border-color: #e0231c; }
+  .swatch { height: 90px; display: flex; }
+  .swatch span { flex: 1; }
+  .body { padding: 22px 24px 26px; }
+  .tag { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+  .body h2 { font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 20px; margin: 10px 0 6px; }
+  .body p { font-size: 13.5px; line-height: 1.55; color: rgba(238,242,247,.65); margin: 0 0 14px; }
+  .go { font-weight: 600; font-size: 13.5px; }
+  footer { margin-top: auto; padding: 20px 40px; text-align: center; font-size: 12px; color: rgba(238,242,247,.4); border-top: 1px solid rgba(255,255,255,.08); }
+</style>
+</head>
+<body>
+<header>
+  <div class="kick">Radix Power Solutions · Website redesign</div>
+  <h1>Homepage concepts</h1>
+  <p class="sub">Two directions for review — same content and sections, different visual language. Best viewed on desktop / laptop. Click a concept to open the full homepage.</p>
+</header>
+<div class="grid">
+  <a class="card" href="Radix%20Home%20-%20Charcoal%20Blue.dc.html">
+    <div class="swatch"><span style="background:#0d1117"></span><span style="background:#161d29"></span><span style="background:#2f6bff"></span></div>
+    <div class="body">
+      <div class="tag" style="color:#2f6bff">Direction A</div>
+      <h2>Charcoal + Electric Blue</h2>
+      <p>Technical / engineered. Full-bleed video hero, spec-driven layout, precision detailing.</p>
+      <div class="go" style="color:#2f6bff">Open homepage →</div>
+    </div>
+  </a>
+  <a class="card red" href="Radix%20Home%20-%20Editorial%20Red.dc.html">
+    <div class="swatch"><span style="background:#12233b"></span><span style="background:#f7f8fa"></span><span style="background:#e0231c"></span></div>
+    <div class="body">
+      <div class="tag" style="color:#e0231c">Direction B</div>
+      <h2>Light Editorial + Radix Red</h2>
+      <p>Warm and magazine-like. Big type, framed video, product-forward — closest to the current Radix identity.</p>
+      <div class="go" style="color:#e0231c">Open homepage →</div>
+    </div>
+  </a>
+</div>
+<footer>Concept preview · desktop-first · mobile layouts to follow</footer>
+</body>
+</html>
