@@ -7,7 +7,7 @@ Companion to `CLAUDE.md`. That file says *how* we work; this one says *what* we 
 
 | Phase | Title | Status |
 |---|---|---|
-| 0 | Foundation & repo setup | ◐ |
+| 0 | Foundation & repo setup | ☑ |
 | 1 | Design system & homepage shell | ☐ |
 | 2 | Content schema & models | ☐ |
 | 3 | Auth, RBAC & admin panel | ☐ |
@@ -41,13 +41,17 @@ starting data entry early is the schedule's biggest lever.
 - [x] Git init, remote, `.gitignore`
 - [x] `CLAUDE.md` — shared conventions
 - [x] `docs/PROJECT_PLAN.md` — this document
-- [ ] Install deps: Livewire, `spatie/laravel-permission`, `spatie/laravel-translatable`
-- [ ] Self-host Archivo / IBM Plex Sans / IBM Plex Mono; wire into Vite
-- [ ] Tailwind v4 `@theme` tokens in `resources/css/app.css` (see CLAUDE.md §6)
-- [ ] Confirm MySQL connection and baseline `php artisan migrate` runs clean
-- [ ] Empty `DatabaseSeeder` confirmed (no demo data, ever)
+- [x] Install deps: Livewire 4.3, `spatie/laravel-permission` 8.3, `spatie/laravel-translatable` 6.14
+- [x] Self-host Archivo / IBM Plex Sans / IBM Plex Mono via `laravel-vite-plugin/fonts`
+- [x] Tailwind v4 `@theme` tokens in `resources/css/app.css` (see CLAUDE.md §6)
+- [x] Confirm MySQL connection and baseline `php artisan migrate` runs clean
+- [x] Empty `DatabaseSeeder` (scaffold's test-user seed removed)
+- [x] Minimal public layout + holding page + smoke tests; project README
 
-**Exit:** a fresh clone runs `composer setup && composer dev` and serves a themed blank page.
+**Exit:** a fresh clone runs `composer setup && composer dev` and serves a themed blank page. ✅
+
+**Carried into Phase 1:** the permission tables migration was published and run here so the
+schema baseline is complete in one pass; roles and permissions are actually wired in Phase 3.
 
 ---
 
