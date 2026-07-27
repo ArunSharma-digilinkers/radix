@@ -24,6 +24,12 @@ These are project owner instructions, not preferences.
 | **No `Co-Authored-By` trailer** | Commit messages must not include a co-author trailer of any kind. |
 | **Never push to `main`** | See §2. |
 
+> **Why this matters more than usual here:** the local MySQL instance is shared with
+> roughly fifteen other project databases, including what appear to be live ones. A
+> destructive command run against the wrong connection does damage well beyond this
+> project. Tests are pinned to in-memory SQLite in `phpunit.xml` and can never reach
+> MySQL — keep it that way.
+
 ## 2. Git workflow
 
 - `main` is protected by convention. **Only the initial scaffold was committed directly.**
@@ -46,13 +52,13 @@ Repo: `https://github.com/ArunSharma-digilinkers/radix.git`
 
 | Layer | Choice |
 |---|---|
-| Framework | Laravel 13 (PHP 8.3+; local runs 8.4) |
-| Database | MySQL, schema `radix` |
+| Framework | Laravel 13.22 (PHP 8.3+; local runs 8.4) |
+| Database | MySQL 8.4, schema `radix` |
 | Frontend | Blade + Tailwind CSS v4 + Alpine.js, built with Vite 8 |
-| Interactivity / admin | Livewire (custom-built admin — **no Filament, no Nova**) |
+| Interactivity / admin | Livewire 4.3 (custom-built admin — **no Filament, no Nova**) |
 | Auth | Laravel's own; **no Breeze/Jetstream scaffolding** |
-| RBAC | `spatie/laravel-permission` |
-| Translations | `spatie/laravel-translatable` (JSON columns) |
+| RBAC | `spatie/laravel-permission` 8.3 |
+| Translations | `spatie/laravel-translatable` 6.14 (JSON columns) |
 | Formatting | Laravel Pint (`vendor/bin/pint`) before every commit |
 | Tests | PHPUnit (`php artisan test`) |
 
@@ -105,24 +111,38 @@ Source of truth: `design_handoff/` — the client brief PDF and the approved
 **"Direction B — Light Editorial + Radix Red"** homepage concept. The rejected
 Charcoal/Blue direction is kept for reference only; **do not** take styling from it.
 
-Tokens are defined once in `resources/css/app.css` under Tailwind v4 `@theme`. Never
-hardcode a hex value in a Blade template.
+**Tokens live in `resources/css/app.css`** under Tailwind v4 `@theme`, each with a comment
+explaining its role. That file is the source of truth — the summary below is orientation,
+not a second copy to keep in sync.
 
-| Token | Value | Use |
-|---|---|---|
-| `--color-radix-red` | `#e0231c` | Accent: CTAs, eyebrows, numerals, rules |
-| `--color-radix-dark` | `#12233b` | Dark sections, headings, footer |
-| `--color-radix-dark-2` | `#1b2f4d` | Dark section insets |
-| `--color-ink` | `#16202e` | Body text |
-| `--color-muted` | `#5c6a7e` | Secondary text |
-| `--color-muted-2` | `#8a97a8` | Meta / captions |
-| `--color-surface` | `#f7f8fa` | Alternating section background |
-| `--color-hairline` | `#eef1f5` | Borders, dividers |
+Never hardcode a hex value in a Blade template. If the colour you need isn't a token, add
+it to `app.css` first so the palette stays reviewable in one place.
 
-**Type:** Archivo (600/700/800/900) for headings, tight tracking `-0.02em`.
-IBM Plex Sans (400/500/600) for body. IBM Plex Mono (500/600) for eyebrows and labels —
-uppercase, `0.1–0.16em` letter-spacing, 10–11px.
-Fonts are **self-hosted**, not loaded from Google's CDN (render-blocking; hurts the load target).
+| Group | Utilities |
+|---|---|
+| Brand | `radix-red`, `radix-red-deep`, `radix-dark`, `radix-dark-2` |
+| Text ramp | `ink` → `ink-soft` → `nav` → `lead` → `muted` → `meta` → `placeholder`, plus `on-dark` |
+| Surfaces | `surface`, `surface-raised`, `surface-sunken` |
+| Lines | `hairline`, `line`, `line-strong` |
+| Layout | `max-w-radix` (1060px content column) |
+| Radii | `rounded-btn` (10px), `rounded-card` (16px), `rounded-frame` (18px) |
+
+The text ramp looks long, but each step is a distinct value the concept actually uses —
+they were kept faithful rather than collapsed, so pixel-matching the design doesn't require
+arbitrary hexes.
+
+**Type:** Archivo (600/700/800/900) for headings — `font-display`, tracking `tracking-display`.
+IBM Plex Sans (400/500/600) for body — `font-sans`. IBM Plex Mono (500/600) for eyebrows and
+labels — `font-mono`, uppercase, `tracking-eyebrow`, 10–11px.
+
+Fonts are **self-hosted**. They are declared in `vite.config.js` via
+`laravel-vite-plugin/fonts` (Bunny provider), downloaded at build time, and emitted by
+`{{ Vite::fonts() }}` in the layout head. **Never** add a `fonts.googleapis.com` or
+`fonts.bunny.net` `<link>` — a render-blocking cross-origin request works against the
+<2.5s target, and `HomePageTest` fails the build if one appears.
+
+Only above-the-fold weights are preloaded (Archivo 800, IBM Plex Sans 400). Adding more
+preloads competes with the hero video for mobile bandwidth — change deliberately, not casually.
 
 **Layout:** content container `max-width: 1060px`. Desktop section padding `74px 56px`.
 Radii: `10px` buttons, `16–18px` cards and media frames.
@@ -175,6 +195,7 @@ composer setup      # first-time install (creates .env, key, migrate, npm build)
 composer dev        # serve + queue + logs + vite, all at once
 composer test       # config:clear then php artisan test
 vendor/bin/pint     # format before committing
+npm run build       # production assets; also re-downloads fonts if vite.config.js changed
 ```
 
 ## 10. Where things live

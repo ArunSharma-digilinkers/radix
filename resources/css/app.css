@@ -3,7 +3,96 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
+/*
+ |----------------------------------------------------------------------------
+ | Radix design tokens
+ |----------------------------------------------------------------------------
+ | Single source of truth for the approved "Editorial Red" direction.
+ | See design_handoff/homepage-concept/ for the reference render and
+ | CLAUDE.md §6 for the rules around using these.
+ |
+ | Never hardcode a hex value in a Blade template. If a colour you need is not
+ | here, add it here first so it stays reviewable in one place.
+ */
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    /* Typography ------------------------------------------------------------
+     | Self-hosted via laravel-vite-plugin/fonts (see vite.config.js).
+     | Families are named literally rather than referencing the plugin's
+     | --font-* variables so that type still degrades gracefully if a layout
+     | ever renders without Vite::fonts().
+     */
+    --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Archivo', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+    /* Brand ---------------------------------------------------------------- */
+    --color-radix-red: #e0231c;
+    --color-radix-red-deep: #c41d17; /* hover / pressed */
+    --color-radix-dark: #12233b;
+    --color-radix-dark-2: #1b2f4d; /* insets within dark sections */
+
+    /* Text ramp, darkest to lightest --------------------------------------- */
+    --color-ink: #16202e; /* headings, primary body */
+    --color-ink-soft: #2c3a4d; /* pull-quote body */
+    --color-nav: #42506b; /* nav links */
+    --color-lead: #4a5768; /* hero and section lead paragraphs */
+    --color-muted: #5c6a7e; /* secondary body */
+    --color-meta: #8a97a8; /* captions, bylines, timestamps */
+    --color-placeholder: #9aa6b5; /* unfilled form values */
+    --color-on-dark: #eef2f7; /* text on --color-radix-dark */
+
+    /* Surfaces ------------------------------------------------------------- */
+    --color-surface: #f7f8fa; /* alternating section background */
+    --color-surface-raised: #fbfbfc; /* finder panel */
+    --color-surface-sunken: #f4f6f9; /* product thumbnail wells */
+
+    /* Lines ---------------------------------------------------------------- */
+    --color-hairline: #eef1f5; /* section dividers, list rules */
+    --color-line: #e0e5ec; /* input underlines, ghost buttons */
+    --color-line-strong: #d3d9e2; /* secondary button borders */
+
+    /* Third party ---------------------------------------------------------- */
+    --color-whatsapp: #25d366;
+
+    /* Layout --------------------------------------------------------------- */
+    --container-radix: 1060px; /* max-w-radix — the content column */
+
+    /* Radii ---------------------------------------------------------------- */
+    --radius-btn: 10px;
+    --radius-card: 16px;
+    --radius-frame: 18px; /* media frames, map panels */
+
+    /* Tracking ------------------------------------------------------------- */
+    --tracking-display: -0.02em; /* Archivo headings */
+    --tracking-eyebrow: 0.14em; /* uppercase mono labels */
+}
+
+@layer base {
+    body {
+        font-family: var(--font-sans);
+        color: var(--color-ink);
+        background-color: #fff;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    /* Visible focus is an accessibility requirement in the brief (§7),
+       so it is set once here rather than left to each component. */
+    :focus-visible {
+        outline: 2px solid var(--color-radix-red);
+        outline-offset: 2px;
+    }
+}
+
+/* Scroll-reveal. The concept animates sections in on scroll; the JS that
+   observes [data-rev] lands in Phase 1. Motion is opt-out here so the
+   preference is honoured no matter how that JS is written. */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
