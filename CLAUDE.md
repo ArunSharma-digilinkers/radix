@@ -91,6 +91,30 @@ class Enquiry extends Model
 // validation: ['status' => ['required', Rule::in(Enquiry::STATUSES)]]
 ```
 
+**These rules are enforced by `SchemaConventionsTest`,** which fails the build on an enum
+column, a `dropColumn`/`renameColumn` in a migration's `up()`, or a `DatabaseSeeder` that
+creates records. Documentation erodes; a failing test does not.
+
+### 4.1 Model conventions
+
+- Content models use `Spatie\Translatable\HasTranslations` with a `public array $translatable`.
+  Factories must pass the locale map (`['en' => 'Inverter Batteries']`), not a bare string.
+- `App\Models\Concerns\Listable` gives `active()`, `ordered()` and `forDisplay()`. It needs
+  **both** `is_active` and `sort_order` columns — a model with only the flag (dealers,
+  redirects) uses `Activatable` instead, so `ordered()` never compiles against a column
+  that isn't there.
+- Images attach through the polymorphic `media` table via `HasMedia`, never a path column
+  on the owning model.
+- Anything a person submitted (enquiries, applications, callbacks) is soft-deleted only,
+  and its request metadata is in `$hidden`.
+- Public models are routed by `slug`, never by id.
+- Factories live in `database/factories` and are **for tests only** — never call one from
+  a seeder or a command.
+
+**Database portability:** tests run on SQLite, production on MySQL. Raw SQL must work on
+both. `Dealer::nearest()` documents a concrete instance — `LEAST()` and `HAVING` on a
+select alias are MySQL-only, so it uses the haversine form and a `WHERE` instead.
+
 ## 5. Roles & permissions
 
 Roles are created by an **idempotent** `RolePermissionSeeder` (uses `firstOrCreate`, safe to
@@ -237,6 +261,7 @@ npm run build:maps      # regenerate the homepage SVG maps (output is committed)
 
 ```
 app/Models/                 Eloquent models
+app/Models/Concerns/        Shared model traits (Listable, Activatable, HasMedia)
 app/Livewire/               Livewire components (public + Admin/ subfolder)
 app/Http/Controllers/       Thin controllers for public pages
 app/Support/Content/        Phase 1 content scaffold — the seam Phase 4 replaces

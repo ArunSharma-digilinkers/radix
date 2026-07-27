@@ -9,7 +9,7 @@ Companion to `CLAUDE.md`. That file says *how* we work; this one says *what* we 
 |---|---|---|
 | 0 | Foundation & repo setup | ☑ |
 | 1 | Design system & homepage shell | ☑ |
-| 2 | Content schema & models | ☐ |
+| 2 | Content schema & models | ☑ |
 | 3 | Auth, RBAC & admin panel | ☐ |
 | 4 | Public pages, CMS-driven | ☐ |
 | 5 | Lead capture & conversion tools | ☐ |
@@ -115,7 +115,25 @@ Additive migrations, translatable JSON columns, no enums, no seeders.
 Also: models with relationships, `$translatable` arrays, query scopes, factories for
 **tests only** (never invoked as seed data), and model-level tests.
 
-**Exit:** `php artisan migrate` on a clean DB produces the full schema; model tests pass.
+**Exit:** `php artisan migrate` on a clean DB produces the full schema; model tests pass. ✅
+
+**Delivered:** 22 tables across 7 additive migrations, 21 models, 5 factories, 53 tests.
+
+**Two shape decisions worth knowing:**
+
+- A `product` is a *line* (Inverter Batteries), not an SKU. Individual models are
+  `product_variants`. `product_components` exists only for the Solar Power Generating
+  System, which the brief singles out as a bundled solution.
+- No `authors` table. Posts point at the admin user who wrote them, with an
+  `author_name` override for the house byline ("Team Radix") the concept uses. A second
+  identity table would be two places to keep one name correct.
+- No `infrastructure_media` table either — factory and QC photos attach through the
+  polymorphic `media` table like every other image, so upload and alt-text handling is
+  written once.
+
+**Conventions are now enforced by tests,** not just documented: `SchemaConventionsTest`
+fails the build if a migration declares an enum, drops or renames a column in `up()`, or
+if `DatabaseSeeder` creates any record.
 
 ---
 
