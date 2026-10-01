@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Spatie\Translatable\HasTranslations;
@@ -13,10 +14,29 @@ use Spatie\Translatable\HasTranslations;
  * distributors, 10L+ customers, contact numbers. Brief §6 traces the current
  * site's contradictory team-size claims to exactly the opposite approach, so no
  * template may hardcode these.
+ *
+ * HasMedia is used by exactly one row: the `infrastructure_gallery` key (see
+ * {@see galleryOwner()}), which exists purely as a polymorphic anchor for
+ * factory/QC photos and video — there is no dedicated infrastructure_media
+ * table (see docs/PROJECT_PLAN.md, Phase 2), and this reuses the model that
+ * already represents "the company" for other sitewide figures rather than
+ * inventing a new one for a single gallery.
  */
 class SiteSetting extends Model
 {
-    use HasTranslations;
+    use HasMedia, HasTranslations;
+
+    /** The key of the singleton row that owns the infrastructure gallery media. */
+    private const GALLERY_KEY = 'infrastructure_gallery';
+
+    /**
+     * The row factory/QC photos and video attach to. Created on first use —
+     * not a seeder, since it carries no content of its own, only media.
+     */
+    public static function galleryOwner(): self
+    {
+        return static::firstOrCreate(['key' => self::GALLERY_KEY], ['value' => '']);
+    }
 
     public const CAST_STRING = 'string';
 

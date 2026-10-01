@@ -1,0 +1,72 @@
+/*
+ |----------------------------------------------------------------------------
+ | CKEditor 5 skin
+ |----------------------------------------------------------------------------
+ | Imported from resources/js/rich-text.js AFTER ckeditor5.css, so these win
+ | without any !important. It ships in the editor's own lazy chunk — no admin
+ | page that lacks a rich-text field pays for it.
+ |
+ | Everything here reads a design token from app.css (CLAUDE.md §6: no hex in
+ | a template, and none in a stylesheet that isn't the token file either).
+ | CKEditor's own variables are the seam: set them once and the whole UI
+ | follows, instead of chasing its internal class names.
+ |
+ | Editor CHROME only. The typography of the article itself lives in app.css
+ | under `.rich-content, .ck-content`, because the public post page needs the
+ | identical rules and two copies would drift — what the author sees while
+ | writing would stop matching what readers get.
+ */
+:root {
+    --ck-border-radius: var(--radius-btn);
+    --ck-font-face: var(--font-sans);
+    --ck-font-size-base: 14px;
+
+    --ck-color-base-border: var(--color-line);
+    --ck-color-base-background: #fff;
+    --ck-color-base-text: var(--color-ink);
+    --ck-color-focus-border: var(--color-radix-red);
+    --ck-color-focus-outer-shadow: transparent;
+
+    --ck-color-toolbar-background: var(--color-surface);
+    --ck-color-toolbar-border: var(--color-hairline);
+
+    --ck-color-button-default-hover-background: var(--color-surface-sunken);
+    --ck-color-button-on-background: var(--color-surface-sunken);
+    --ck-color-button-on-color: var(--color-radix-red-deep);
+    --ck-color-button-on-hover-background: var(--color-line);
+
+    --ck-color-link-default: var(--color-radix-red-deep);
+    --ck-color-text: var(--color-ink);
+}
+
+/* The editable itself: an editorial measure and a comfortable minimum height,
+   so a short post does not render as a one-line box. */
+.ck-editor__editable_inline {
+    min-height: 22rem;
+    padding: 1.125rem 1.25rem;
+}
+
+.ck.ck-editor__main > .ck-editor__editable {
+    background: #fff;
+    border-color: var(--color-line);
+}
+
+.ck.ck-editor__main > .ck-editor__editable.ck-focused {
+    border-color: var(--color-radix-red);
+    box-shadow: none;
+}
+
+.ck.ck-toolbar {
+    border-color: var(--color-hairline);
+}
+
+/* Word count strip under the editor. */
+.ck-word-count {
+    display: flex;
+    gap: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-eyebrow);
+    color: var(--color-meta);
+}

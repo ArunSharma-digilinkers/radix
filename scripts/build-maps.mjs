@@ -40,13 +40,13 @@ const ANTARCTICA = 10;
 const PATH_DIGITS = 1;
 
 const WORLD_PINS = [
-    { name: 'India', coords: [78.9, 22.5] },
-    { name: 'Nigeria', coords: [8.7, 9.1] },
-    { name: 'UAE', coords: [54.3, 24.3] },
-    { name: 'Afghanistan', coords: [66, 34] },
-    { name: 'Nepal', coords: [84.2, 28.2] },
-    { name: 'Bhutan', coords: [90.4, 27.4] },
-    { name: 'Sri Lanka', coords: [80.7, 7.9] },
+    { name: 'India', iso: 356, coords: [78.9, 22.5] },
+    { name: 'Nigeria', iso: 566, coords: [8.7, 9.1] },
+    { name: 'UAE', iso: 784, coords: [54.3, 24.3] },
+    { name: 'Afghanistan', iso: 4, coords: [66, 34] },
+    { name: 'Nepal', iso: 524, coords: [84.2, 28.2] },
+    { name: 'Bhutan', iso: 64, coords: [90.4, 27.4] },
+    { name: 'Sri Lanka', iso: 144, coords: [80.7, 7.9] },
 ];
 
 // Indicative distributor concentrations, not real dealer records. The genuine
@@ -80,9 +80,16 @@ async function loadCountries({ retain } = {}) {
     return feature(topo, topo.objects.countries).features;
 }
 
+/**
+ * `points` is either plain [lng, lat] pairs (decorative dealer pins, no
+ * per-point identity) or { coords, iso } objects (export markets, where the
+ * `iso` becomes a `data-iso` hook the Export page's Alpine component reads to
+ * connect a pin to its ExportMarket blurb).
+ */
 function pins(points, projection, radius) {
     return points
-        .map((coords) => {
+        .map((point) => {
+            const coords = Array.isArray(point) ? point : point.coords;
             const projected = projection(coords);
 
             // A projection given a bad input returns [NaN, NaN] rather than
@@ -92,15 +99,16 @@ function pins(points, projection, radius) {
                 throw new Error(`Could not project pin at ${JSON.stringify(coords)}`);
             }
 
-            return projected;
+            return { projected, iso: Array.isArray(point) ? null : point.iso };
         })
-        .map(([x, y]) => {
+        .map(({ projected: [x, y], iso }) => {
             const cx = round(x);
             const cy = round(y);
+            const isoAttr = iso !== null ? ` data-iso="${iso}"` : '';
 
             return (
-                `        <circle class="radix-map__ping" cx="${cx}" cy="${cy}" r="${radius}" fill="currentColor" />\n` +
-                `        <circle cx="${cx}" cy="${cy}" r="${radius - 0.5}" fill="currentColor" stroke="#fff" stroke-width="1.2" />`
+                `        <circle class="radix-map__ping" cx="${cx}" cy="${cy}" r="${radius}"${isoAttr} fill="currentColor" />\n` +
+                `        <circle cx="${cx}" cy="${cy}" r="${radius - 0.5}"${isoAttr} fill="currentColor" stroke="#fff" stroke-width="1.2" />`
             );
         })
         .join('\n');
@@ -176,9 +184,12 @@ async function buildWorld(countries) {
         `    <g fill="var(--map-land, #d2dae4)" stroke="var(--map-line, #b3becc)" stroke-width="0.5">\n` +
         other.map((d) => `        <path d="${path(d)}" />`).join('\n') +
         `\n    </g>\n` +
+        // `data-iso` (ISO 3166-1 numeric, matching ExportMarket.iso_numeric) is
+        // the hook the Export page's Alpine component uses to highlight a
+        // country and its blurb together on hover/focus.
         `    <g fill="currentColor" fill-opacity="0.9" stroke="currentColor" stroke-width="0.5">\n` +
-        served.map((d) => `        <path d="${path(d)}" />`).join('\n') +
-        `\n    </g>\n    <g>\n${pins(WORLD_PINS.map((p) => p.coords), projection, 4.5)}\n    </g>`;
+        served.map((d) => `        <path data-iso="${+d.id}" tabindex="0" d="${path(d)}" />`).join('\n') +
+        `\n    </g>\n    <g>\n${pins(WORLD_PINS, projection, 4.5)}\n    </g>`;
 
     await writeFile(
         resolve(OUT_DIR, 'world.blade.php'),

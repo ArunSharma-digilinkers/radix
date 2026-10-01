@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,7 +11,7 @@ use Spatie\Translatable\HasTranslations;
 
 class JobOpening extends Model
 {
-    use HasTranslations, SoftDeletes;
+    use HasFactory, HasTranslations, SoftDeletes;
 
     public const TYPE_FULL_TIME = 'full_time';
 

@@ -3,6 +3,41 @@ import focus from '@alpinejs/focus';
 
 Alpine.plugin(focus);
 
+/**
+ * Export page: connects the world map's served countries to their market
+ * cards. The map's paths and pins carry `data-iso` (baked in by
+ * scripts/build-maps.mjs); each market card carries the same attribute from
+ * its ExportMarket.iso_numeric. Hovering or focusing either side highlights
+ * every element sharing that code — DOM lookup rather than a CSS rule per
+ * country, since the country set is admin-editable, not fixed.
+ */
+Alpine.data('exportMarketMap', () => ({
+    activeIso: null,
+
+    highlight(iso) {
+        if (!iso || iso === this.activeIso) {
+            return;
+        }
+
+        this.clear();
+        this.activeIso = iso;
+        this.$root.querySelectorAll(`[data-iso="${iso}"]`).forEach((el) => {
+            el.classList.add('radix-map__market--active');
+        });
+    },
+
+    clear() {
+        if (!this.activeIso) {
+            return;
+        }
+
+        this.$root.querySelectorAll(`[data-iso="${this.activeIso}"]`).forEach((el) => {
+            el.classList.remove('radix-map__market--active');
+        });
+        this.activeIso = null;
+    },
+}));
+
 window.Alpine = Alpine;
 Alpine.start();
 

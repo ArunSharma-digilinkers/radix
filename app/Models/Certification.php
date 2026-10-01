@@ -7,6 +7,7 @@ use App\Models\Concerns\Listable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Spatie\Translatable\HasTranslations;
 
 /**
@@ -48,5 +49,18 @@ class Certification extends Model
     public function hasExpired(): bool
     {
         return $this->expires_on !== null && $this->expires_on->isPast();
+    }
+
+    /**
+     * The scanned certificate, stored under COLLECTION_CERTIFICATE rather
+     * than HasMedia's generic COLLECTION_MAIN — a certification's "image" is
+     * a specific document, not a decorative photo, and the two must never be
+     * confused for the wrong one to render on this page.
+     */
+    public function certificateImage(): MorphOne
+    {
+        return $this->morphOne(Media::class, 'mediable')
+            ->where('collection', Media::COLLECTION_CERTIFICATE)
+            ->orderBy('sort_order');
     }
 }

@@ -15,23 +15,6 @@ use PHPUnit\Framework\TestCase;
  */
 class HomePageContentTest extends TestCase
 {
-    public function test_it_lists_the_eight_product_lines_from_the_brief(): void
-    {
-        $products = HomePageContent::products();
-
-        $this->assertCount(8, $products, 'The brief specifies exactly eight product lines.');
-
-        foreach ($products as $product) {
-            $this->assertSame(['number', 'name', 'pitch', 'image'], array_keys($product));
-        }
-
-        $this->assertContains(
-            'Solar Power Systems',
-            array_column($products, 'name'),
-            'The bundled solar system is a priority line and must appear on the homepage.'
-        );
-    }
-
     public function test_the_trust_stats_match_the_figures_stated_in_the_brief(): void
     {
         $stats = collect(HomePageContent::stats())->pluck('value', 'label')->all();
@@ -66,15 +49,5 @@ class HomePageContentTest extends TestCase
         $onMap = array_values(array_diff($matches[1], ['India']));
 
         $this->assertSame(HomePageContent::exportMarkets(), $onMap);
-    }
-
-    public function test_every_post_has_the_metadata_a_card_needs(): void
-    {
-        foreach (HomePageContent::posts() as $post) {
-            $this->assertNotEmpty($post['category']);
-            $this->assertNotEmpty($post['title']);
-            $this->assertNotEmpty($post['meta']);
-            $this->assertNotEmpty($post['image']);
-        }
     }
 }

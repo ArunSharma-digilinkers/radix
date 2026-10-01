@@ -25,13 +25,17 @@ class SiteContent
         // rendered as dead links anywhere a user can tab into by accident —
         // see the button component.
         return [
-            ['label' => 'Products', 'href' => '#products'],
+            // About, Products, Infrastructure, Export, Dealers, Blog and
+            // Contact are real Phase 4 routes now; the rest stay on-page
+            // anchors until their own pages land.
+            ['label' => 'Products', 'href' => route('products.index')],
             ['label' => 'Solar Systems', 'href' => '#solar'],
-            ['label' => 'Infrastructure', 'href' => '#infrastructure'],
-            ['label' => 'Export', 'href' => '#export'],
-            ['label' => 'Dealers', 'href' => '#dealers'],
-            ['label' => 'About', 'href' => '#why'],
-            ['label' => 'Blog', 'href' => '#blog'],
+            ['label' => 'Infrastructure', 'href' => route('infrastructure.index')],
+            ['label' => 'Export', 'href' => route('export.index')],
+            ['label' => 'Dealers', 'href' => route('dealers.index')],
+            ['label' => 'About', 'href' => route('about')],
+            ['label' => 'Blog', 'href' => route('blog.index')],
+            ['label' => 'Contact', 'href' => route('contact')],
         ];
     }
 
@@ -44,27 +48,28 @@ class SiteContent
             [
                 'heading' => 'Products',
                 'links' => [
-                    ['label' => 'Inverter', 'href' => '#products'],
-                    ['label' => 'Automotive', 'href' => '#products'],
+                    ['label' => 'Inverter', 'href' => route('products.index')],
+                    ['label' => 'Automotive', 'href' => route('products.index')],
                     ['label' => 'Solar Systems', 'href' => '#solar'],
-                    ['label' => 'Lithium', 'href' => '#products'],
+                    ['label' => 'Lithium', 'href' => route('products.index')],
                 ],
             ],
             [
                 'heading' => 'Company',
                 'links' => [
-                    ['label' => 'About', 'href' => '#why'],
-                    ['label' => 'Infrastructure', 'href' => '#infrastructure'],
-                    ['label' => 'Export', 'href' => '#export'],
-                    ['label' => 'Careers', 'href' => '#'],
+                    ['label' => 'About', 'href' => route('about')],
+                    ['label' => 'Infrastructure', 'href' => route('infrastructure.index')],
+                    ['label' => 'Export', 'href' => route('export.index')],
+                    ['label' => 'Careers', 'href' => route('careers.index')],
                 ],
             ],
             [
                 'heading' => 'Get in touch',
                 'links' => [
-                    ['label' => 'Find a dealer', 'href' => '#dealers'],
-                    ['label' => 'Become a dealer', 'href' => '#dealers'],
-                    ['label' => 'Export enquiry', 'href' => '#export'],
+                    ['label' => 'Contact us', 'href' => route('contact')],
+                    ['label' => 'Find a dealer', 'href' => route('dealers.index')],
+                    ['label' => 'Become a dealer', 'href' => route('contact').'#enquiry'],
+                    ['label' => 'Export enquiry', 'href' => route('export.index').'#enquire'],
                 ],
             ],
         ];
@@ -91,5 +96,14 @@ class SiteContent
     public static function whatsapp(): ?string
     {
         return config('radix.whatsapp');
+    }
+
+    /**
+     * Toll-free number for the Contact page. Same null-until-confirmed
+     * treatment as {@see whatsapp()} — see config/radix.php.
+     */
+    public static function tollFree(): ?string
+    {
+        return config('radix.toll_free');
     }
 }

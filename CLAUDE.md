@@ -56,6 +56,7 @@ Repo: `https://github.com/ArunSharma-digilinkers/radix.git`
 | Database | MySQL 8.4, schema `radix` |
 | Frontend | Blade + Tailwind CSS v4 + Alpine.js, built with Vite 8 |
 | Interactivity / admin | Livewire 4.3 (custom-built admin — **no Filament, no Nova**) |
+| Rich text | CKEditor 5 (GPL build), lazy-loaded by `resources/js/admin.js`; output sanitised server-side by `App\Support\Html\RichText` |
 | Auth | Laravel's own; **no Breeze/Jetstream scaffolding** |
 | RBAC | `spatie/laravel-permission` 8.3 |
 | Translations | `spatie/laravel-translatable` 6.14 (JSON columns) |
@@ -265,6 +266,10 @@ app/Models/Concerns/        Shared model traits (Listable, Activatable, HasMedia
 app/Livewire/               Livewire components (public + Admin/ subfolder)
 app/Http/Controllers/       Thin controllers for public pages
 app/Support/Content/        Phase 1 content scaffold — the seam Phase 4 replaces
+app/Support/Html/           HTML sanitiser for CKEditor output (allowlist lives here)
+app/Support/Admin/          Admin sidebar nav (grouped, permission-filtered)
+resources/js/admin.js       Admin entry — no Alpine (Livewire ships its own), lazy-loads the editor
+resources/views/components/admin/  Admin shell parts: nav, page-header, alert, seo-panel, icons
 resources/views/components/layouts/  Base layouts (<x-layouts.public>)
 resources/views/components/ui/       Design system components
 resources/views/components/site/     Header, footer, quick actions

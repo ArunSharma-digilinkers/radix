@@ -61,29 +61,39 @@
                     />
                 @endforeach
 
-                <x-ui.button variant="primary" size="lg" class="sm:col-span-2 lg:col-span-1">
+                <x-ui.button type="submit" variant="primary" size="lg" class="sm:col-span-2 lg:col-span-1">
                     Show results
                 </x-ui.button>
             </form>
         </div>
     </x-ui.section>
 
-    {{-- PRODUCTS — editorial numbered index --}}
-    <x-ui.section tone="white" padding="flush-top" id="products">
-        <x-ui.eyebrow>Explore the range</x-ui.eyebrow>
-        <x-ui.heading size="lg" class="mt-3 text-radix-dark">Eight lines of power.</x-ui.heading>
+    {{-- PRODUCTS — editorial numbered index. Real Product rows (CLAUDE.md §8):
+         empty until the admin adds them, same as the blog strip below. --}}
+    @if ($products->isNotEmpty())
+        <x-ui.section tone="white" padding="flush-top" id="products">
+            <x-ui.eyebrow>Explore the range</x-ui.eyebrow>
+            <x-ui.heading size="lg" class="mt-3 text-radix-dark">Eight lines of power.</x-ui.heading>
 
-        <div class="mt-6 grid gap-x-10 sm:grid-cols-2">
-            @foreach (App\Support\Content\HomePageContent::products() as $product)
-                <x-ui.index-row
-                    :number="$product['number']"
-                    :name="$product['name']"
-                    :pitch="$product['pitch']"
-                    :image="asset('images/placeholder/'.$product['image'])"
-                />
-            @endforeach
-        </div>
-    </x-ui.section>
+            <div class="mt-6 grid gap-x-10 sm:grid-cols-2">
+                @foreach ($products as $product)
+                    <x-ui.index-row
+                        :number="sprintf('%02d', $loop->iteration)"
+                        :name="$product->getTranslation('name', 'en')"
+                        :pitch="trim((string) $product->getTranslation('pitch', 'en')) ?: null"
+                        :image="$product->image?->url()"
+                        :href="route('products.show', $product)"
+                    />
+                @endforeach
+            </div>
+
+            <div class="mt-6">
+                <x-ui.button variant="secondary" size="md" href="{{ route('products.index') }}">
+                    See all products
+                </x-ui.button>
+            </div>
+        </x-ui.section>
+    @endif
 
     {{-- SOLAR — the bundled system the current site never shows (brief §6) --}}
     <x-ui.section tone="dark" id="solar">
@@ -157,6 +167,12 @@
                         <x-ui.chip>{{ $step }}</x-ui.chip>
                     @endforeach
                 </ul>
+
+                <div class="mt-6">
+                    <x-ui.button variant="secondary" size="md" href="{{ route('infrastructure.index') }}">
+                        See the full facility
+                    </x-ui.button>
+                </div>
             </div>
 
             <x-ui.media-frame
@@ -182,9 +198,11 @@
                     Search by city or state and connect with a stocked Radix dealer near you.
                 </p>
 
-                {{-- Search is wired to real dealer records in Phase 5. --}}
-                <form class="mt-5">
-                    <label for="dealer-search" class="sr-only">City or PIN code</label>
+                {{-- Text search runs against real dealer records at /dealers.
+                     Ordering by distance instead of city name needs geocoding,
+                     which is Phase 5. --}}
+                <form action="{{ route('dealers.index') }}" method="GET" class="mt-5">
+                    <label for="dealer-search" class="sr-only">City, state or PIN code</label>
                     <div class="flex items-end gap-3 border-b-2 border-line-control focus-within:border-radix-red">
                         <input
                             id="dealer-search"
@@ -218,7 +236,7 @@
                     @endforeach
                 </ul>
 
-                <x-ui.button variant="primary" size="lg" class="mt-6">
+                <x-ui.button variant="primary" size="lg" class="mt-6" href="{{ route('export.index').'#enquire' }}">
                     Request an export quote <span aria-hidden="true">&rarr;</span>
                 </x-ui.button>
             </div>
@@ -229,84 +247,114 @@
         </div>
     </x-ui.section>
 
-    {{-- TESTIMONIALS --}}
-    @php $testimonials = App\Support\Content\HomePageContent::testimonials(); @endphp
+    {{-- TESTIMONIALS — real, named quotes (CLAUDE.md §8); hidden until the
+         admin adds at least one, same treatment as every other unverified
+         section on this site. --}}
+    @if ($testimonials->isNotEmpty())
+        <x-ui.section tone="surface">
+            <x-ui.pull-quote
+                variant="featured"
+                :quote="$testimonials[0]->getTranslation('quote', 'en')"
+                :name="$testimonials[0]->author_name"
+                :role="trim(collect([$testimonials[0]->getTranslation('author_role', 'en'), $testimonials[0]->location])->filter()->implode(', '))"
+                :image="$testimonials[0]->image?->url()"
+            />
 
-    <x-ui.section tone="surface">
-        <x-ui.pull-quote
-            variant="featured"
-            :quote="$testimonials[0]['quote']"
-            :name="$testimonials[0]['name']"
-            :role="$testimonials[0]['role']"
-        />
-
-        <div class="mt-5 grid gap-5 sm:grid-cols-2">
-            @foreach (array_slice($testimonials, 1) as $testimonial)
-                <x-ui.pull-quote
-                    variant="compact"
-                    :quote="$testimonial['quote']"
-                    :name="$testimonial['name']"
-                    :role="$testimonial['role']"
-                />
-            @endforeach
-        </div>
-    </x-ui.section>
+            @if ($testimonials->count() > 1)
+                <div class="mt-5 grid gap-5 sm:grid-cols-2">
+                    @foreach ($testimonials->slice(1) as $testimonial)
+                        <x-ui.pull-quote
+                            variant="compact"
+                            :quote="$testimonial->getTranslation('quote', 'en')"
+                            :name="$testimonial->author_name"
+                            :role="trim(collect([$testimonial->getTranslation('author_role', 'en'), $testimonial->location])->filter()->implode(', '))"
+                        />
+                    @endforeach
+                </div>
+            @endif
+        </x-ui.section>
+    @endif
 
     {{-- BLOG --}}
-    @php $posts = App\Support\Content\HomePageContent::posts(); @endphp
+    {{--
+        Real posts, not scaffold copy: the homepage strip renders whatever the
+        admin has published (CLAUDE.md §8). With nothing published the section
+        is dropped entirely — an empty "From the Radix blog" heading is worse
+        than no heading at all.
+    --}}
+    @if ($posts->isNotEmpty())
+        @php $lead = $posts->first(); @endphp
 
-    <x-ui.section tone="white" id="blog">
-        <div class="flex flex-wrap items-end justify-between gap-4">
-            <x-ui.heading size="lg" class="text-radix-dark">From the Radix blog</x-ui.heading>
-            <a href="#blog" class="text-sm font-bold text-radix-red-deep">View all posts <span aria-hidden="true">&rarr;</span></a>
-        </div>
+        <x-ui.section tone="white" id="blog">
+            <div class="flex flex-wrap items-end justify-between gap-4">
+                <x-ui.heading size="lg" class="text-radix-dark">From the Radix blog</x-ui.heading>
+                <a href="{{ route('blog.index') }}" class="text-sm font-bold text-radix-red-deep">View all posts <span aria-hidden="true">&rarr;</span></a>
+            </div>
 
-        <div class="mt-7 grid items-start gap-9 lg:grid-cols-[1.3fr_1fr]">
-            <article>
-                <div class="h-56 overflow-hidden rounded-card bg-hairline sm:h-72 lg:h-[18.75rem]">
-                    <img
-                        src="{{ asset('images/placeholder/'.$posts[0]['image']) }}"
-                        alt=""
-                        loading="lazy"
-                        decoding="async"
-                        class="h-full w-full object-cover"
-                    >
-                </div>
-
-                <x-ui.eyebrow class="mt-4.5">{{ $posts[0]['category'] }}</x-ui.eyebrow>
-
-                <h3 class="mt-2.5 font-display text-xl font-extrabold leading-tight tracking-display text-ink sm:text-2xl">
-                    <a href="#blog">{{ $posts[0]['title'] }}</a>
-                </h3>
-
-                <p class="mt-2.5 text-[0.90625rem] leading-relaxed text-muted">{{ $posts[0]['excerpt'] }}</p>
-                <p class="mt-2 text-[0.78125rem] text-meta">{{ $posts[0]['meta'] }}</p>
-            </article>
-
-            <div>
-                @foreach (array_slice($posts, 1) as $post)
-                    <article class="flex gap-4 border-t border-hairline py-5">
-                        <div class="h-[4.5rem] w-24 shrink-0 overflow-hidden rounded-lg bg-hairline">
+            <div class="mt-7 grid items-start gap-9 lg:grid-cols-[1.3fr_1fr]">
+                <article>
+                    <div class="h-56 overflow-hidden rounded-card bg-surface-sunken sm:h-72 lg:h-[18.75rem]">
+                        @if ($lead->image)
                             <img
-                                src="{{ asset('images/placeholder/'.$post['image']) }}"
-                                alt=""
+                                src="{{ $lead->image->url() }}"
+                                alt="{{ $lead->image->altText() }}"
                                 loading="lazy"
                                 decoding="async"
                                 class="h-full w-full object-cover"
                             >
-                        </div>
-                        <div class="min-w-0">
-                            <x-ui.eyebrow size="xs">{{ $post['category'] }}</x-ui.eyebrow>
-                            <h3 class="mt-1.5 font-display text-[0.9375rem] font-bold leading-snug text-ink">
-                                <a href="#blog">{{ $post['title'] }}</a>
-                            </h3>
-                            <p class="mt-1.5 text-[0.71875rem] text-meta">{{ $post['meta'] }}</p>
-                        </div>
-                    </article>
-                @endforeach
+                        @endif
+                    </div>
+
+                    @if ($lead->category)
+                        <x-ui.eyebrow class="mt-4.5">{{ $lead->category->getTranslation('name', 'en') }}</x-ui.eyebrow>
+                    @endif
+
+                    <h3 class="mt-2.5 font-display text-xl font-extrabold leading-tight tracking-display text-ink sm:text-2xl">
+                        <a href="{{ route('blog.show', $lead) }}" class="hover:text-radix-red-deep">{{ $lead->getTranslation('title', 'en') }}</a>
+                    </h3>
+
+                    @if ($excerpt = $lead->getTranslation('excerpt', 'en'))
+                        <p class="mt-2.5 text-[0.90625rem] leading-relaxed text-muted">{{ $excerpt }}</p>
+                    @endif
+
+                    <p class="mt-2 text-[0.78125rem] text-meta">
+                        {{ $lead->authorName() }} ·
+                        <time datetime="{{ $lead->published_at->toDateString() }}">{{ $lead->published_at->format('M Y') }}</time>
+                    </p>
+                </article>
+
+                <div>
+                    @foreach ($posts->skip(1) as $post)
+                        <article class="flex gap-4 border-t border-hairline py-5">
+                            <div class="h-[4.5rem] w-24 shrink-0 overflow-hidden rounded-lg bg-surface-sunken">
+                                @if ($post->image)
+                                    <img
+                                        src="{{ $post->image->url() }}"
+                                        alt="{{ $post->image->altText() }}"
+                                        loading="lazy"
+                                        decoding="async"
+                                        class="h-full w-full object-cover"
+                                    >
+                                @endif
+                            </div>
+                            <div class="min-w-0">
+                                @if ($post->category)
+                                    <x-ui.eyebrow size="xs">{{ $post->category->getTranslation('name', 'en') }}</x-ui.eyebrow>
+                                @endif
+                                <h3 class="mt-1.5 font-display text-[0.9375rem] font-bold leading-snug text-ink">
+                                    <a href="{{ route('blog.show', $post) }}" class="hover:text-radix-red-deep">{{ $post->getTranslation('title', 'en') }}</a>
+                                </h3>
+                                <p class="mt-1.5 text-[0.71875rem] text-meta">
+                                    {{ $post->authorName() }} ·
+                                    <time datetime="{{ $post->published_at->toDateString() }}">{{ $post->published_at->format('M Y') }}</time>
+                                </p>
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
             </div>
-        </div>
-    </x-ui.section>
+        </x-ui.section>
+    @endif
 
     {{-- CTA BAND --}}
     <x-ui.section tone="accent" padding="band" class="text-center">

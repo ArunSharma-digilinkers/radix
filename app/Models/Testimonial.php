@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Concerns\HasMedia;
 use App\Models\Concerns\Listable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Translatable\HasTranslations;
@@ -15,7 +16,7 @@ use Spatie\Translatable\HasTranslations;
  */
 class Testimonial extends Model
 {
-    use HasMedia, HasTranslations, Listable, SoftDeletes;
+    use HasFactory, HasMedia, HasTranslations, Listable, SoftDeletes;
 
     public const TYPE_RETAIL = 'retail';
 

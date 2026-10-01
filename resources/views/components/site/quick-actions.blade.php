@@ -12,7 +12,7 @@
     out entirely instead of rendering a dead link.
 --}}
 <div class="fixed bottom-5 right-5 z-30 flex flex-col items-end gap-2.5 print:hidden">
-    <x-ui.button variant="primary" size="md" class="rounded-full shadow-lg">
+    <x-ui.button variant="primary" size="md" class="rounded-full shadow-lg" href="{{ route('contact').'#enquiry' }}">
         Enquire Now
     </x-ui.button>
 

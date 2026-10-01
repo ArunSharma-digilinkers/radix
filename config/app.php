@@ -65,7 +65,19 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    /*
+     | Asia/Kolkata, not UTC.
+     |
+     | Every author is in India and every publish time is typed from an Indian
+     | wall clock. Under UTC a post published "now" from the admin was stored
+     | 5h30m in the future and stayed invisible on the public site for the rest
+     | of the afternoon — the datetime-local input has no timezone in it, so
+     | whatever the app believes is what the value means.
+     |
+     | Single-country business, single timezone: aligning the app with the
+     | authors is simpler and less breakable than converting at every edge.
+     */
+    'timezone' => env('APP_TIMEZONE', 'Asia/Kolkata'),
 
     /*
     |--------------------------------------------------------------------------

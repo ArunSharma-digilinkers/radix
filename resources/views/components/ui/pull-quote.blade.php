@@ -2,14 +2,16 @@
     'quote',
     'name',
     'role' => null,
+    /** Author photo URL, featured variant only. Falls back to a decorative placeholder. */
+    'image' => null,
     /** featured renders the large card; compact renders the two beneath it. */
     'variant' => 'featured',
 ])
 
 {{--
     The brief asks for testimonials with real names (§4) and flags that the current
-    site has none (§6). Names and roles here are placeholders until Radix supplies
-    attributable quotes — see CLAUDE.md §8.
+    site has none (§6) — callers pass real App\Models\Testimonial rows
+    (CLAUDE.md §8), never invented ones.
 --}}
 <figure {{ $attributes->class([
     'rounded-frame bg-white' => $variant === 'featured',
@@ -30,9 +32,13 @@
 
     <figcaption @class(['mt-5 flex items-center gap-3.5' => $variant === 'featured', 'mt-4' => $variant === 'compact'])>
         @if ($variant === 'featured')
-            {{-- Placeholder avatar. Replaced with a real photo, or dropped, once
-                 Radix confirms which customers may be pictured. --}}
-            <span aria-hidden="true" class="size-11 shrink-0 rounded-full bg-[repeating-linear-gradient(135deg,#e7ebf1_0_8px,#f1f4f8_8px_16px)]"></span>
+            @if ($image)
+                <img src="{{ $image }}" alt="" class="size-11 shrink-0 rounded-full object-cover">
+            @else
+                {{-- No photo on file for this testimonial yet — a neutral
+                     placeholder, not a stock headshot (CLAUDE.md §6). --}}
+                <span aria-hidden="true" class="size-11 shrink-0 rounded-full bg-[repeating-linear-gradient(135deg,#e7ebf1_0_8px,#f1f4f8_8px_16px)]"></span>
+            @endif
         @endif
         <span>
             <span class="block font-display text-sm font-bold text-ink">{{ $name }}</span>

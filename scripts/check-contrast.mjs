@@ -54,10 +54,18 @@ const PAIRS = [
     ['white', 'radix-red', 'normal', 'CTA band copy'],
     ['radix-red-deep', 'white', 'normal', 'inverse button label'],
 
+    // Admin chrome — navy sidebar, and the status banners in the content column
+    ['on-dark', 'radix-dark-2', 'normal', 'active sidebar link'],
+    ['on-dark-muted', 'radix-dark-2', 'normal', 'sidebar group labels'],
+    ['success', 'white', 'normal', 'confirmation text'],
+    ['success', 'success-soft', 'normal', 'confirmation banner'],
+    ['radix-red-deep', 'danger-soft', 'normal', 'error banner'],
+
     // Non-text boundaries
     ['line-control', 'white', 'ui', 'secondary button border'],
     ['line-control', 'surface', 'ui', 'form underline on surface'],
     ['radix-red', 'white', 'ui', 'focus ring'],
+    ['radix-red', 'radix-dark', 'ui', 'active sidebar indicator'],
 ];
 
 function parseTokens(css) {

@@ -4,12 +4,20 @@
     /** md | lg */
     'size' => 'md',
     'href' => null,
+    /** button | submit | reset — ignored when $href is set. Forms must pass 'submit' explicitly. */
+    'type' => 'button',
 ])
 
 @php
     // Phase 1 has no destinations yet. Rendering a real <button> rather than an
     // <a href="#"> keeps the shell keyboard-operable and avoids dead links that
     // read as broken to screen readers. Phase 4 passes real hrefs.
+    //
+    // Defaulting $type to 'button' (not 'submit') means a plain <x-ui.button>
+    // inside a <form> does nothing on click unless the caller explicitly asks
+    // for type="submit" — deliberate, so a form's real submit action is always
+    // a conscious choice in the calling template, not an accident of this
+    // component's default.
     $tag = $href ? 'a' : 'button';
 
     $base = 'inline-flex items-center justify-center gap-2 rounded-btn font-semibold '
@@ -29,7 +37,7 @@
 @endphp
 
 <{{ $tag }}
-    @if ($href) href="{{ $href }}" @else type="button" @endif
+    @if ($href) href="{{ $href }}" @else type="{{ $type }}" @endif
     {{ $attributes->class([$base, $variants[$variant] ?? $variants['primary'], $sizes[$size] ?? $sizes['md']]) }}
 >
     {{ $slot }}

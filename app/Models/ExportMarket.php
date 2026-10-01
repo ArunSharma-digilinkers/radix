@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\Listable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
 
@@ -17,7 +18,7 @@ use Spatie\Translatable\HasTranslations;
  */
 class ExportMarket extends Model
 {
-    use HasTranslations, Listable;
+    use HasFactory, HasTranslations, Listable;
 
     /** @var list<string> */
     public array $translatable = ['country_name', 'blurb'];

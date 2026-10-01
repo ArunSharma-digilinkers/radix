@@ -88,4 +88,37 @@ class Post extends Model
     {
         return $this->published_at !== null && $this->published_at->isPast();
     }
+
+    /**
+     * Reading time in minutes. The admin field wins when an editor set one;
+     * otherwise it is estimated from the body at 200 words per minute, so a
+     * post never displays "0 min read" just because nobody filled the box in.
+     */
+    public function readingTime(): int
+    {
+        if ($this->reading_minutes) {
+            return $this->reading_minutes;
+        }
+
+        $words = str_word_count(strip_tags((string) $this->getTranslation('body', 'en')));
+
+        return max(1, (int) ceil($words / 200));
+    }
+
+    /**
+     * Meta fields fall back to the post's own title and excerpt — the same
+     * chain the admin's SEO preview shows while the post is being written.
+     */
+    public function seoTitle(): string
+    {
+        return trim((string) $this->getTranslation('meta_title', 'en')) ?: (string) $this->getTranslation('title', 'en');
+    }
+
+    public function seoDescription(): ?string
+    {
+        $description = trim((string) $this->getTranslation('meta_description', 'en'))
+            ?: trim((string) $this->getTranslation('excerpt', 'en'));
+
+        return $description ?: null;
+    }
 }

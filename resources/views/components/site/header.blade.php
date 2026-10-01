@@ -34,8 +34,8 @@
         </nav>
 
         <div class="hidden items-center gap-2.5 lg:flex">
-            <x-ui.button variant="secondary" size="md">Contact</x-ui.button>
-            <x-ui.button variant="primary" size="md">Enquire Now</x-ui.button>
+            <x-ui.button variant="secondary" size="md" href="{{ route('contact') }}">Contact</x-ui.button>
+            <x-ui.button variant="primary" size="md" href="{{ route('contact').'#enquiry' }}">Enquire Now</x-ui.button>
         </div>
 
         <button
@@ -78,8 +78,8 @@
             </ul>
 
             <div class="mt-5 flex flex-col gap-2.5">
-                <x-ui.button variant="primary" size="lg" class="w-full">Enquire Now</x-ui.button>
-                <x-ui.button variant="secondary" size="lg" class="w-full">Contact</x-ui.button>
+                <x-ui.button variant="primary" size="lg" class="w-full" href="{{ route('contact').'#enquiry' }}">Enquire Now</x-ui.button>
+                <x-ui.button variant="secondary" size="lg" class="w-full" href="{{ route('contact') }}">Contact</x-ui.button>
             </div>
         </nav>
     </div>

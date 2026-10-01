@@ -41,7 +41,20 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
+            /*
+             | Root-relative on purpose.
+             |
+             | Built from APP_URL, an uploaded image is addressed by whatever
+             | host that variable happens to hold — so a site served on
+             | 127.0.0.1:8000 was handing browsers http://localhost/storage/...
+             | (port 80, XAMPP's htdocs) and every image 404'd. Relative URLs
+             | resolve against the host actually serving the page, in dev and
+             | in production alike.
+             |
+             | Anything that must be absolute — og:image, a sitemap, an email —
+             | should wrap this with url() at the point of use.
+             */
+            'url' => '/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,

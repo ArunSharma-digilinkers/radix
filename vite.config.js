@@ -6,7 +6,10 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
+            // admin.js is a third entry, not part of app.js: the admin must not
+            // load the public bundle's Alpine (Livewire ships its own) and the
+            // public site must not download the admin's editor.
+            input: ['resources/css/app.css', 'resources/js/app.js', 'resources/js/admin.js'],
             refresh: true,
             // Fonts are downloaded at build time and served from our own origin.
             // Never load these from the Google Fonts CDN: the extra connection and

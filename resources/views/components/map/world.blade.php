@@ -186,28 +186,28 @@
         <path d="M374.1,186.3L372.1,184.1L369,184.5L368,182.8L363,176.7L363.8,172.6L366.3,174L370.6,174.3L372.4,172.5L374.8,173.5L376.5,170.9L375.9,169.1L377.9,168.7L378,171.6L379.4,175.8L378.7,177.8L381.8,182.2L379.6,184.8L378.5,185.7Z" />
     </g>
     <g fill="currentColor" fill-opacity="0.9" stroke="currentColor" stroke-width="0.5">
-        <path d="M324.7,180.7L324.8,176.1L326.5,173L326.3,169.7L327.6,165.5L329.5,165.2L331.9,166.8L335.7,167.4L337.6,166.4L341.4,166.9L343.2,165.9L344.7,168.1L345.1,169.9L343.7,171.5L340.6,179.2L337.7,179.1L336.2,180.3L334.9,183.7L330.3,184.8L327.6,180.7Z" />
-        <path d="M408,144.1L412.2,144.3L415.2,140.4L415.6,141.1L416,142.7L415.2,142.7L414.5,147.2L409,146.6Z" />
-        <path d="M484.3,135.9L484.5,138.3L481.3,139.3L480.7,144.9L479.3,144.4L479.6,148.1L478.9,148.6L477.4,145.3L475.8,145.6L477.3,142.6L473,142L472.6,140.6L470.2,139.6L471.3,142.1L470.2,143.6L472.6,148.6L469.3,149.7L468.9,152.4L466.6,153.8L462.3,158.8L462.4,159.8L459.3,161.1L458.9,162.7L459.7,167L459.4,172.4L455.6,177.2L453.9,175.3L452.1,170.4L450.4,167.5L449.3,163.7L447.5,160.9L445.6,154.4L444.7,150L441.1,151L438.6,148.5L439.3,147.8L436.5,145.2L437.4,143.9L441.2,143.9L439,139.5L437.8,138.6L439.3,136.4L441.3,136.6L444.6,130.3L445.5,127.7L443.9,126.7L442.1,123.5L442.7,122.6L447.1,122.8L448.3,121.1L450.6,123.5L451.9,127.2L451.6,129.2L456.1,131.9L455,134.8L464.5,139L469.4,139.7L468.9,136.7L470.3,137.8L472.1,139L476,138.8L475,136.9L476.3,136.6L479.2,133.8L481.7,133.4L482.4,135.6Z" />
-        <path d="M475,136.9L476,138.8L472.1,139L470.3,137.8L471.9,135.8Z" />
-        <path d="M468.9,136.7L469.4,139.7L464.5,139L455,134.8L456.1,131.9L456.7,131.5L464.9,136Z" />
-        <path d="M428.9,117.3L431.1,117.7L434.6,116.8L435.3,115L437.9,118.6L439.8,117L442.7,117.2L443.1,117.8L438,119L437.5,124.2L435.9,124.1L435.2,129L432,129.7L431.5,132.6L429.4,133.4L425.3,133.7L422.3,132.7L423.5,130.8L421.9,129.2L420.4,124.8L420.8,120.8L422.7,121.6L426.1,119.4L427.5,116.7Z" />
-        <path d="M463.1,178.1L462.9,180.3L460.7,181.3L459.4,176.8L460,173.5Z" />
+        <path data-iso="566" tabindex="0" d="M324.7,180.7L324.8,176.1L326.5,173L326.3,169.7L327.6,165.5L329.5,165.2L331.9,166.8L335.7,167.4L337.6,166.4L341.4,166.9L343.2,165.9L344.7,168.1L345.1,169.9L343.7,171.5L340.6,179.2L337.7,179.1L336.2,180.3L334.9,183.7L330.3,184.8L327.6,180.7Z" />
+        <path data-iso="784" tabindex="0" d="M408,144.1L412.2,144.3L415.2,140.4L415.6,141.1L416,142.7L415.2,142.7L414.5,147.2L409,146.6Z" />
+        <path data-iso="356" tabindex="0" d="M484.3,135.9L484.5,138.3L481.3,139.3L480.7,144.9L479.3,144.4L479.6,148.1L478.9,148.6L477.4,145.3L475.8,145.6L477.3,142.6L473,142L472.6,140.6L470.2,139.6L471.3,142.1L470.2,143.6L472.6,148.6L469.3,149.7L468.9,152.4L466.6,153.8L462.3,158.8L462.4,159.8L459.3,161.1L458.9,162.7L459.7,167L459.4,172.4L455.6,177.2L453.9,175.3L452.1,170.4L450.4,167.5L449.3,163.7L447.5,160.9L445.6,154.4L444.7,150L441.1,151L438.6,148.5L439.3,147.8L436.5,145.2L437.4,143.9L441.2,143.9L439,139.5L437.8,138.6L439.3,136.4L441.3,136.6L444.6,130.3L445.5,127.7L443.9,126.7L442.1,123.5L442.7,122.6L447.1,122.8L448.3,121.1L450.6,123.5L451.9,127.2L451.6,129.2L456.1,131.9L455,134.8L464.5,139L469.4,139.7L468.9,136.7L470.3,137.8L472.1,139L476,138.8L475,136.9L476.3,136.6L479.2,133.8L481.7,133.4L482.4,135.6Z" />
+        <path data-iso="64" tabindex="0" d="M475,136.9L476,138.8L472.1,139L470.3,137.8L471.9,135.8Z" />
+        <path data-iso="524" tabindex="0" d="M468.9,136.7L469.4,139.7L464.5,139L455,134.8L456.1,131.9L456.7,131.5L464.9,136Z" />
+        <path data-iso="4" tabindex="0" d="M428.9,117.3L431.1,117.7L434.6,116.8L435.3,115L437.9,118.6L439.8,117L442.7,117.2L443.1,117.8L438,119L437.5,124.2L435.9,124.1L435.2,129L432,129.7L431.5,132.6L429.4,133.4L425.3,133.7L422.3,132.7L423.5,130.8L421.9,129.2L420.4,124.8L420.8,120.8L422.7,121.6L426.1,119.4L427.5,116.7Z" />
+        <path data-iso="144" tabindex="0" d="M463.1,178.1L462.9,180.3L460.7,181.3L459.4,176.8L460,173.5Z" />
     </g>
     <g>
-        <circle class="radix-map__ping" cx="455.14" cy="147.65" r="4.5" fill="currentColor" />
-        <circle cx="455.14" cy="147.65" r="4" fill="currentColor" stroke="#fff" stroke-width="1.2" />
-        <circle class="radix-map__ping" cx="335.2" cy="174.94" r="4.5" fill="currentColor" />
-        <circle cx="335.2" cy="174.94" r="4" fill="currentColor" stroke="#fff" stroke-width="1.2" />
-        <circle class="radix-map__ping" cx="412.62" cy="143.97" r="4.5" fill="currentColor" />
-        <circle cx="412.62" cy="143.97" r="4" fill="currentColor" stroke="#fff" stroke-width="1.2" />
-        <circle class="radix-map__ping" cx="429.39" cy="124.15" r="4.5" fill="currentColor" />
-        <circle cx="429.39" cy="124.15" r="4" fill="currentColor" stroke="#fff" stroke-width="1.2" />
-        <circle class="radix-map__ping" cx="462.16" cy="136" r="4.5" fill="currentColor" />
-        <circle cx="462.16" cy="136" r="4" fill="currentColor" stroke="#fff" stroke-width="1.2" />
-        <circle class="radix-map__ping" cx="472.97" cy="137.64" r="4.5" fill="currentColor" />
-        <circle cx="472.97" cy="137.64" r="4" fill="currentColor" stroke="#fff" stroke-width="1.2" />
-        <circle class="radix-map__ping" cx="461.17" cy="177.38" r="4.5" fill="currentColor" />
-        <circle cx="461.17" cy="177.38" r="4" fill="currentColor" stroke="#fff" stroke-width="1.2" />
+        <circle class="radix-map__ping" cx="455.14" cy="147.65" r="4.5" data-iso="356" fill="currentColor" />
+        <circle cx="455.14" cy="147.65" r="4" data-iso="356" fill="currentColor" stroke="#fff" stroke-width="1.2" />
+        <circle class="radix-map__ping" cx="335.2" cy="174.94" r="4.5" data-iso="566" fill="currentColor" />
+        <circle cx="335.2" cy="174.94" r="4" data-iso="566" fill="currentColor" stroke="#fff" stroke-width="1.2" />
+        <circle class="radix-map__ping" cx="412.62" cy="143.97" r="4.5" data-iso="784" fill="currentColor" />
+        <circle cx="412.62" cy="143.97" r="4" data-iso="784" fill="currentColor" stroke="#fff" stroke-width="1.2" />
+        <circle class="radix-map__ping" cx="429.39" cy="124.15" r="4.5" data-iso="4" fill="currentColor" />
+        <circle cx="429.39" cy="124.15" r="4" data-iso="4" fill="currentColor" stroke="#fff" stroke-width="1.2" />
+        <circle class="radix-map__ping" cx="462.16" cy="136" r="4.5" data-iso="524" fill="currentColor" />
+        <circle cx="462.16" cy="136" r="4" data-iso="524" fill="currentColor" stroke="#fff" stroke-width="1.2" />
+        <circle class="radix-map__ping" cx="472.97" cy="137.64" r="4.5" data-iso="64" fill="currentColor" />
+        <circle cx="472.97" cy="137.64" r="4" data-iso="64" fill="currentColor" stroke="#fff" stroke-width="1.2" />
+        <circle class="radix-map__ping" cx="461.17" cy="177.38" r="4.5" data-iso="144" fill="currentColor" />
+        <circle cx="461.17" cy="177.38" r="4" data-iso="144" fill="currentColor" stroke="#fff" stroke-width="1.2" />
     </g>
 </svg>

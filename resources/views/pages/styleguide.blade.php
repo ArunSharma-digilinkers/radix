@@ -122,13 +122,19 @@
     <x-ui.section tone="white" padding="tight">
         <x-ui.heading size="md" class="text-radix-dark">Index rows &amp; numbered items</x-ui.heading>
 
+        {{-- Sample rows for layout reference only — real product data comes
+             from App\Models\Product via ProductController. --}}
         <div class="mt-6 grid gap-x-10 sm:grid-cols-2">
-            @foreach (array_slice(App\Support\Content\HomePageContent::products(), 0, 4) as $product)
+            @foreach ([
+                ['number' => '01', 'name' => 'Sample Line One', 'pitch' => 'One-line pitch for the index row.'],
+                ['number' => '02', 'name' => 'Sample Line Two', 'pitch' => 'One-line pitch for the index row.'],
+                ['number' => '03', 'name' => 'Sample Line Three', 'pitch' => 'One-line pitch for the index row.'],
+                ['number' => '04', 'name' => 'Sample Line Four', 'pitch' => 'One-line pitch for the index row.'],
+            ] as $product)
                 <x-ui.index-row
                     :number="$product['number']"
                     :name="$product['name']"
                     :pitch="$product['pitch']"
-                    :image="asset('images/placeholder/'.$product['image'])"
                 />
             @endforeach
         </div>
@@ -189,12 +195,13 @@
                 height="h-56"
             />
 
-            @php $testimonials = App\Support\Content\HomePageContent::testimonials(); @endphp
+            {{-- Sample copy for layout reference only — this page never ships
+                 to production. Real testimonials come from App\Models\Testimonial. --}}
             <x-ui.pull-quote
                 variant="compact"
-                :quote="$testimonials[1]['quote']"
-                :name="$testimonials[1]['name']"
-                :role="$testimonials[1]['role']"
+                quote="Sample quote text for reviewing the compact pull-quote layout."
+                name="Component Preview"
+                role="Styleguide"
             />
         </div>
     </x-ui.section>
