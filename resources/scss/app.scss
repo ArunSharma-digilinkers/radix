@@ -1196,7 +1196,9 @@ img, video {
 }
 
 .rx-footer {
-    padding: 3rem 1.5rem 2rem;
+    // The bottom padding keeps the copyright row clear of the fixed Enquire Now /
+    // WhatsApp buttons (.rx-quick-actions) when the page is scrolled to the end.
+    padding: 3rem 1.5rem 7rem;
 
     @include media-breakpoint-up(sm) {
         padding-inline: 2.5rem;
@@ -1204,6 +1206,21 @@ img, video {
 
     @include media-breakpoint-up(lg) {
         padding-inline: 3.5rem;
+    }
+
+    // Brand column wider than the three link columns, as in the concept.
+    &__grid {
+        display: grid;
+        gap: 2.25rem;
+        grid-template-columns: 1fr;
+
+        @include media-breakpoint-up(sm) {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        @include media-breakpoint-up(lg) {
+            grid-template-columns: 1.4fr repeat(3, 1fr);
+        }
     }
 
     &__link:hover {
