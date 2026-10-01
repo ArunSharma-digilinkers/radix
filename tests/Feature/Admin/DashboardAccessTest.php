@@ -38,7 +38,7 @@ class DashboardAccessTest extends TestCase
 
         $response = $this->actingAs($user)->get(route('admin.dashboard'));
 
-        foreach (['Products', 'Blog', 'Careers', 'Pages', 'Media', 'Enquiries', 'Dealers', 'Users'] as $label) {
+        foreach (['Products', 'Blog', 'Careers', 'Enquiries', 'Dealers', 'Users'] as $label) {
             $response->assertSee($label);
         }
     }
@@ -50,7 +50,7 @@ class DashboardAccessTest extends TestCase
 
         $response = $this->actingAs($user)->get(route('admin.dashboard'));
 
-        foreach (['Products', 'Blog', 'Careers', 'Pages', 'Media'] as $label) {
+        foreach (['Products', 'Blog', 'Careers'] as $label) {
             $response->assertSee($label);
         }
 
@@ -70,7 +70,7 @@ class DashboardAccessTest extends TestCase
             $response->assertSee($label);
         }
 
-        foreach (['Products', 'Blog', 'Careers', 'Pages', 'Media', 'Users'] as $label) {
+        foreach (['Products', 'Blog', 'Careers', 'Users'] as $label) {
             $response->assertDontSee($label);
         }
     }

@@ -54,8 +54,6 @@ class Nav
                     ['label' => 'Infrastructure', 'href' => route('admin.infrastructure.index'), 'icon' => 'infrastructure', 'permission' => 'infrastructure.manage', 'active' => 'admin.infrastructure.*'],
                     ['label' => 'Certifications', 'href' => route('admin.certifications.index'), 'icon' => 'certifications', 'permission' => 'infrastructure.manage', 'active' => 'admin.certifications.*'],
                     ['label' => 'Testimonials', 'href' => route('admin.testimonials.index'), 'icon' => 'testimonials', 'permission' => 'testimonials.manage', 'active' => 'admin.testimonials.*'],
-                    ['label' => 'Pages', 'href' => null, 'icon' => 'pages', 'permission' => 'pages.manage', 'active' => null],
-                    ['label' => 'Media', 'href' => null, 'icon' => 'media', 'permission' => 'media.manage', 'active' => null],
                 ],
             ],
             [

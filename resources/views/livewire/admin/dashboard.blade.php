@@ -14,9 +14,7 @@
         <x-ui.eyebrow>Getting started</x-ui.eyebrow>
 
         <p class="mt-2-5 mw-prose fs-15 text-muted">
-            Pick a section from the sidebar to manage the site. Sections marked
-            <span class="font-mono fs-11 text-uppercase tracking-eyebrow text-meta">Soon</span>
-            are not built yet.
+            Pick a section from the sidebar to manage the site.
         </p>
     </div>
 </div>
