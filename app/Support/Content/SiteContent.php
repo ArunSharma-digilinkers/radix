@@ -21,21 +21,17 @@ class SiteContent
      */
     public static function nav(): array
     {
-        // Hrefs are '#' until Phase 4 introduces the real routes. They are not
-        // rendered as dead links anywhere a user can tab into by accident —
-        // see the button component.
+        // Order is the client's sitemap order (brief §4).
         return [
-            // About, Products, Infrastructure, Export, Dealers, Blog and
-            // Contact are real Phase 4 routes now; the rest stay on-page
-            // anchors until their own pages land.
+            ['label' => 'Home', 'href' => route('home')],
+            ['label' => 'About Us', 'href' => route('about')],
             ['label' => 'Products', 'href' => route('products.index')],
-            ['label' => 'Solar Systems', 'href' => '#solar'],
             ['label' => 'Infrastructure', 'href' => route('infrastructure.index')],
             ['label' => 'Export', 'href' => route('export.index')],
-            ['label' => 'Dealers', 'href' => route('dealers.index')],
-            ['label' => 'About', 'href' => route('about')],
+            ['label' => 'Career', 'href' => route('careers.index')],
             ['label' => 'Blog', 'href' => route('blog.index')],
-            ['label' => 'Contact', 'href' => route('contact')],
+            ['label' => 'Dealer/Distributor Locator', 'href' => route('dealers.index')],
+            ['label' => 'Contact Us', 'href' => route('contact')],
         ];
     }
 

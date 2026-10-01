@@ -25,15 +25,15 @@
             >
         </a>
 
-        <nav aria-label="Primary" class="hidden lg:block">
-            <ul class="flex items-center gap-5 text-[0.84375rem] text-nav">
+        <nav aria-label="Primary" class="hidden xl:block">
+            <ul class="flex items-center gap-4 text-[0.84375rem] text-nav">
                 @foreach ($nav as $item)
                     <li><a href="{{ $item['href'] }}" class="hover:text-radix-red-deep">{{ $item['label'] }}</a></li>
                 @endforeach
             </ul>
         </nav>
 
-        <div class="hidden items-center gap-2.5 lg:flex">
+        <div class="hidden items-center gap-2.5 xl:flex">
             <x-ui.button variant="secondary" size="md" href="{{ route('contact') }}">Contact</x-ui.button>
             <x-ui.button variant="primary" size="md" href="{{ route('contact').'#enquiry' }}">Enquire Now</x-ui.button>
         </div>
@@ -43,7 +43,7 @@
             x-on:click="open = ! open"
             :aria-expanded="open ? 'true' : 'false'"
             aria-controls="mobile-nav"
-            class="-mr-2 inline-flex items-center justify-center rounded-btn p-2 text-ink lg:hidden"
+            class="-mr-2 inline-flex items-center justify-center rounded-btn p-2 text-ink xl:hidden"
         >
             <span class="sr-only">Menu</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" class="size-6">
@@ -62,7 +62,7 @@
         x-trap.noscroll="open"
         x-on:click.outside="open = false"
         x-transition.opacity
-        class="border-t border-hairline bg-white lg:hidden"
+        class="border-t border-hairline bg-white xl:hidden"
     >
         <nav aria-label="Primary" class="px-6 py-4">
             <ul class="flex flex-col">
