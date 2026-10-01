@@ -33,11 +33,6 @@
             </ul>
         </nav>
 
-        <div class="hidden items-center gap-2.5 xl:flex">
-            <x-ui.button variant="secondary" size="md" href="{{ route('contact') }}">Contact</x-ui.button>
-            <x-ui.button variant="primary" size="md" href="{{ route('contact').'#enquiry' }}">Enquire Now</x-ui.button>
-        </div>
-
         <button
             type="button"
             x-on:click="open = ! open"
@@ -74,11 +69,6 @@
                     </li>
                 @endforeach
             </ul>
-
-            <div class="mt-5 flex flex-col gap-2.5">
-                <x-ui.button variant="primary" size="lg" class="w-full" href="{{ route('contact').'#enquiry' }}">Enquire Now</x-ui.button>
-                <x-ui.button variant="secondary" size="lg" class="w-full" href="{{ route('contact') }}">Contact</x-ui.button>
-            </div>
         </nav>
     </div>
 </header>
