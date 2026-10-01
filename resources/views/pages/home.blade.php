@@ -177,6 +177,7 @@
 
             <x-ui.media-frame
                 video="{{ asset('video/factory-floor.mp4') }}"
+                :lazy="true"
                 badge="Live from the floor"
             />
         </div>

@@ -9,6 +9,8 @@
     'height' => 'h-56 sm:h-72 lg:h-[21.25rem]',
     /** Adds a bottom scrim so an overlaid badge stays legible. */
     'scrim' => true,
+    /** Below-the-fold video: nothing downloads until it scrolls near the viewport. */
+    'lazy' => false,
 ])
 
 {{--
@@ -23,16 +25,17 @@
     @if ($video)
         <video
             @if ($image) poster="{{ $image }}" @endif
-            autoplay
+            @unless ($lazy) autoplay @endunless
             muted
             loop
             playsinline
-            preload="metadata"
+            preload="{{ $lazy ? 'none' : 'metadata' }}"
+            @if ($lazy) data-lazy-video @endif
             aria-hidden="true"
             tabindex="-1"
             class="absolute inset-0 h-full w-full object-cover"
         >
-            <source src="{{ $video }}" type="video/mp4">
+            <source {{ $lazy ? 'data-src' : 'src' }}="{{ $video }}" type="video/mp4">
         </video>
     @elseif ($image)
         <img

@@ -98,3 +98,49 @@ if (document.readyState === 'loading') {
 } else {
     initScrollReveal();
 }
+
+/**
+ * Below-the-fold videos stay unloaded until they approach the viewport, so the
+ * hero and first paint have the bandwidth to themselves on mobile. Users who
+ * ask for reduced motion get the first frame and no playback.
+ */
+function initLazyVideo() {
+    const videos = document.querySelectorAll('video[data-lazy-video]');
+
+    if (!videos.length || !('IntersectionObserver' in window)) {
+        return;
+    }
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) {
+                    return;
+                }
+
+                const video = entry.target;
+                observer.unobserve(video);
+
+                video.querySelectorAll('source[data-src]').forEach((source) => {
+                    source.src = source.dataset.src;
+                });
+                video.load();
+
+                if (!reduceMotion) {
+                    video.play().catch(() => {});
+                }
+            });
+        },
+        { rootMargin: '200px 0px' }
+    );
+
+    videos.forEach((video) => observer.observe(video));
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLazyVideo);
+} else {
+    initLazyVideo();
+}
