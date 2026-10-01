@@ -47,12 +47,10 @@
         >
             <span class="sr-only">Menu</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" class="size-6">
-                <template x-if="! open">
-                    <g><path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h16" /></g>
-                </template>
-                <template x-if="open">
-                    <g><path d="M6 6l12 12" /><path d="M18 6L6 18" /></g>
-                </template>
+                {{-- x-show, not <template x-if>: a <template> inside <svg> is not an HTML
+                     template, so Alpine's x-if rendered nothing and the icon vanished. --}}
+                <g x-show="! open"><path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h16" /></g>
+                <g x-show="open" x-cloak><path d="M6 6l12 12" /><path d="M18 6L6 18" /></g>
             </svg>
         </button>
     </div>
