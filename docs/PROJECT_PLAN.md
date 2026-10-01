@@ -91,8 +91,9 @@ in the meantime and will reconcile when they arrive.
 
 - The two factory videos are the concept's originals (2.3MB). No `ffmpeg` was available to
   re-encode to a web profile — folded into Phase 6.
-- Links point at on-page anchors. Real routes arrive in Phase 4; buttons without a
-  destination render as `<button>` rather than dead `<a href="#">`.
+- Links now point at real routes (resolved in Phase 4). The only on-page anchor left is
+  the hero's "Find Your Battery" → `#finder`; the CTA band's WhatsApp button is hidden
+  until `radix.whatsapp` is configured rather than rendering a dead link.
 
 ---
 

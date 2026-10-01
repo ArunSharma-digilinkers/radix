@@ -26,7 +26,7 @@
 
                 <div class="mt-7 flex flex-wrap gap-3.5">
                     <x-ui.button variant="primary" size="lg" href="#finder">Find Your Battery</x-ui.button>
-                    <x-ui.button variant="secondary" size="lg" href="#dealers">Become a dealer</x-ui.button>
+                    <x-ui.button variant="secondary" size="lg" href="{{ route('dealers.index') }}">Become a dealer</x-ui.button>
                 </div>
             </div>
 
@@ -366,8 +366,16 @@
         </p>
 
         <div class="mt-6 flex flex-wrap justify-center gap-3">
-            <x-ui.button variant="inverse" size="lg">Enquire Now</x-ui.button>
-            <x-ui.button variant="on-dark" size="lg">Chat on WhatsApp</x-ui.button>
+            <x-ui.button variant="inverse" size="lg" href="{{ route('contact').'#enquiry' }}">Enquire Now</x-ui.button>
+            @if ($whatsapp = \App\Support\Content\SiteContent::whatsapp())
+                <x-ui.button
+                    variant="on-dark"
+                    size="lg"
+                    href="https://wa.me/{{ preg_replace('/\D+/', '', $whatsapp) }}?text={{ rawurlencode('Hello Radix, I would like to enquire about your batteries.') }}"
+                    target="_blank"
+                    rel="noopener"
+                >Chat on WhatsApp</x-ui.button>
+            @endif
         </div>
     </x-ui.section>
 </x-layouts.public>
