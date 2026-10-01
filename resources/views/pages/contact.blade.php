@@ -1,10 +1,8 @@
 {{--
     Contact page.
 
-    The enquiry form is markup only — same treatment as the homepage's dealer
-    search and battery finder. Submission handling, validation and spam
-    protection land with the rest of the lead pipeline in Phase 5; see
-    App\Support\Content\ContactPageContent.
+    The enquiry form persists an Enquiry (see ContactController). Spam protection
+    and the customer auto-acknowledgement email land with Phase 5.
 
     Quick-contact channels (WhatsApp, toll-free) omit themselves when
     unconfigured, same as x-site.quick-actions — see config/radix.php.
@@ -71,34 +69,55 @@
                 </p>
             </div>
 
-            {{-- Persisted and routed to the sales inbox in Phase 5 — see
-                 App\Models\Enquiry. --}}
-            <form class="grid gap-5 sm:grid-cols-2">
-                <x-ui.text-field label="Full name" name="name" required class="sm:col-span-2" />
-                <x-ui.text-field label="Email" name="email" type="email" required />
-                <x-ui.text-field label="Phone" name="phone" type="tel" />
+            @if (session('enquired'))
+                <div class="rounded-frame border border-hairline bg-surface-raised px-6 py-10">
+                    <p class="font-display text-[1.0625rem] font-extrabold tracking-display text-radix-dark">
+                        Enquiry received.
+                    </p>
+                    <p class="mt-2 max-w-sm text-[0.9375rem] leading-relaxed text-muted">
+                        Thanks for reaching out &mdash; we&rsquo;ll get back to you within one
+                        business day.
+                    </p>
+                </div>
+            @else
+                <form action="{{ route('contact.enquire') }}" method="POST" class="grid gap-5 sm:grid-cols-2">
+                    @csrf
 
-                <x-ui.select-field
-                    label="Reason for enquiry"
-                    name="type"
-                    placeholder="Select a reason"
-                    :options="App\Support\Content\ContactPageContent::enquiryTypes()"
-                    class="sm:col-span-2"
-                />
+                    <x-ui.text-field label="Full name" name="name" required :value="old('name')" class="sm:col-span-2" />
+                    <x-ui.text-field label="Email" name="email" type="email" required :value="old('email')" />
+                    <x-ui.text-field label="Phone" name="phone" type="tel" :value="old('phone')" />
 
-                <x-ui.text-field
-                    label="Message"
-                    name="message"
-                    textarea
-                    required
-                    placeholder="Tell us a bit about what you need…"
-                    class="sm:col-span-2"
-                />
+                    <x-ui.select-field
+                        label="Reason for enquiry"
+                        name="type"
+                        placeholder="Select a reason"
+                        :options="App\Support\Content\ContactPageContent::enquiryTypes()"
+                        :selected="old('type', $selectedProduct ? App\Models\Enquiry::TYPE_PRODUCT : null)"
+                    />
 
-                <x-ui.button type="submit" variant="primary" size="lg" class="sm:col-span-2 sm:w-fit">
-                    Send enquiry
-                </x-ui.button>
-            </form>
+                    <x-ui.select-field
+                        label="Product (optional)"
+                        name="product"
+                        placeholder="Any product"
+                        :options="$products->all()"
+                        :selected="old('product', $selectedProduct)"
+                    />
+
+                    <x-ui.text-field
+                        label="Message"
+                        name="message"
+                        textarea
+                        required
+                        placeholder="Tell us a bit about what you need…"
+                        :value="old('message')"
+                        class="sm:col-span-2"
+                    />
+
+                    <x-ui.button type="submit" variant="primary" size="lg" class="sm:col-span-2 sm:w-fit">
+                        Send enquiry
+                    </x-ui.button>
+                </form>
+            @endif
         </div>
     </x-ui.section>
 

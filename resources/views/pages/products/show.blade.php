@@ -7,9 +7,8 @@
     own, plus the system as a whole — via product_components, which a plain
     battery line simply has none of.
 
-    "Prefilled" Enquire Now passes the product as a query param; it has
-    nowhere to land yet because Contact's enquiry form is still markup-only
-    (Phase 5), same as noted on the Contact and Career pages.
+    "Prefilled" Enquire Now passes the product as a query param; the Contact
+    form reads it to pre-select the product and reason.
 --}}
 @php
     $specGroups = $product->specs->groupBy(fn ($spec) => $spec->group ?: 'Specifications');

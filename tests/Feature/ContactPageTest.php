@@ -2,11 +2,16 @@
 
 namespace Tests\Feature;
 
+use App\Models\Enquiry;
+use App\Models\Product;
 use App\Support\Content\ContactPageContent;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ContactPageTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_the_contact_page_renders(): void
     {
         $this->get(route('contact'))
@@ -55,5 +60,48 @@ class ContactPageTest extends TestCase
         $this->assertStringNotContainsString('fonts.googleapis.com', $html);
         $this->assertStringNotContainsString('fonts.gstatic.com', $html);
         $this->assertStringNotContainsString('fonts.bunny.net', $html);
+    }
+
+    public function test_the_form_requires_name_email_reason_and_message(): void
+    {
+        $this->post(route('contact.enquire'), [])
+            ->assertSessionHasErrors(['name', 'email', 'type', 'message']);
+
+        $this->assertDatabaseCount('enquiries', 0);
+    }
+
+    public function test_a_valid_submission_is_stored_against_the_chosen_product(): void
+    {
+        $product = Product::factory()->create();
+
+        $this->post(route('contact.enquire'), [
+            'name' => 'Asha Verma',
+            'email' => 'asha@example.com',
+            'type' => Enquiry::TYPE_PRODUCT,
+            'product' => $product->slug,
+            'message' => 'Price for a 150Ah inverter battery?',
+        ])->assertRedirect(route('contact').'#enquiry')->assertSessionHas('enquired');
+
+        $enquiry = Enquiry::firstOrFail();
+        $this->assertSame(Enquiry::TYPE_PRODUCT, $enquiry->type);
+        $this->assertSame($product->id, $enquiry->product_id);
+        $this->assertSame(Enquiry::STATUS_NEW, $enquiry->status);
+    }
+
+    public function test_an_unknown_product_or_reason_is_rejected(): void
+    {
+        $this->post(route('contact.enquire'), [
+            'name' => 'A', 'email' => 'a@example.com', 'message' => 'Hi',
+            'type' => 'bogus', 'product' => 'no-such-product',
+        ])->assertSessionHasErrors(['type', 'product']);
+    }
+
+    public function test_the_product_query_param_preselects_the_dropdown(): void
+    {
+        $product = Product::factory()->create();
+
+        $this->get(route('contact', ['product' => $product->slug]))
+            ->assertOk()
+            ->assertSee('value="'.$product->slug.'" selected', false);
     }
 }
