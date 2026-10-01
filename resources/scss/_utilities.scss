@@ -1,0 +1,178 @@
+// Utility extensions, built with Bootstrap's `$utilities` API.
+//
+// Loaded after Bootstrap's own utilities map exists and before
+// `utilities/api` generates the classes. Two rules keep this safe:
+//   1. MERGE into Bootstrap's entries, never replace them — replacing the
+//      `width` map once deleted `w-100`, `rounded-pill` and `fw-bold`.
+//   2. Brand colours join the colour utilities (text-ink, bg-surface,
+//      border-hairline …) without being added to $theme-colors, which would
+//      generate a full button/alert/list-group variant set per palette entry.
+
+@use 'sass:map';
+
+// --- Value scales ------------------------------------------------------------
+
+// Sizes: the spacing scale plus a few fixed widths (`w-6`, `h-24`, `w-fit`).
+$rx-sizes: map.merge($spacers, (
+    'auto': auto,
+    'full': 100%,
+    'fit': fit-content,
+    '18': 4.5rem,
+    '24': 6rem,
+    '32': 8rem,
+    '36': 9rem,
+    '56': 14rem,
+    '60': 15rem,
+    '64': 16rem,
+    '72': 18rem,
+));
+
+// Max-widths: `mw-md` … `mw-4xl`, the reading measure, and the two page columns.
+$rx-max-widths: (
+    'xs': 20rem,
+    'sm': 24rem,
+    'md': 28rem,
+    'lg': 32rem,
+    'xl': 36rem,
+    '2xl': 42rem,
+    '3xl': 48rem,
+    '4xl': 56rem,
+    'prose': 65ch,
+    'radix': $container-radix,
+    'admin': $container-admin,
+    'full': 100%,
+);
+
+// Font sizes in the concept's exact rem values, named by pixel size
+// (`fs-13` = 0.8125rem, `fs-13-5` = 0.84375rem …) and responsive (`fs-sm-15`).
+$rx-font-sizes: (
+    '9': 0.5625rem,
+    '9-5': 0.59375rem,
+    '10': 0.625rem,
+    '11': 0.6875rem,
+    '11-5': 0.71875rem,
+    '12': 0.75rem,
+    '12-5': 0.78125rem,
+    '13': 0.8125rem,
+    '13-5': 0.84375rem,
+    '14': 0.875rem,
+    '14-5': 0.90625rem,
+    '15': 0.9375rem,
+    '16': 1rem,
+    '16-5': 1.03125rem,
+    '17': 1.0625rem,
+    '18': 1.125rem,
+    '19': 1.1875rem,
+    '20': 1.25rem,
+    '22': 1.375rem,
+    '24': 1.5rem,
+    '26': 1.625rem,
+    '28': 1.75rem,
+    '30': 1.875rem,
+    '32': 2rem,
+    '34': 2.125rem,
+    '36': 2.25rem,
+    '38': 2.375rem,
+    '40': 2.5rem,
+    '44': 2.75rem,
+    '48': 3rem,
+    '56': 3.5rem,
+);
+
+$rx-hover-colors: map.merge($radix-colors, ('white': #fff));
+
+// --- New and extended utilities ---------------------------------------------------
+
+$rx-extra-utilities: (
+    'width': (property: width, class: w, responsive: true, values: $rx-sizes),
+    'height': (property: height, class: h, responsive: true, values: map.merge($rx-sizes, ('screen': 100vh))),
+    'min-width': (property: min-width, class: min-w, values: (0: 0, 'full': 100%)),
+    'min-height': (property: min-height, class: min-h, values: ('screen': 100vh)),
+    'max-width': (property: max-width, class: mw, responsive: true, values: $rx-max-widths),
+    'font-size': (rfs: false, responsive: true, property: font-size, class: fs, values: $rx-font-sizes),
+    'font-weight': (property: font-weight, class: fw, values: (
+        'light': $font-weight-light,
+        'normal': $font-weight-normal,
+        'medium': $font-weight-medium,
+        'semibold': $font-weight-semibold,
+        'bold': $font-weight-bold,
+        'extrabold': 800,
+        'black': 900,
+    )),
+    'line-height': (property: line-height, class: lh, values: (
+        'none': 1,
+        '1': 1,
+        'tight': 1.25,
+        'snug': 1.375,
+        'base': 1.5,
+        'relaxed': 1.625,
+    )),
+    'rounded': (property: border-radius, class: rounded, values: (
+        null: $border-radius,
+        'btn': $radius-btn,
+        'card': $radius-card,
+        'frame': $radius-frame,
+        'md': 0.375rem,
+        'lg': 0.5rem,
+        'pill': $border-radius-pill,
+        'circle': 50%,
+        '0': 0,
+    )),
+    'flex-basis': (property: flex, class: flex, values: ('1': '1 1 0%', 'none': 'none')),
+    'inset': (property: top right bottom left, class: inset, values: (0: 0)),
+    'letter-spacing': (property: letter-spacing, class: tracking, values: (
+        'display': $tracking-display,
+        'eyebrow': $tracking-eyebrow,
+    )),
+    'font-family': (property: font-family, class: font, values: (
+        'display': $font-display,
+        'sans': $font-sans,
+        'mono': $font-mono,
+    )),
+    'nowrap': (property: white-space, class: text, values: ('nowrap': nowrap)),
+
+    // CSS grid: `d-grid grid-cols-sm-2 gap-4` is the two-column form grid.
+    'grid-cols': (property: grid-template-columns, class: grid-cols, responsive: true, values: (
+        1: repeat(1, minmax(0, 1fr)),
+        2: repeat(2, minmax(0, 1fr)),
+        3: repeat(3, minmax(0, 1fr)),
+        4: repeat(4, minmax(0, 1fr)),
+        6: repeat(6, minmax(0, 1fr)),
+        'fr-auto': 1fr auto,
+        'fr-fr-auto': 1fr 1fr auto,
+        'fr-auto-fr-auto': 1fr auto 1fr auto,
+    )),
+    'grid-col-span': (property: grid-column, class: grid-col-span, responsive: true, values: (
+        1: span 1 / span 1,
+        2: span 2 / span 2,
+        3: span 3 / span 3,
+        'full': 1 / -1,
+    )),
+
+    // Hover states for the brand palette: .text-ink-hover, .bg-surface-hover, …
+    'color-hover': (property: color, class: text, state: hover, values: $rx-hover-colors),
+    'bg-hover': (property: background-color, class: bg, state: hover, values: $rx-hover-colors),
+    'border-hover': (property: border-color, class: border, state: hover, values: $rx-hover-colors),
+);
+
+@each $name, $config in $rx-extra-utilities {
+    @if map.has-key($utilities, $name) {
+        $existing: map.get($utilities, $name);
+        $values: map.merge(map.get($existing, 'values'), map.get($config, 'values'));
+        $utilities: map.merge($utilities, ($name: map.merge($existing, map.merge($config, ('values': $values)))));
+    } @else {
+        $utilities: map.merge($utilities, ($name: $config));
+    }
+}
+
+// --- Brand colours: text-*, bg-*, border-* -----------------------------------------
+
+@each $name, $class-values in (
+    'color': map.merge($radix-colors, ('white': #fff)),
+    'background-color': $radix-colors,
+    'border-color': $radix-colors
+) {
+    $existing: map.get($utilities, $name);
+    $values: map.merge(map.get($existing, 'values'), $class-values);
+    $utilities: map.merge($utilities, ($name: map.merge($existing, ('values': $values))));
+}
