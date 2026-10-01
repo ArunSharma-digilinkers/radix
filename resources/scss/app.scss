@@ -107,6 +107,23 @@ $radius-frame: 18px; // media frames, map panels
 $tracking-display: -0.02em; // Archivo headings
 $tracking-eyebrow: 0.14em; // uppercase mono labels
 
+// Type scale ------------------------------------------------------------------
+// Every font size in this file goes through rx-type(), so the whole site can be made
+// larger or smaller from here. Sizes below 1.5rem (body, UI, labels) scale by
+// $type-scale; display sizes scale by the gentler $type-scale-display so hero
+// headlines don't outgrow a phone screen. Nothing renders below $type-floor.
+$type-scale: 1.125;
+$type-scale-display: 1.0625;
+$type-floor: 0.75rem;
+
+@function rx-type($size) {
+    @if $size >= 1.5rem {
+        @return $size * $type-scale-display;
+    }
+
+    @return max($size * $type-scale, $type-floor);
+}
+
 // Every colour above, by the name templates use: text-<name>, bg-<name>,
 // border-<name>. Built into Bootstrap's colour utilities in section 3 and
 // exposed as CSS custom properties (--color-<name>) in :root for the editor skin.
@@ -208,7 +225,7 @@ $body-bg: #fff;
 $body-color: $ink;
 
 // --- Type --------------------------------------------------------------------
-$body-font-size: 1rem;
+$font-size-base: rx-type(1rem);
 $line-height-base: 1.6;
 $font-family-sans-serif: $font-sans;
 $font-family-monospace: $font-mono;
@@ -253,7 +270,7 @@ $btn-border-radius: $radius-btn;
 $btn-font-weight: 600;
 $btn-padding-y: 0.625rem;
 $btn-padding-x: 1rem;
-$btn-font-size: 0.875rem;
+$btn-font-size: rx-type(0.875rem);
 $btn-focus-width: 0;
 $btn-focus-box-shadow: none;
 
@@ -319,9 +336,10 @@ $rx-max-widths: (
     'full': 100%,
 );
 
-// Font sizes in the concept's exact rem values, named by pixel size
-// (`fs-13` = 0.8125rem, `fs-13-5` = 0.84375rem …) and responsive (`fs-sm-15`).
-$rx-font-sizes: (
+// Font sizes named by the concept's pixel size (`fs-13` = the concept's 0.8125rem,
+// `fs-13-5` = 0.84375rem …), responsive as `fs-sm-15`. The rendered size is the
+// concept's value run through rx-type(), so changing $type-scale resizes them all.
+$rx-font-size-base: (
     '9': 0.5625rem,
     '9-5': 0.59375rem,
     '10': 0.625rem,
@@ -354,6 +372,11 @@ $rx-font-sizes: (
     '48': 3rem,
     '56': 3.5rem,
 );
+
+$rx-font-sizes: ();
+@each $name, $size in $rx-font-size-base {
+    $rx-font-sizes: map.merge($rx-font-sizes, ($name: rx-type($size)));
+}
 
 $rx-hover-colors: map.merge($radix-colors, ('white': #fff));
 
@@ -660,7 +683,7 @@ img, video {
         border-radius: $radius-btn;
         background: $radix-red;
         color: #fff;
-        font-size: 0.875rem;
+        font-size: rx-type(0.875rem);
         font-weight: 600;
     }
 }
@@ -669,7 +692,7 @@ img, video {
 
 .btn {
     --bs-btn-border-radius: #{$radius-btn};
-    --bs-btn-font-size: 0.875rem;
+    --bs-btn-font-size: rx-type(0.875rem);
     transition: color 150ms, background-color 150ms, border-color 150ms;
 
     &:focus-visible {
@@ -681,11 +704,11 @@ img, video {
 .btn-lg {
     --bs-btn-padding-y: 0.875rem;
     --bs-btn-padding-x: 1.25rem;
-    --bs-btn-font-size: 0.875rem;
+    --bs-btn-font-size: rx-type(0.875rem);
     --bs-btn-border-radius: #{$radius-btn};
 
     @include media-breakpoint-up(sm) {
-        --bs-btn-font-size: 0.9375rem;
+        --bs-btn-font-size: rx-type(0.9375rem);
     }
 }
 
@@ -745,13 +768,13 @@ img, video {
 
 .rx-eyebrow {
     font-family: $font-mono;
-    font-size: 0.6875rem;
+    font-size: rx-type(0.6875rem);
     text-transform: uppercase;
     letter-spacing: $tracking-eyebrow;
     color: $radix-red-deep;
 
     &--xs {
-        font-size: 0.59375rem;
+        font-size: rx-type(0.59375rem);
     }
 
     &--dark {
@@ -769,62 +792,62 @@ img, video {
     letter-spacing: $tracking-display;
 
     &--hero {
-        font-size: 2.125rem;
+        font-size: rx-type(2.125rem);
         line-height: 1.05;
         font-weight: 800;
 
         @include media-breakpoint-up(sm) {
-            font-size: 3rem;
+            font-size: rx-type(3rem);
             line-height: 1.02;
         }
 
         @include media-breakpoint-up(lg) {
-            font-size: 3.5rem;
+            font-size: rx-type(3.5rem);
             line-height: 1;
         }
     }
 
     &--xl {
-        font-size: 1.75rem;
+        font-size: rx-type(1.75rem);
         line-height: 1.1;
         font-weight: 900;
 
         @include media-breakpoint-up(sm) {
-            font-size: 2.25rem;
+            font-size: rx-type(2.25rem);
         }
 
         @include media-breakpoint-up(lg) {
-            font-size: 2.75rem;
+            font-size: rx-type(2.75rem);
             line-height: 1.02;
         }
     }
 
     &--lg {
-        font-size: 1.625rem;
+        font-size: rx-type(1.625rem);
         line-height: 1.15;
         font-weight: 900;
 
         @include media-breakpoint-up(sm) {
-            font-size: 2rem;
+            font-size: rx-type(2rem);
         }
 
         @include media-breakpoint-up(lg) {
-            font-size: 2.5rem;
+            font-size: rx-type(2.5rem);
             line-height: 1.05;
         }
     }
 
     &--md {
-        font-size: 1.375rem;
+        font-size: rx-type(1.375rem);
         line-height: 1.2;
         font-weight: 800;
 
         @include media-breakpoint-up(sm) {
-            font-size: 1.625rem;
+            font-size: rx-type(1.625rem);
         }
 
         @include media-breakpoint-up(lg) {
-            font-size: 2rem;
+            font-size: rx-type(2rem);
         }
     }
 }
@@ -916,10 +939,10 @@ img, video {
     }
 
     &__value {
-        font-size: 2rem;
+        font-size: rx-type(2rem);
 
         @include media-breakpoint-up(lg) {
-            font-size: 2.5rem;
+            font-size: rx-type(2.5rem);
         }
     }
 }
@@ -931,7 +954,7 @@ img, video {
     border-radius: $border-radius-pill;
     background: #fff;
     padding: 0.5rem 0.875rem;
-    font-size: 0.8125rem;
+    font-size: rx-type(0.8125rem);
     font-weight: 500;
     color: $ink;
 
@@ -1027,7 +1050,7 @@ img, video {
         left: 1rem;
         padding: 0.375rem 0.625rem;
         font-family: $font-mono;
-        font-size: 0.625rem;
+        font-size: rx-type(0.625rem);
         text-transform: uppercase;
         letter-spacing: $tracking-eyebrow;
     }
@@ -1256,7 +1279,7 @@ img, video {
     display: block;
     margin-bottom: 0.5rem;
     font-family: $font-mono;
-    font-size: 0.625rem;
+    font-size: rx-type(0.625rem);
     text-transform: uppercase;
     letter-spacing: $tracking-eyebrow;
     color: $meta;
@@ -1271,7 +1294,7 @@ img, video {
     border-bottom: 2px solid $line-control;
     border-radius: 0;
     background-color: transparent;
-    font-size: 0.9375rem;
+    font-size: rx-type(0.9375rem);
     color: $ink;
     box-shadow: none;
 
@@ -1314,7 +1337,7 @@ img, video {
     padding: 0;
     border: 0;
     background: transparent;
-    font-size: 0.84375rem;
+    font-size: rx-type(0.84375rem);
     color: $ink;
     box-shadow: none;
 
@@ -1324,7 +1347,7 @@ img, video {
         border: 0;
         border-radius: $radius-btn;
         background: $surface;
-        font-size: 0.8125rem;
+        font-size: rx-type(0.8125rem);
         font-weight: 600;
         color: $radix-dark;
     }
@@ -1345,7 +1368,7 @@ img, video {
         padding: 0 0 0.625rem;
         border: 0;
         background: transparent;
-        font-size: 0.9375rem;
+        font-size: rx-type(0.9375rem);
         color: $ink;
 
         &:focus,
@@ -1369,7 +1392,7 @@ img, video {
     padding: 0.625rem 0.875rem;
     border-radius: 0.5rem;
     background: $surface-sunken;
-    font-size: 0.8125rem;
+    font-size: rx-type(0.8125rem);
     color: $ink-soft;
 
     &--error {
@@ -1395,7 +1418,7 @@ img, video {
 
     thead > tr > * {
         background-color: $surface;
-        font-size: 0.71875rem;
+        font-size: rx-type(0.71875rem);
         font-weight: 400;
         text-transform: uppercase;
         letter-spacing: $tracking-eyebrow;
@@ -1428,7 +1451,7 @@ img, video {
 .ck-content {
     color: var(--color-ink);
     font-family: var(--font-sans);
-    font-size: 0.9375rem;
+    font-size: rx-type(0.9375rem);
     line-height: 1.7;
 }
 
@@ -1448,17 +1471,17 @@ img, video {
 
 .rich-content h2,
 .ck-content h2 {
-    font-size: 1.375rem;
+    font-size: rx-type(1.375rem);
 }
 
 .rich-content h3,
 .ck-content h3 {
-    font-size: 1.125rem;
+    font-size: rx-type(1.125rem);
 }
 
 .rich-content h4,
 .ck-content h4 {
-    font-size: 1rem;
+    font-size: rx-type(1rem);
 }
 
 .rich-content p,
@@ -1541,7 +1564,7 @@ img, video {
 .ck-content table {
     border-collapse: collapse;
     width: 100%;
-    font-size: 0.875rem;
+    font-size: rx-type(0.875rem);
 }
 
 .rich-content th,
@@ -1580,7 +1603,7 @@ img, video {
 .rich-content figure.image figcaption,
 .ck-content figure.image figcaption {
     margin-top: 0.55em;
-    font-size: 0.8125rem;
+    font-size: rx-type(0.8125rem);
     color: var(--color-meta);
 }
 
@@ -1736,7 +1759,7 @@ $rx-admin-bar: 3.5rem;
 .rx-nav-row {
     padding: 0.5rem 0.75rem;
     border-radius: $radius-btn;
-    font-size: 0.84375rem;
+    font-size: rx-type(0.84375rem);
     font-weight: 500;
     color: $on-dark-muted;
     transition: color 150ms, background-color 150ms;
@@ -1833,7 +1856,7 @@ $rx-admin-bar: 3.5rem;
     border: 1px solid $line-control;
     border-radius: $radius-btn;
     background-color: #fff;
-    font-size: 0.84375rem;
+    font-size: rx-type(0.84375rem);
     color: $ink;
     box-shadow: none;
 
