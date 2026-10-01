@@ -9,10 +9,10 @@
 --}}
 @if ($errors->any())
     <x-admin.alert variant="error" {{ $attributes->class('mb-6') }}>
-        <span class="font-semibold">Not saved.</span>
+        <span class="fw-semibold">Not saved.</span>
         {{ $errors->count() === 1 ? 'One field needs attention:' : $errors->count().' fields need attention:' }}
 
-        <ul class="mt-1.5 list-disc space-y-0.5 pl-4 font-normal">
+        <ul class="mb-0 mt-1-5 ps-4 fw-normal rx-bullets">
             @foreach ($errors->all() as $message)
                 <li>{{ $message }}</li>
             @endforeach

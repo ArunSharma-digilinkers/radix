@@ -11,11 +11,11 @@
     Values come from site settings, never typed into a template — the old site
     contradicts itself on team size and we are not repeating that.
 --}}
-<div {{ $attributes->class('border-t border-hairline pt-5 sm:border-t-0 sm:border-l sm:pt-0 sm:pl-6 lg:pl-8') }}>
-    <p class="font-display text-[2rem] font-extrabold leading-none tracking-display text-radix-red lg:text-[2.5rem]">
+<div {{ $attributes->class('rx-stat') }}>
+    <p class="rx-stat__value mb-0 font-display fw-extrabold lh-none tracking-display text-radix-red">
         {{ $value }}
     </p>
-    <p class="mt-2 text-[0.8125rem] text-muted">
+    <p class="mb-0 mt-2 fs-13 text-muted">
         {{ $label }}
     </p>
 </div>

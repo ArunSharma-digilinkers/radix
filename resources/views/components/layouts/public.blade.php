@@ -24,13 +24,13 @@
     @endif
 
     {{-- Self-hosted @font-face plus preloads for above-the-fold weights.
-         Must precede app.css. --}}
+         Must precede the stylesheet. --}}
     {{ Vite::fonts() }}
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/scss/app.scss', 'resources/js/app.js'])
 </head>
 <body class="bg-white">
-    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-btn focus:bg-radix-red focus:px-4 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-white">
+    <a href="#main" class="rx-skip-link visually-hidden-focusable">
         Skip to content
     </a>
 

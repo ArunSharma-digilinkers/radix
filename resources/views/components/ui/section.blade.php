@@ -19,25 +19,21 @@
     ];
 
     // Concept spec is 74px/56px on desktop; scaled down for mobile, where the
-    // brief says 60–70% of traffic lives.
+    // brief says 60–70% of traffic lives. The paddings themselves are in
+    // scss/_components.scss (.rx-section--*).
     //
     // Consecutive same-tone sections would otherwise stack two full paddings and
     // read as a gap, so `flush-top` exists for sections that continue the one
     // above rather than starting a new band.
-    $paddings = [
-        'default' => 'px-6 py-14 sm:px-10 sm:py-16 lg:px-14 lg:py-[4.625rem]',
-        'tight' => 'px-6 py-10 sm:px-10 sm:py-12 lg:px-14',
-        'flush-top' => 'px-6 pb-14 pt-10 sm:px-10 sm:pb-16 sm:pt-12 lg:px-14 lg:pb-[4.625rem]',
-        'band' => 'px-6 py-12 sm:px-10 sm:py-13 lg:px-14',
-    ];
+    $paddings = ['default', 'tight', 'flush-top', 'band'];
 @endphp
 
 <{{ $as }}
     @if ($reveal) data-rev @endif
-    {{ $attributes->class([$tones[$tone] ?? $tones['white'], $paddings[$padding] ?? $paddings['default']]) }}
+    {{ $attributes->class(['rx-section', 'rx-section--'.(in_array($padding, $paddings, true) ? $padding : 'default'), $tones[$tone] ?? $tones['white']]) }}
 >
     @if ($contained)
-        <div class="mx-auto max-w-radix">
+        <div class="rx-container">
             {{ $slot }}
         </div>
     @else

@@ -4,7 +4,7 @@
     <x-admin.form-errors />
 
 
-    <form wire:submit="save" class="mt-6 grid max-w-xl gap-5">
+    <form wire:submit="save" class="mt-6 d-grid mw-xl gap-5">
         <x-ui.text-field label="Name" name="name" wire:model="name" required />
         <x-ui.text-field label="Email" name="email" type="email" wire:model="email" required />
 
@@ -25,15 +25,15 @@
         />
         <x-ui.text-field label="Confirm password" name="password_confirmation" type="password" wire:model="password_confirmation" />
 
-        <label class="flex items-center gap-2 text-[0.84375rem] text-ink">
-            <input type="checkbox" wire:model="is_active" class="rounded border-line-control text-radix-red focus:ring-radix-red">
+        <label class="d-flex align-items-center gap-2 fs-13-5 text-ink">
+            <input type="checkbox" wire:model="is_active" class="form-check-input rx-check">
             Active
         </label>
-        @error('is_active') <p class="text-[0.78125rem] text-radix-red-deep">{{ $message }}</p> @enderror
+        @error('is_active') <p class="fs-12-5 text-radix-red-deep">{{ $message }}</p> @enderror
 
-        <div class="flex items-center gap-3">
+        <div class="d-flex align-items-center gap-3">
             <x-ui.button type="submit" variant="primary" size="lg">Save user</x-ui.button>
-            <a href="{{ route('admin.users.index') }}" class="text-[0.8125rem] font-medium text-meta">Cancel</a>
+            <a href="{{ route('admin.users.index') }}" class="fs-13 fw-medium text-meta">Cancel</a>
         </div>
     </form>
 </div>

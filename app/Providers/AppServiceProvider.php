@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Support\Content\SiteContent;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,6 +22,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Pagination links render with Bootstrap 5 markup.
+        Paginator::useBootstrapFive();
+
         $this->composeSiteChrome();
     }
 

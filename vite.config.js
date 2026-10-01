@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import { bunny } from 'laravel-vite-plugin/fonts';
-import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
     plugins: [
@@ -9,7 +8,7 @@ export default defineConfig({
             // admin.js is a third entry, not part of app.js: the admin must not
             // load the public bundle's Alpine (Livewire ships its own) and the
             // public site must not download the admin's editor.
-            input: ['resources/css/app.css', 'resources/js/app.js', 'resources/js/admin.js'],
+            input: ['resources/scss/app.scss', 'resources/js/app.js', 'resources/js/admin.js'],
             refresh: true,
             // Fonts are downloaded at build time and served from our own origin.
             // Never load these from the Google Fonts CDN: the extra connection and
@@ -43,8 +42,17 @@ export default defineConfig({
                 }),
             ],
         }),
-        tailwindcss(),
     ],
+    css: {
+        preprocessorOptions: {
+            scss: {
+                // Bootstrap 5.3 is still written against Sass @import; its own
+                // deprecation noise is not ours to fix.
+                quietDeps: true,
+                silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'mixed-decls', 'if-function'],
+            },
+        },
+    },
     server: {
         watch: {
             ignored: ['**/storage/framework/views/**'],

@@ -32,11 +32,11 @@
        XSS.
 --}}
 <div {{ $attributes->only('class')->class('min-w-0') }}>
-    <label for="{{ $id }}" class="block font-mono text-[0.625rem] uppercase tracking-eyebrow text-meta">
+    <label for="{{ $id }}" class="rx-label form-label">
         {{ $label }}@if ($required) <span aria-hidden="true" class="text-radix-red-deep">*</span>@endif
     </label>
 
-    <div wire:ignore class="mt-2">
+    <div wire:ignore>
         <div
             id="{{ $id }}"
             data-rich-text
@@ -46,12 +46,12 @@
         >{!! $value !!}</div>
     </div>
 
-    <div class="mt-1.5 flex flex-wrap items-center justify-between gap-2">
-        <p class="text-[0.75rem] text-meta">{{ $hint }}</p>
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-1-5">
+        <p class="mb-0 fs-12 text-meta">{{ $hint }}</p>
         <div id="{{ $countId }}"></div>
     </div>
 
     @error($model)
-        <p class="mt-1 text-[0.78125rem] text-radix-red-deep">{{ $message }}</p>
+        <p class="mb-0 mt-1 fs-12-5 text-radix-red-deep">{{ $message }}</p>
     @enderror
 </div>

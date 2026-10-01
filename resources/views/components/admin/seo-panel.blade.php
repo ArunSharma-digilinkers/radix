@@ -22,7 +22,7 @@
     warning and the form still saves.
 --}}
 <section
-    {{ $attributes->class('border-t border-hairline pt-6') }}
+    {{ $attributes->class('border-top border-hairline pt-6') }}
     x-data="{
         limits: { title: 60, description: 160 },
         slugify(value) {
@@ -39,29 +39,29 @@
         get previewPath() { return '{{ $basePath }}' + (this.slugify($wire.{{ $slugModel }}) || this.slugify($wire.{{ $fallbackTitleModel }})); },
     }"
 >
-    <div class="flex items-baseline justify-between gap-3">
+    <div class="d-flex align-items-baseline justify-content-between gap-3">
         <div>
             <x-ui.eyebrow>Search appearance</x-ui.eyebrow>
-            <h2 class="mt-1 font-display text-[1.0625rem] font-extrabold tracking-display text-radix-dark">Meta</h2>
+            <h2 class="mt-1 font-display fs-17 fw-extrabold tracking-display text-radix-dark">Meta</h2>
         </div>
     </div>
 
-    <p class="mt-1.5 max-w-prose text-[0.8125rem] text-muted">
+    <p class="mt-1-5 mw-prose fs-13 text-muted">
         Leave a field blank to fall back to the post's own title and excerpt — that is exactly what the
         page will output, and the preview below shows the result either way.
     </p>
 
-    <div class="mt-5 grid gap-5 sm:grid-cols-2">
+    <div class="mt-5 d-grid gap-5 grid-cols-sm-2">
         <div>
             <x-ui.text-field label="Meta title" name="meta_title" wire:model="{{ $titleModel }}" placeholder="Defaults to the post title" />
-            <p class="mt-1.5 font-mono text-[0.625rem] uppercase tracking-eyebrow" :class="metaTitle.length > limits.title ? 'text-radix-red-deep' : 'text-meta'">
+            <p class="mt-1-5 font-mono fs-10 text-uppercase tracking-eyebrow" :class="metaTitle.length > limits.title ? 'text-radix-red-deep' : 'text-meta'">
                 <span x-text="metaTitle.length"></span> / <span x-text="limits.title"></span> characters
             </p>
         </div>
 
         <div>
             <x-ui.text-field label="Meta description" name="meta_description" wire:model="{{ $descriptionModel }}" textarea placeholder="Defaults to the excerpt" />
-            <p class="mt-1.5 font-mono text-[0.625rem] uppercase tracking-eyebrow" :class="metaDescription.length > limits.description ? 'text-radix-red-deep' : 'text-meta'">
+            <p class="mt-1-5 font-mono fs-10 text-uppercase tracking-eyebrow" :class="metaDescription.length > limits.description ? 'text-radix-red-deep' : 'text-meta'">
                 <span x-text="metaDescription.length"></span> / <span x-text="limits.description"></span> characters
             </p>
         </div>
@@ -70,12 +70,12 @@
     <div class="mt-5 rounded-card border border-hairline bg-surface-raised p-4">
         <x-ui.eyebrow size="xs">Preview</x-ui.eyebrow>
 
-        <div class="mt-2.5">
-            <p class="truncate text-[0.75rem] text-meta">
+        <div class="mt-2-5">
+            <p class="text-truncate fs-12 text-meta">
                 {{ rtrim(config('app.url'), '/') }}<span x-text="previewPath"></span>
             </p>
-            <p class="mt-0.5 text-[1.0625rem] font-medium leading-snug text-radix-dark" x-text="previewTitle"></p>
-            <p class="mt-1 text-[0.8125rem] leading-relaxed text-muted" x-text="previewDescription || 'No description yet — search engines will pick their own snippet.'"></p>
+            <p class="mt-0-5 fs-17 fw-medium lh-snug text-radix-dark" x-text="previewTitle"></p>
+            <p class="mt-1 fs-13 lh-relaxed text-muted" x-text="previewDescription || 'No description yet — search engines will pick their own snippet.'"></p>
         </div>
     </div>
 </section>

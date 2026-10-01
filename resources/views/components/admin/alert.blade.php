@@ -14,8 +14,8 @@
 
 <div
     role="{{ $variant === 'error' ? 'alert' : 'status' }}"
-    {{ $attributes->class(['flex items-start gap-2.5 rounded-btn px-4 py-3 text-[0.84375rem] font-medium', $tone]) }}
+    {{ $attributes->class(['d-flex align-items-start gap-2-5 rounded-btn px-4 py-3 fs-13-5 fw-medium', $tone]) }}
 >
-    <x-admin.icon name="{{ $icon }}" class="mt-px h-[1.0625rem] w-[1.0625rem]" />
+    <x-admin.icon name="{{ $icon }}" class="mt-px h-4-5 w-4-5 flex-shrink-0" />
     <span>{{ $slot }}</span>
 </div>

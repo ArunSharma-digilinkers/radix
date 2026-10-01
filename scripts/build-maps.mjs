@@ -127,7 +127,7 @@ function wrap({ width, height, body, title, description }) {
     preserveAspectRatio="xMidYMid meet"
     role="img"
     aria-label="${title}"
-    class="h-full w-full"
+    class="w-100 h-100"
 >
     <title>${title}</title>
     <desc>${description}</desc>

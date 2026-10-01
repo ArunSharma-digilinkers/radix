@@ -21,8 +21,8 @@
 >
     {{-- HERO --}}
     <x-ui.section tone="surface" :reveal="false">
-        <div class="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-12">
-            <div>
+        <div class="row align-items-center gy-10 gx-lg-12">
+            <div class="col-lg-6">
                 <x-ui.eyebrow>{{ $product->category?->getTranslation('name', 'en') ?? 'Product' }}</x-ui.eyebrow>
 
                 <x-ui.heading as="h1" size="hero" class="mt-4 text-radix-dark">
@@ -30,12 +30,12 @@
                 </x-ui.heading>
 
                 @if ($pitch = trim((string) $product->getTranslation('pitch', 'en')))
-                    <p class="mt-5 max-w-lg text-base leading-relaxed text-lead sm:text-[1.03125rem]">
+                    <p class="mb-0 mt-5 mw-lg fs-16 fs-sm-16-5 lh-relaxed text-lead">
                         {{ $pitch }}
                     </p>
                 @endif
 
-                <div class="mt-7 flex flex-wrap gap-3.5">
+                <div class="d-flex flex-wrap gap-3-5 mt-7">
                     <x-ui.button variant="primary" size="lg" href="{{ route('contact', ['product' => $product->slug]).'#enquiry' }}">
                         Enquire Now
                     </x-ui.button>
@@ -53,20 +53,24 @@
             </div>
 
             @if ($product->image)
-                <x-ui.media-frame
-                    image="{{ $product->image->url() }}"
-                    alt="{{ $product->image->altText() }}"
-                    height="h-64 sm:h-80"
-                    :scrim="false"
-                />
+                <div class="col-lg-6">
+                    <x-ui.media-frame
+                        image="{{ $product->image->url() }}"
+                        alt="{{ $product->image->altText() }}"
+                        height="rx-media--tall"
+                        :scrim="false"
+                    />
+                </div>
             @endif
         </div>
 
         @if ($product->gallery->isNotEmpty())
-            <div class="mt-6 grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-6">
+            <div class="row row-cols-3 row-cols-sm-4 row-cols-lg-6 g-3 mt-3">
                 @foreach ($product->gallery as $photo)
-                    <div class="aspect-square overflow-hidden rounded-lg border border-hairline bg-white">
-                        <img src="{{ $photo->url() }}" alt="{{ $photo->altText() }}" loading="lazy" class="h-full w-full object-contain p-2">
+                    <div class="col">
+                        <div class="ratio ratio-1x1 overflow-hidden rounded-lg border border-hairline bg-white">
+                            <img src="{{ $photo->url() }}" alt="{{ $photo->altText() }}" loading="lazy" class="object-fit-contain p-2">
+                        </div>
                     </div>
                 @endforeach
             </div>
@@ -77,10 +81,10 @@
     @if ($description = trim((string) $product->getTranslation('description', 'en')))
         <x-ui.section tone="white">
             <x-ui.eyebrow>Overview</x-ui.eyebrow>
-            <div class="mt-4 max-w-2xl space-y-4 text-[0.9375rem] leading-relaxed text-ink-soft">
+            <div class="vstack gap-4 mt-4 mw-2xl fs-15 lh-relaxed text-ink-soft">
                 @foreach (explode("\n", $description) as $paragraph)
                     @continue(trim($paragraph) === '')
-                    <p>{{ $paragraph }}</p>
+                    <p class="mb-0">{{ $paragraph }}</p>
                 @endforeach
             </div>
         </x-ui.section>
@@ -89,7 +93,7 @@
     @if ($useCases = trim((string) $product->getTranslation('use_cases', 'en')))
         <x-ui.section tone="surface">
             <x-ui.eyebrow>Where it's used</x-ui.eyebrow>
-            <p class="mt-4 max-w-2xl text-[0.9375rem] leading-relaxed text-ink-soft">{{ $useCases }}</p>
+            <p class="mb-0 mt-4 mw-2xl fs-15 lh-relaxed text-ink-soft">{{ $useCases }}</p>
         </x-ui.section>
     @endif
 
@@ -99,17 +103,19 @@
             <x-ui.eyebrow tone="dark">The complete system</x-ui.eyebrow>
             <x-ui.heading size="lg" class="mt-3">Four parts, one warranty.</x-ui.heading>
 
-            <div class="mt-7 grid gap-x-14 sm:grid-cols-2">
+            <div class="row gx-14 mt-7">
                 {{-- Not `$component`: Blade reserves that name inside a
                      component's slot, and the nested <x-…> tag below would
                      reassign it mid-loop (CLAUDE.md §6). --}}
                 @foreach ($product->components as $index => $part)
-                    <x-ui.numbered-item
-                        tone="dark"
-                        :number="sprintf('%02d', $index + 1)"
-                        :title="$part->getTranslation('name', 'en')"
-                        :description="trim((string) $part->getTranslation('description', 'en')) ?: null"
-                    />
+                    <div class="col-sm-6">
+                        <x-ui.numbered-item
+                            tone="dark"
+                            :number="sprintf('%02d', $index + 1)"
+                            :title="$part->getTranslation('name', 'en')"
+                            :description="trim((string) $part->getTranslation('description', 'en')) ?: null"
+                        />
+                    </div>
                 @endforeach
             </div>
         </x-ui.section>
@@ -121,18 +127,18 @@
             <x-ui.eyebrow>Specifications</x-ui.eyebrow>
             <x-ui.heading size="lg" class="mt-3 text-radix-dark">Key specs.</x-ui.heading>
 
-            <div class="mt-7 grid gap-8 sm:grid-cols-2">
+            <div class="row g-8 mt-4">
                 @foreach ($specGroups as $group => $specs)
-                    <div>
+                    <div class="col-sm-6">
                         @if ($group !== 'Specifications' || $specGroups->count() > 1)
-                            <p class="font-mono text-[0.625rem] uppercase tracking-eyebrow text-meta">{{ $group }}</p>
+                            <p class="mb-0 font-mono fs-10 text-uppercase tracking-eyebrow text-meta">{{ $group }}</p>
                         @endif
 
-                        <dl class="mt-2">
+                        <dl class="mb-0 mt-2">
                             @foreach ($specs as $spec)
-                                <div class="flex items-baseline justify-between gap-4 border-t border-hairline py-2.5 first:border-t-0">
-                                    <dt class="text-[0.84375rem] text-muted">{{ $spec->getTranslation('label', 'en') }}</dt>
-                                    <dd class="text-right text-[0.9375rem] font-semibold text-ink">{{ $spec->getTranslation('value', 'en') }}</dd>
+                                <div class="rx-spec-row d-flex align-items-baseline justify-content-between gap-4 py-2-5">
+                                    <dt class="fw-normal fs-13-5 text-muted">{{ $spec->getTranslation('label', 'en') }}</dt>
+                                    <dd class="mb-0 text-end fs-15 fw-semibold text-ink">{{ $spec->getTranslation('value', 'en') }}</dd>
                                 </div>
                             @endforeach
                         </dl>
@@ -148,29 +154,29 @@
             <x-ui.eyebrow>Models</x-ui.eyebrow>
             <x-ui.heading size="lg" class="mt-3 text-radix-dark">Available variants.</x-ui.heading>
 
-            <div class="mt-6 overflow-x-auto rounded-card border border-hairline bg-white">
-                <table class="w-full min-w-[640px] text-left text-[0.84375rem]">
-                    <thead class="border-b border-hairline bg-surface text-[0.71875rem] uppercase tracking-eyebrow text-meta">
+            <div class="table-responsive mt-6 rounded-card border border-hairline bg-white">
+                <table class="rx-table table mb-0 fs-13-5">
+                    <thead>
                         <tr>
-                            <th class="px-4 py-2.5">Model</th>
-                            <th class="px-4 py-2.5">Capacity</th>
-                            <th class="px-4 py-2.5">Voltage</th>
-                            <th class="px-4 py-2.5">Warranty</th>
-                            <th class="px-4 py-2.5">Dimensions</th>
-                            <th class="px-4 py-2.5">Weight</th>
+                            <th scope="col">Model</th>
+                            <th scope="col">Capacity</th>
+                            <th scope="col">Voltage</th>
+                            <th scope="col">Warranty</th>
+                            <th scope="col">Dimensions</th>
+                            <th scope="col">Weight</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($product->variants as $variant)
-                            <tr class="border-b border-hairline last:border-b-0">
-                                <td class="px-4 py-2.5 font-medium text-ink">
+                            <tr>
+                                <td class="fw-medium text-ink">
                                     {{ trim((string) $variant->getTranslation('name', 'en')) ?: $variant->model_code }}
                                 </td>
-                                <td class="px-4 py-2.5 text-ink-soft">{{ $variant->capacity_ah ? $variant->capacity_ah.' Ah' : '—' }}</td>
-                                <td class="px-4 py-2.5 text-ink-soft">{{ $variant->voltage ? $variant->voltage.' V' : '—' }}</td>
-                                <td class="px-4 py-2.5 text-ink-soft">{{ $variant->warranty_months ? $variant->warranty_months.' mo' : '—' }}</td>
-                                <td class="px-4 py-2.5 text-ink-soft">{{ $variant->dimensions_mm ?: '—' }}</td>
-                                <td class="px-4 py-2.5 text-ink-soft">{{ $variant->weight_kg ? $variant->weight_kg.' kg' : '—' }}</td>
+                                <td class="text-ink-soft">{{ $variant->capacity_ah ? $variant->capacity_ah.' Ah' : '—' }}</td>
+                                <td class="text-ink-soft">{{ $variant->voltage ? $variant->voltage.' V' : '—' }}</td>
+                                <td class="text-ink-soft">{{ $variant->warranty_months ? $variant->warranty_months.' mo' : '—' }}</td>
+                                <td class="text-ink-soft">{{ $variant->dimensions_mm ?: '—' }}</td>
+                                <td class="text-ink-soft">{{ $variant->weight_kg ? $variant->weight_kg.' kg' : '—' }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -185,16 +191,16 @@
             <x-ui.eyebrow>Downloads</x-ui.eyebrow>
             <x-ui.heading size="lg" class="mt-3 text-radix-dark">Datasheets &amp; documents.</x-ui.heading>
 
-            <ul class="mt-6 grid gap-3 sm:grid-cols-2">
+            <ul class="row g-3 mt-3">
                 @foreach ($documentsByType as $type => $documents)
                     @foreach ($documents as $document)
-                        <li>
+                        <li class="col-sm-6">
                             <a
                                 href="{{ route('products.documents.download', [$product, $document]) }}"
-                                class="flex items-center justify-between gap-3 rounded-card border border-hairline bg-white px-4 py-3.5 text-[0.9375rem] font-medium text-ink hover:border-line-control"
+                                class="rx-doc-link d-flex align-items-center justify-content-between gap-3 rounded-card border border-hairline bg-white px-4 py-3-5 fs-15 fw-medium text-ink"
                             >
                                 <span>{{ $document->getTranslation('title', 'en') }}</span>
-                                <span class="shrink-0 font-mono text-[0.625rem] uppercase tracking-eyebrow text-radix-red-deep">
+                                <span class="flex-shrink-0 font-mono fs-10 text-uppercase tracking-eyebrow text-radix-red-deep">
                                     {{ $type }} &darr;
                                 </span>
                             </a>
@@ -211,11 +217,11 @@
             <x-ui.eyebrow>FAQs</x-ui.eyebrow>
             <x-ui.heading size="lg" class="mt-3 text-radix-dark">Common questions.</x-ui.heading>
 
-            <div class="mt-6 max-w-2xl divide-y divide-hairline">
+            <div class="mt-6 mw-2xl">
                 @foreach ($product->faqs as $faq)
-                    <div class="py-4">
-                        <p class="font-display text-base font-bold text-ink">{{ $faq->getTranslation('question', 'en') }}</p>
-                        <p class="mt-1.5 text-[0.875rem] leading-relaxed text-muted">{{ $faq->getTranslation('answer', 'en') }}</p>
+                    <div class="border-top border-hairline py-4">
+                        <p class="mb-0 font-display fs-16 fw-bold text-ink">{{ $faq->getTranslation('question', 'en') }}</p>
+                        <p class="mb-0 mt-1-5 fs-14 lh-relaxed text-muted">{{ $faq->getTranslation('answer', 'en') }}</p>
                     </div>
                 @endforeach
             </div>
@@ -226,11 +232,11 @@
     <x-ui.section tone="accent" padding="band" class="text-center">
         <x-ui.heading size="md" class="text-white">Ready to order {{ $product->getTranslation('name', 'en') }}?</x-ui.heading>
 
-        <p class="mx-auto mt-2.5 max-w-xl text-[0.9375rem] text-white/90">
+        <p class="mx-auto mb-0 mt-2-5 mw-xl fs-15 text-white">
             Talk to our team or find a stocked dealer near you.
         </p>
 
-        <div class="mt-6 flex flex-wrap justify-center gap-3">
+        <div class="d-flex flex-wrap justify-content-center gap-3 mt-6">
             <x-ui.button variant="inverse" size="lg" href="{{ route('contact', ['product' => $product->slug]).'#enquiry' }}">
                 Enquire Now
             </x-ui.button>

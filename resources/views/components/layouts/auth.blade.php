@@ -14,19 +14,19 @@
     <title>{{ $title ? $title.' — '.config('app.name') : config('app.name') }}</title>
 
     {{ Vite::fonts() }}
-    @vite(['resources/css/app.css'])
+    @vite(['resources/scss/app.scss'])
 </head>
-<body class="flex min-h-screen items-center justify-center bg-surface px-6 py-12">
-    <div class="w-full max-w-sm">
+<body class="d-flex align-items-center justify-content-center min-h-screen bg-surface px-6 py-12">
+    <div class="w-100 mw-sm">
         <img
             src="{{ asset('images/placeholder/logo.png') }}"
             alt="Radix Power Solutions"
             width="160"
             height="61"
-            class="mx-auto h-9 w-auto"
+            class="d-block mx-auto h-9 w-auto"
         >
 
-        <div class="mt-8 rounded-frame border border-hairline bg-white p-7 shadow-[0_20px_46px_rgba(15,27,45,0.08)]">
+        <div class="rx-auth-card mt-8 rounded-frame border border-hairline bg-white p-7">
             {{ $slot }}
         </div>
     </div>

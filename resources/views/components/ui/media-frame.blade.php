@@ -6,7 +6,8 @@
     'alt' => '',
     /** Small mono badge in the top-left corner. */
     'badge' => null,
-    'height' => 'h-56 sm:h-72 lg:h-[21.25rem]',
+    /** Extra classes for the frame's height — see .rx-media in scss/_components.scss. */
+    'height' => 'rx-media--default',
     /** Adds a bottom scrim so an overlaid badge stays legible. */
     'scrim' => true,
     /** Below-the-fold video: nothing downloads until it scrolls near the viewport. */
@@ -21,7 +22,7 @@
     clip of the actual factory is the replacement. Video is decorative here, so
     it is muted, loops, and carries no audio track to miss.
 --}}
-<div {{ $attributes->class(['relative overflow-hidden rounded-frame bg-radix-dark shadow-[0_20px_46px_rgba(15,27,45,0.18)]', $height]) }}>
+<div {{ $attributes->class(['rx-media position-relative overflow-hidden rounded-frame bg-radix-dark', $height]) }}>
     @if ($video)
         <video
             @if ($image) poster="{{ $image }}" @endif
@@ -33,7 +34,7 @@
             @if ($lazy) data-lazy-video @endif
             aria-hidden="true"
             tabindex="-1"
-            class="absolute inset-0 h-full w-full object-cover"
+            class="rx-media__fill"
         >
             <source {{ $lazy ? 'data-src' : 'src' }}="{{ $video }}" type="video/mp4">
         </video>
@@ -43,16 +44,16 @@
             alt="{{ $alt }}"
             loading="lazy"
             decoding="async"
-            class="absolute inset-0 h-full w-full object-cover"
+            class="rx-media__fill"
         >
     @endif
 
     @if ($scrim)
-        <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-transparent from-55% to-radix-dark/40"></div>
+        <div aria-hidden="true" class="rx-media__scrim"></div>
     @endif
 
     @if ($badge)
-        <p class="absolute left-4 top-4 rounded-md bg-radix-red px-2.5 py-1.5 font-mono text-[0.625rem] uppercase tracking-eyebrow text-white">
+        <p class="rx-media__badge position-absolute mb-0 rounded-md bg-radix-red text-white">
             {{ $badge }}
         </p>
     @endif

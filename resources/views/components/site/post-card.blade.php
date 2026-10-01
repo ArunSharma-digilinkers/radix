@@ -10,50 +10,47 @@
 
     The whole card is not a link — the title is. A card-sized link makes the
     excerpt unselectable and reads as one enormous link target to a screen
-    reader; the ::after trick below keeps the big click area without that.
+    reader; Bootstrap's .stretched-link keeps the big click area without that.
 --}}
 @php
     $image = $post->image;
     $category = $post->category;
 @endphp
 
-<article {{ $attributes->class('group relative flex flex-col overflow-hidden rounded-card border border-hairline bg-white') }}>
-    <div @class(['relative overflow-hidden bg-surface-sunken', 'aspect-[16/9]' => ! $lead, 'aspect-[16/10]' => $lead])>
+<article {{ $attributes->class('rx-card position-relative d-flex flex-column h-100 overflow-hidden rounded-card border border-hairline bg-white') }}>
+    <div @class(['rx-card__media ratio bg-surface-sunken', 'ratio-16x9' => ! $lead, 'rx-ratio-16x10' => $lead])>
         @if ($image)
             <img
                 src="{{ $image->url() }}"
                 alt="{{ $image->altText() }}"
                 loading="lazy"
-                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                class="object-fit-cover"
             >
         @endif
     </div>
 
-    <div @class(['flex flex-1 flex-col p-5', 'sm:p-7' => $lead])>
+    <div @class(['d-flex flex-column flex-1 p-5', 'p-sm-7' => $lead])>
         @if ($category)
             <x-ui.eyebrow>{{ $category->getTranslation('name', 'en') }}</x-ui.eyebrow>
         @endif
 
         <h3 @class([
-            'font-display font-extrabold tracking-display text-radix-dark',
-            'mt-2 text-[1.0625rem] leading-snug' => ! $lead,
-            'mt-2.5 text-[1.375rem] leading-tight sm:text-[1.625rem]' => $lead,
+            'mb-0 font-display fw-extrabold tracking-display text-radix-dark',
+            'mt-2 fs-17 lh-snug' => ! $lead,
+            'mt-2-5 fs-22 fs-sm-26 lh-tight' => $lead,
         ])>
-            <a
-                href="{{ route('blog.show', $post) }}"
-                class="after:absolute after:inset-0 after:content-[''] hover:text-radix-red-deep"
-            >
+            <a href="{{ route('blog.show', $post) }}" class="stretched-link rx-title-link">
                 {{ $post->getTranslation('title', 'en') }}
             </a>
         </h3>
 
         @if ($excerpt = $post->getTranslation('excerpt', 'en'))
-            <p @class(['mt-2 text-[0.875rem] leading-relaxed text-muted', 'sm:text-[0.9375rem]' => $lead])>
+            <p @class(['mb-0 mt-2 fs-14 lh-relaxed text-muted', 'fs-sm-15' => $lead])>
                 {{ $excerpt }}
             </p>
         @endif
 
-        <p class="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 pt-1 font-mono text-[0.625rem] uppercase tracking-eyebrow text-meta">
+        <p class="rx-meta-line d-flex flex-wrap align-items-center column-gap-2 row-gap-1 mb-0 mt-4 pt-1 font-mono fs-10 text-uppercase tracking-eyebrow text-meta">
             <span>{{ $post->authorName() }}</span>
             <span aria-hidden="true">·</span>
             <time datetime="{{ $post->published_at->toDateString() }}">{{ $post->published_at->format('d M Y') }}</time>

@@ -11,49 +11,52 @@
 >
     {{-- HERO — a looping factory clip, not a carousel (brief §5.4) --}}
     <x-ui.section tone="surface" :reveal="false">
-        <div class="grid items-center gap-9 lg:grid-cols-[1.05fr_0.95fr] lg:gap-11">
-            <div>
+        <div class="row align-items-center gy-9 gx-lg-11">
+            <div class="col-lg-6">
                 <x-ui.eyebrow>25 years of power &middot; made in India</x-ui.eyebrow>
 
                 <x-ui.heading as="h1" size="hero" class="mt-4 text-radix-dark">
                     The battery brand India <span class="text-radix-red">runs on</span>.
                 </x-ui.heading>
 
-                <p class="mt-5 max-w-md text-base leading-relaxed text-lead sm:text-[1.03125rem]">
+                <p class="mb-0 mt-5 mw-md fs-16 fs-sm-16-5 lh-relaxed text-lead">
                     Inverter, automotive, solar and lithium — plus complete solar systems
                     and a 650-dealer network to back them.
                 </p>
 
-                <div class="mt-7 flex flex-wrap gap-3.5">
+                <div class="d-flex flex-wrap gap-3-5 mt-7">
                     <x-ui.button variant="primary" size="lg" href="#finder">Find Your Battery</x-ui.button>
                     <x-ui.button variant="secondary" size="lg" href="{{ route('dealers.index') }}">Become a dealer</x-ui.button>
                 </div>
             </div>
 
-            <x-ui.media-frame
-                video="{{ asset('video/factory-hero.mp4') }}"
-                badge="Live from the floor"
-            />
+            <div class="col-lg-6">
+                <x-ui.media-frame
+                    video="{{ asset('video/factory-hero.mp4') }}"
+                    badge="Live from the floor"
+                />
+            </div>
         </div>
     </x-ui.section>
 
     {{-- TRUST STATS — the brief asks for these to be headline figures, not buried --}}
-    <x-ui.section tone="white" padding="tight" class="border-b border-hairline">
-        <dl class="grid grid-cols-2 gap-6 sm:gap-0 lg:grid-cols-4">
+    <x-ui.section tone="white" padding="tight" class="border-bottom border-hairline">
+        <dl class="rx-stats mb-0">
             @foreach (App\Support\Content\HomePageContent::stats() as $stat)
-                <x-ui.stat :value="$stat['value']" :label="$stat['label']" class="first:border-t-0 sm:first:border-l-0 sm:first:pl-0" />
+                <x-ui.stat :value="$stat['value']" :label="$stat['label']" />
             @endforeach
         </dl>
     </x-ui.section>
 
     {{-- FIND YOUR BATTERY — quick-select from brief §4 --}}
     <x-ui.section tone="white" padding="flush-top" id="finder">
-        <div class="rounded-frame border border-hairline bg-surface-raised p-6 sm:p-7">
-            <h2 class="font-display text-xl font-extrabold tracking-display text-radix-dark">Find Your Battery</h2>
+        <div class="rounded-frame border border-hairline bg-surface-raised p-6 p-sm-7">
+            <h2 class="mb-0 font-display fs-20 fw-extrabold tracking-display text-radix-dark">Find Your Battery</h2>
 
-            <form class="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-[repeat(3,1fr)_auto] lg:items-end">
+            <form class="row g-5 align-items-end mt-0">
                 @foreach (App\Support\Content\HomePageContent::finder() as $name => $field)
                     <x-ui.select-field
+                        class="col-sm-6 col-lg"
                         :name="$name"
                         :label="$field['label']"
                         :placeholder="$field['placeholder']"
@@ -61,9 +64,11 @@
                     />
                 @endforeach
 
-                <x-ui.button type="submit" variant="primary" size="lg" class="sm:col-span-2 lg:col-span-1">
-                    Show results
-                </x-ui.button>
+                <div class="col-12 col-lg-auto">
+                    <x-ui.button type="submit" variant="primary" size="lg" class="w-100">
+                        Show results
+                    </x-ui.button>
+                </div>
             </form>
         </div>
     </x-ui.section>
@@ -75,15 +80,17 @@
             <x-ui.eyebrow>Explore the range</x-ui.eyebrow>
             <x-ui.heading size="lg" class="mt-3 text-radix-dark">Eight lines of power.</x-ui.heading>
 
-            <div class="mt-6 grid gap-x-10 sm:grid-cols-2">
+            <div class="row gx-10 mt-6">
                 @foreach ($products as $product)
-                    <x-ui.index-row
-                        :number="sprintf('%02d', $loop->iteration)"
-                        :name="$product->getTranslation('name', 'en')"
-                        :pitch="trim((string) $product->getTranslation('pitch', 'en')) ?: null"
-                        :image="$product->image?->url()"
-                        :href="route('products.show', $product)"
-                    />
+                    <div class="col-sm-6">
+                        <x-ui.index-row
+                            :number="sprintf('%02d', $loop->iteration)"
+                            :name="$product->getTranslation('name', 'en')"
+                            :pitch="trim((string) $product->getTranslation('pitch', 'en')) ?: null"
+                            :image="$product->image?->url()"
+                            :href="route('products.show', $product)"
+                        />
+                    </div>
                 @endforeach
             </div>
 
@@ -97,13 +104,13 @@
 
     {{-- SOLAR — the bundled system the current site never shows (brief §6) --}}
     <x-ui.section tone="dark" id="solar">
-        <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-13">
-            <div>
+        <div class="row align-items-center gy-10 gx-lg-13">
+            <div class="col-lg-6">
                 <x-ui.eyebrow tone="dark">The complete solution</x-ui.eyebrow>
 
-                <x-ui.heading size="xl" class="mt-3.5">Solar, sold as one system.</x-ui.heading>
+                <x-ui.heading size="xl" class="mt-3-5">Solar, sold as one system.</x-ui.heading>
 
-                <p class="mt-4 text-[0.9375rem] leading-relaxed text-on-dark-muted sm:text-base">
+                <p class="mb-0 mt-4 fs-15 fs-sm-16 lh-relaxed text-on-dark-muted">
                     Panel, battery, inverter and charge controller — matched and warrantied
                     together, not four parts you have to reconcile yourself.
                 </p>
@@ -112,12 +119,12 @@
                     class="mt-6"
                     image="{{ asset('images/placeholder/solar-array.jpg') }}"
                     alt="A Radix solar power generating system installed on a rooftop"
-                    height="h-48 sm:h-60"
+                    height="rx-media--short"
                     :scrim="false"
                 />
             </div>
 
-            <div>
+            <div class="col-lg-6">
                 {{-- Not `$component`: Blade reserves that name inside a component's
                      slot, and a nested <x-…> tag reassigns it mid-loop. --}}
                 @foreach (App\Support\Content\HomePageContent::solarComponents() as $part)
@@ -137,32 +144,34 @@
         <x-ui.eyebrow>Why Radix</x-ui.eyebrow>
         <x-ui.heading size="lg" class="mt-3 text-radix-dark">Built like a national brand.</x-ui.heading>
 
-        <div class="mt-7 grid gap-x-14 sm:grid-cols-2">
+        <div class="row gx-14 mt-7">
             @foreach (App\Support\Content\HomePageContent::whyRadix() as $reason)
-                <x-ui.numbered-item
-                    divider="rule"
-                    :number="$reason['number']"
-                    :title="$reason['title']"
-                    :description="$reason['description']"
-                />
+                <div class="col-sm-6">
+                    <x-ui.numbered-item
+                        divider="rule"
+                        :number="$reason['number']"
+                        :title="$reason['title']"
+                        :description="$reason['description']"
+                    />
+                </div>
             @endforeach
         </div>
     </x-ui.section>
 
     {{-- INFRASTRUCTURE --}}
     <x-ui.section tone="surface" id="infrastructure">
-        <div class="grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
-            <div>
+        <div class="row align-items-center gy-10 gx-lg-12">
+            <div class="col-lg-5">
                 <x-ui.eyebrow>Inside the factory</x-ui.eyebrow>
 
                 <x-ui.heading size="md" class="mt-3 text-radix-dark">See where the power is made.</x-ui.heading>
 
-                <p class="mt-4 text-[0.9375rem] leading-relaxed text-muted">
+                <p class="mb-0 mt-4 fs-15 lh-relaxed text-muted">
                     A walk through the production floor, QC lab and testing bays — the
                     credibility a spec sheet alone can't give.
                 </p>
 
-                <ul class="mt-5 flex flex-wrap gap-2.5">
+                <ul class="d-flex flex-wrap gap-2-5 mt-5">
                     @foreach (App\Support\Content\HomePageContent::processFlow() as $step)
                         <x-ui.chip>{{ $step }}</x-ui.chip>
                     @endforeach
@@ -175,27 +184,31 @@
                 </div>
             </div>
 
-            <x-ui.media-frame
-                video="{{ asset('video/factory-floor.mp4') }}"
-                :lazy="true"
-                badge="Live from the floor"
-            />
+            <div class="col-lg-7">
+                <x-ui.media-frame
+                    video="{{ asset('video/factory-floor.mp4') }}"
+                    :lazy="true"
+                    badge="Live from the floor"
+                />
+            </div>
         </div>
     </x-ui.section>
 
     {{-- DEALER LOCATOR --}}
     <x-ui.section tone="white" id="dealers">
-        <div class="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
-            <div class="overflow-hidden rounded-frame border border-hairline bg-surface p-4 text-radix-red">
-                <x-map.india />
+        <div class="row align-items-center gy-10 gx-lg-12">
+            <div class="col-lg-7">
+                <div class="rx-map-panel overflow-hidden rounded-frame border border-hairline bg-surface p-4 text-radix-red">
+                    <x-map.india />
+                </div>
             </div>
 
-            <div>
+            <div class="col-lg-5">
                 <x-ui.eyebrow>650+ network</x-ui.eyebrow>
 
                 <x-ui.heading size="md" class="mt-3 text-radix-dark">Find your nearest dealer.</x-ui.heading>
 
-                <p class="mt-3.5 text-[0.90625rem] leading-relaxed text-muted">
+                <p class="mb-0 mt-3-5 fs-14-5 lh-relaxed text-muted">
                     Search by city or state and connect with a stocked Radix dealer near you.
                 </p>
 
@@ -203,16 +216,16 @@
                      Ordering by distance instead of city name needs geocoding,
                      which is Phase 5. --}}
                 <form action="{{ route('dealers.index') }}" method="GET" class="mt-5">
-                    <label for="dealer-search" class="sr-only">City, state or PIN code</label>
-                    <div class="flex items-end gap-3 border-b-2 border-line-control focus-within:border-radix-red">
+                    <label for="dealer-search" class="visually-hidden">City, state or PIN code</label>
+                    <div class="rx-inline-search d-flex align-items-end gap-3">
                         <input
                             id="dealer-search"
                             type="text"
                             name="location"
                             placeholder="Enter city or PIN code…"
-                            class="min-w-0 flex-1 border-0 bg-transparent pb-2.5 text-[0.9375rem] text-ink placeholder:text-placeholder focus:outline-none focus:ring-0"
+                            class="min-w-0 flex-1"
                         >
-                        <button type="submit" class="pb-2.5 text-[0.9375rem] font-bold text-radix-red-deep">
+                        <button type="submit" class="rx-inline-search__submit fs-15 fw-bold text-radix-red-deep">
                             Search <span aria-hidden="true">&rarr;</span>
                         </button>
                     </div>
@@ -223,15 +236,15 @@
 
     {{-- EXPORT --}}
     <x-ui.section tone="dark" id="export">
-        <div class="grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
-            <div>
+        <div class="row align-items-center gy-10 gx-lg-12">
+            <div class="col-lg-5">
                 <x-ui.eyebrow tone="dark">Export &middot; B2B</x-ui.eyebrow>
 
                 <x-ui.heading size="md" class="mt-3">Trusted across borders.</x-ui.heading>
 
                 <ul class="mt-5">
                     @foreach (App\Support\Content\HomePageContent::exportMarkets() as $market)
-                        <li class="border-t border-white/15 py-2.5 font-display text-[1.0625rem] font-bold text-on-dark sm:text-lg">
+                        <li class="border-top rx-rule-on-dark py-2-5 font-display fs-17 fs-sm-18 fw-bold text-on-dark">
                             {{ $market }}
                         </li>
                     @endforeach
@@ -242,8 +255,10 @@
                 </x-ui.button>
             </div>
 
-            <div class="overflow-hidden rounded-frame border border-white/10 bg-radix-dark-2 p-4 text-radix-red-on-dark [--map-land:#22364f] [--map-line:#2e4664]">
-                <x-map.world />
+            <div class="col-lg-7">
+                <div class="rx-map-panel rx-map-panel--dark overflow-hidden rounded-frame border rx-rule-on-dark bg-radix-dark-2 p-4 text-radix-red-on-dark">
+                    <x-map.world />
+                </div>
             </div>
         </div>
     </x-ui.section>
@@ -262,14 +277,17 @@
             />
 
             @if ($testimonials->count() > 1)
-                <div class="mt-5 grid gap-5 sm:grid-cols-2">
+                <div class="row g-5 mt-0">
                     @foreach ($testimonials->slice(1) as $testimonial)
-                        <x-ui.pull-quote
-                            variant="compact"
-                            :quote="$testimonial->getTranslation('quote', 'en')"
-                            :name="$testimonial->author_name"
-                            :role="trim(collect([$testimonial->getTranslation('author_role', 'en'), $testimonial->location])->filter()->implode(', '))"
-                        />
+                        <div class="col-sm-6">
+                            <x-ui.pull-quote
+                                variant="compact"
+                                class="h-100"
+                                :quote="$testimonial->getTranslation('quote', 'en')"
+                                :name="$testimonial->author_name"
+                                :role="trim(collect([$testimonial->getTranslation('author_role', 'en'), $testimonial->location])->filter()->implode(', '))"
+                            />
+                        </div>
                     @endforeach
                 </div>
             @endif
@@ -287,54 +305,56 @@
         @php $lead = $posts->first(); @endphp
 
         <x-ui.section tone="white" id="blog">
-            <div class="flex flex-wrap items-end justify-between gap-4">
+            <div class="d-flex flex-wrap align-items-end justify-content-between gap-4">
                 <x-ui.heading size="lg" class="text-radix-dark">From the Radix blog</x-ui.heading>
-                <a href="{{ route('blog.index') }}" class="text-sm font-bold text-radix-red-deep">View all posts <span aria-hidden="true">&rarr;</span></a>
+                <a href="{{ route('blog.index') }}" class="fs-14 fw-bold text-radix-red-deep">View all posts <span aria-hidden="true">&rarr;</span></a>
             </div>
 
-            <div class="mt-7 grid items-start gap-9 lg:grid-cols-[1.3fr_1fr]">
-                <article>
-                    <div class="h-56 overflow-hidden rounded-card bg-surface-sunken sm:h-72 lg:h-[18.75rem]">
-                        @if ($lead->image)
-                            <img
-                                src="{{ $lead->image->url() }}"
-                                alt="{{ $lead->image->altText() }}"
-                                loading="lazy"
-                                decoding="async"
-                                class="h-full w-full object-cover"
-                            >
+            <div class="row align-items-start gy-9 gx-lg-9 mt-7">
+                <div class="col-lg-7">
+                    <article>
+                        <div class="rx-blog-lead overflow-hidden rounded-card bg-surface-sunken">
+                            @if ($lead->image)
+                                <img
+                                    src="{{ $lead->image->url() }}"
+                                    alt="{{ $lead->image->altText() }}"
+                                    loading="lazy"
+                                    decoding="async"
+                                    class="w-100 h-100 object-fit-cover"
+                                >
+                            @endif
+                        </div>
+
+                        @if ($lead->category)
+                            <x-ui.eyebrow class="mt-4-5">{{ $lead->category->getTranslation('name', 'en') }}</x-ui.eyebrow>
                         @endif
-                    </div>
 
-                    @if ($lead->category)
-                        <x-ui.eyebrow class="mt-4.5">{{ $lead->category->getTranslation('name', 'en') }}</x-ui.eyebrow>
-                    @endif
+                        <h3 class="mb-0 mt-2-5 font-display fs-20 fs-sm-24 fw-extrabold lh-tight tracking-display text-ink">
+                            <a href="{{ route('blog.show', $lead) }}" class="rx-title-link">{{ $lead->getTranslation('title', 'en') }}</a>
+                        </h3>
 
-                    <h3 class="mt-2.5 font-display text-xl font-extrabold leading-tight tracking-display text-ink sm:text-2xl">
-                        <a href="{{ route('blog.show', $lead) }}" class="hover:text-radix-red-deep">{{ $lead->getTranslation('title', 'en') }}</a>
-                    </h3>
+                        @if ($excerpt = $lead->getTranslation('excerpt', 'en'))
+                            <p class="mb-0 mt-2-5 fs-14-5 lh-relaxed text-muted">{{ $excerpt }}</p>
+                        @endif
 
-                    @if ($excerpt = $lead->getTranslation('excerpt', 'en'))
-                        <p class="mt-2.5 text-[0.90625rem] leading-relaxed text-muted">{{ $excerpt }}</p>
-                    @endif
+                        <p class="mb-0 mt-2 fs-12-5 text-meta">
+                            {{ $lead->authorName() }} ·
+                            <time datetime="{{ $lead->published_at->toDateString() }}">{{ $lead->published_at->format('M Y') }}</time>
+                        </p>
+                    </article>
+                </div>
 
-                    <p class="mt-2 text-[0.78125rem] text-meta">
-                        {{ $lead->authorName() }} ·
-                        <time datetime="{{ $lead->published_at->toDateString() }}">{{ $lead->published_at->format('M Y') }}</time>
-                    </p>
-                </article>
-
-                <div>
+                <div class="col-lg-5">
                     @foreach ($posts->skip(1) as $post)
-                        <article class="flex gap-4 border-t border-hairline py-5">
-                            <div class="h-[4.5rem] w-24 shrink-0 overflow-hidden rounded-lg bg-surface-sunken">
+                        <article class="d-flex gap-4 border-top border-hairline py-5">
+                            <div class="rx-blog-thumb flex-shrink-0 overflow-hidden rounded-lg bg-surface-sunken">
                                 @if ($post->image)
                                     <img
                                         src="{{ $post->image->url() }}"
                                         alt="{{ $post->image->altText() }}"
                                         loading="lazy"
                                         decoding="async"
-                                        class="h-full w-full object-cover"
+                                        class="w-100 h-100 object-fit-cover"
                                     >
                                 @endif
                             </div>
@@ -342,10 +362,10 @@
                                 @if ($post->category)
                                     <x-ui.eyebrow size="xs">{{ $post->category->getTranslation('name', 'en') }}</x-ui.eyebrow>
                                 @endif
-                                <h3 class="mt-1.5 font-display text-[0.9375rem] font-bold leading-snug text-ink">
-                                    <a href="{{ route('blog.show', $post) }}" class="hover:text-radix-red-deep">{{ $post->getTranslation('title', 'en') }}</a>
+                                <h3 class="mb-0 mt-1-5 font-display fs-15 fw-bold lh-snug text-ink">
+                                    <a href="{{ route('blog.show', $post) }}" class="rx-title-link">{{ $post->getTranslation('title', 'en') }}</a>
                                 </h3>
-                                <p class="mt-1.5 text-[0.71875rem] text-meta">
+                                <p class="mb-0 mt-1-5 fs-11-5 text-meta">
                                     {{ $post->authorName() }} ·
                                     <time datetime="{{ $post->published_at->toDateString() }}">{{ $post->published_at->format('M Y') }}</time>
                                 </p>
@@ -361,12 +381,12 @@
     <x-ui.section tone="accent" padding="band" class="text-center">
         <x-ui.heading size="md" class="text-white">Ready to power up with Radix?</x-ui.heading>
 
-        <p class="mx-auto mt-2.5 max-w-xl text-[0.9375rem] text-white/90">
+        <p class="mx-auto mb-0 mt-2-5 mw-xl fs-15 text-white">
             Distributor enquiry, export quote or a battery for home — we reply within one
             business day.
         </p>
 
-        <div class="mt-6 flex flex-wrap justify-center gap-3">
+        <div class="d-flex flex-wrap justify-content-center gap-3 mt-6">
             <x-ui.button variant="inverse" size="lg" href="{{ route('contact').'#enquiry' }}">Enquire Now</x-ui.button>
             @if ($whatsapp = \App\Support\Content\SiteContent::whatsapp())
                 <x-ui.button

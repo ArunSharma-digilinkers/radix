@@ -13,9 +13,9 @@
     <div class="rounded-card border border-hairline bg-white px-5 py-6">
         <x-ui.eyebrow>Getting started</x-ui.eyebrow>
 
-        <p class="mt-2.5 max-w-prose text-[0.9375rem] text-muted">
+        <p class="mt-2-5 mw-prose fs-15 text-muted">
             Pick a section from the sidebar to manage the site. Sections marked
-            <span class="font-mono text-[0.6875rem] uppercase tracking-eyebrow text-meta">Soon</span>
+            <span class="font-mono fs-11 text-uppercase tracking-eyebrow text-meta">Soon</span>
             are not built yet.
         </p>
     </div>

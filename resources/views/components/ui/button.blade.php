@@ -9,10 +9,6 @@
 ])
 
 @php
-    // Phase 1 has no destinations yet. Rendering a real <button> rather than an
-    // <a href="#"> keeps the shell keyboard-operable and avoids dead links that
-    // read as broken to screen readers. Phase 4 passes real hrefs.
-    //
     // Defaulting $type to 'button' (not 'submit') means a plain <x-ui.button>
     // inside a <form> does nothing on click unless the caller explicitly asks
     // for type="submit" — deliberate, so a form's real submit action is always
@@ -20,25 +16,23 @@
     // component's default.
     $tag = $href ? 'a' : 'button';
 
-    $base = 'inline-flex items-center justify-center gap-2 rounded-btn font-semibold '
-        .'transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2';
-
+    // Bootstrap's .btn plus the Radix variants defined in scss/_components.scss.
     $variants = [
-        'primary' => 'bg-radix-red text-white font-bold hover:bg-radix-red-deep focus-visible:outline-radix-red-deep',
-        'secondary' => 'border border-line-control text-radix-dark hover:border-radix-dark hover:bg-surface',
-        'inverse' => 'bg-white text-radix-red-deep font-bold hover:bg-surface focus-visible:outline-white',
-        'on-dark' => 'bg-white/15 text-white hover:bg-white/25 focus-visible:outline-white',
+        'primary' => 'btn-primary',
+        'secondary' => 'btn-outline-radix',
+        'inverse' => 'btn-inverse',
+        'on-dark' => 'btn-on-dark',
     ];
 
     $sizes = [
-        'md' => 'px-4 py-2.5 text-sm',
-        'lg' => 'px-5 py-3.5 text-sm sm:text-[0.9375rem]',
+        'md' => '',
+        'lg' => 'btn-lg',
     ];
 @endphp
 
 <{{ $tag }}
     @if ($href) href="{{ $href }}" @else type="{{ $type }}" @endif
-    {{ $attributes->class([$base, $variants[$variant] ?? $variants['primary'], $sizes[$size] ?? $sizes['md']]) }}
+    {{ $attributes->class(['btn d-inline-flex align-items-center justify-content-center gap-2', $variants[$variant] ?? $variants['primary'], $sizes[$size] ?? '']) }}
 >
     {{ $slot }}
 </{{ $tag }}>

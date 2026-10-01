@@ -12,29 +12,26 @@
 
 <{{ $tag }}
     @if ($href) href="{{ $href }}" @endif
-    {{ $attributes->class([
-        'group flex items-center gap-4 border-t border-hairline py-4 sm:gap-5 sm:py-5',
-        'transition-transform duration-200 motion-safe:hover:translate-x-2 no-underline hover:no-underline' => (bool) $href,
-    ]) }}
+    {{ $attributes->class(['rx-index-row d-flex align-items-center gap-4 gap-sm-5 border-top border-hairline py-4 py-sm-5', 'rx-index-row--link' => (bool) $href]) }}
 >
-    <span class="w-6 shrink-0 font-display text-[0.9375rem] font-extrabold text-radix-red-deep">
+    <span class="rx-index-row__num flex-shrink-0 font-display fs-15 fw-extrabold text-radix-red-deep">
         {{ $number }}
     </span>
 
-    <span class="flex h-14 w-[4.5rem] shrink-0 items-center justify-center rounded-lg bg-surface-sunken p-1.5">
+    <span class="rx-index-row__thumb d-flex flex-shrink-0 align-items-center justify-content-center bg-surface-sunken">
         @if ($image)
             {{-- Decorative: the product name sits immediately alongside, so alt
                  text here would just repeat it to a screen reader. --}}
-            <img src="{{ $image }}" alt="" loading="lazy" decoding="async" class="max-h-full max-w-full object-contain">
+            <img src="{{ $image }}" alt="" loading="lazy" decoding="async">
         @endif
     </span>
 
     <span class="min-w-0 flex-1">
-        <span class="block font-display text-[0.9375rem] font-bold text-ink sm:text-base">{{ $name }}</span>
+        <span class="d-block font-display fs-15 fs-sm-16 fw-bold text-ink">{{ $name }}</span>
         @if ($pitch)
-            <span class="mt-0.5 block text-xs text-muted sm:text-[0.78125rem]">{{ $pitch }}</span>
+            <span class="d-block mt-0-5 fs-12 fs-sm-12-5 text-muted">{{ $pitch }}</span>
         @endif
     </span>
 
-    <span aria-hidden="true" class="shrink-0 text-lg text-radix-red-deep">&rarr;</span>
+    <span aria-hidden="true" class="flex-shrink-0 fs-18 text-radix-red-deep">&rarr;</span>
 </{{ $tag }}>

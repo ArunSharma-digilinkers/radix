@@ -13,11 +13,9 @@
     backgrounds and the lighter one on dark. See scripts/check-contrast.mjs.
 --}}
 <p {{ $attributes->class([
-    'font-mono uppercase tracking-eyebrow',
-    'text-[0.6875rem]' => $size === 'default',
-    'text-[0.59375rem]' => $size === 'xs',
-    'text-radix-red-deep' => $tone === 'light',
-    'text-radix-red-on-dark' => $tone === 'dark',
+    'rx-eyebrow mb-0',
+    'rx-eyebrow--xs' => $size === 'xs',
+    'rx-eyebrow--dark' => $tone === 'dark',
 ]) }}>
     {{ $slot }}
 </p>

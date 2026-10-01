@@ -46,7 +46,7 @@ Check which phase your work belongs to before starting.
 
 ## Stack
 
-Laravel 13 · MySQL · Blade + Tailwind v4 + Alpine · Livewire (custom admin, no Filament) ·
+Laravel 13 · MySQL · Blade + Bootstrap 5.3 + Alpine · Livewire (custom admin, no Filament) ·
 `spatie/laravel-permission` for RBAC · `spatie/laravel-translatable` for content
 (English at launch, Hindi-ready schema).
 

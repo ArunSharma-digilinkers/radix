@@ -40,5 +40,5 @@
     stroke-linecap="round"
     stroke-linejoin="round"
     aria-hidden="true"
-    {{ $attributes->class('shrink-0') }}
+    {{ $attributes->class('flex-shrink-0') }}
 >{!! $paths[$name] ?? $paths['pages'] !!}</svg>

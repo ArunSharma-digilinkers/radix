@@ -10,7 +10,7 @@
     preserveAspectRatio="xMidYMid meet"
     role="img"
     aria-label="World map highlighting Radix export markets"
-    class="h-full w-full"
+    class="w-100 h-100"
 >
     <title>World map highlighting Radix export markets</title>
     <desc>Countries Radix currently exports to are highlighted: India, Nigeria, UAE, Afghanistan, Nepal, Bhutan, Sri Lanka.</desc>

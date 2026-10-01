@@ -10,7 +10,7 @@
     preserveAspectRatio="xMidYMid meet"
     role="img"
     aria-label="Map of India showing Radix distributor coverage"
-    class="h-full w-full"
+    class="w-100 h-100"
 >
     <title>Map of India showing Radix distributor coverage</title>
     <desc>Outline of India with markers indicating cities where Radix distributors operate. Indicative coverage, not a complete dealer list.</desc>

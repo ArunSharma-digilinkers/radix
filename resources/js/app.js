@@ -1,3 +1,5 @@
+// Bootstrap's JS is imported per plugin so only what the site uses ships.
+import 'bootstrap/js/dist/collapse';
 import Alpine from 'alpinejs';
 import focus from '@alpinejs/focus';
 

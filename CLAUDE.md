@@ -54,7 +54,7 @@ Repo: `https://github.com/ArunSharma-digilinkers/radix.git`
 |---|---|
 | Framework | Laravel 13.22 (PHP 8.3+; local runs 8.4) |
 | Database | MySQL 8.4, schema `radix` |
-| Frontend | Blade + Tailwind CSS v4 + Alpine.js, built with Vite 8 |
+| Frontend | Blade + Bootstrap 5.3 (compiled from Sass) + Alpine.js, built with Vite 8 |
 | Interactivity / admin | Livewire 4.3 (custom-built admin — **no Filament, no Nova**) |
 | Rich text | CKEditor 5 (GPL build), lazy-loaded by `resources/js/admin.js`; output sanitised server-side by `App\Support\Html\RichText` |
 | Auth | Laravel's own; **no Breeze/Jetstream scaffolding** |
@@ -136,21 +136,41 @@ Source of truth: `design_handoff/` — the client brief PDF and the approved
 **"Direction B — Light Editorial + Radix Red"** homepage concept. The rejected
 Charcoal/Blue direction is kept for reference only; **do not** take styling from it.
 
-**Tokens live in `resources/css/app.css`** under Tailwind v4 `@theme`, each with a comment
+**Stack: Bootstrap 5.3**, compiled from source (`resources/scss/app.scss`) so the tokens drive
+Bootstrap's variables, breakpoints and utilities. Prefer Bootstrap's own classes (`d-flex`,
+`row`/`col-*`, `gap-*`, `btn`, `form-control`, `table`, `ratio`, `stretched-link`, …); reach for
+an `rx-*` class only for something brand-specific (eyebrow, index row, stat, media frame) or a
+Bootstrap component restyled to the concept (see `resources/scss/_components.scss`,
+`_admin.scss`). Bootstrap JS is imported per plugin in `resources/js/app.js` (collapse only).
+
+**Tokens live in `resources/scss/_tokens.scss`** as Sass variables, each with a comment
 explaining its role. That file is the source of truth — the summary below is orientation,
-not a second copy to keep in sync.
+not a second copy to keep in sync. `_tokens-root.scss` also exposes every token as a
+`--color-*` CSS custom property (used by the CKEditor skin and inline swatches).
 
 Never hardcode a hex value in a Blade template. If the colour you need isn't a token, add
-it to `app.css` first so the palette stays reviewable in one place.
+it to `_tokens.scss` first so the palette stays reviewable in one place.
 
 | Group | Utilities |
 |---|---|
-| Brand | `radix-red`, `radix-red-deep`, `radix-dark`, `radix-dark-2` |
+| Brand | `text-/bg-/border-` + `radix-red`, `radix-red-deep`, `radix-dark`, `radix-dark-2` |
 | Text ramp | `ink` → `ink-soft` → `nav` → `lead` → `muted` → `meta` → `placeholder`, plus `on-dark` |
 | Surfaces | `surface`, `surface-raised`, `surface-sunken` |
-| Lines | `hairline`, `line`, `line-strong` |
-| Layout | `max-w-radix` (1060px content column) |
+| Lines | `hairline`, `line`, `line-strong`, `line-control` |
+| Layout | `.rx-container` / `mw-radix` (1060px content column) |
 | Radii | `rounded-btn` (10px), `rounded-card` (16px), `rounded-frame` (18px) |
+| Hover | `text-ink-hover`, `bg-surface-hover`, `border-line-control-hover` (palette only) |
+
+Our utility extensions (in `app.scss`, all via Bootstrap's `$utilities` API):
+
+- **Spacing** is a 4px-based scale, so `mt-6` is 1.5rem. Half steps use a dash: `py-2-5`,
+  `gap-3-5`, `mt-1-5` (a dot would need escaping). Negative margins: `me-n2`.
+- **Type size** is named by pixel size: `fs-13` = 0.8125rem, `fs-13-5` = 0.84375rem; responsive
+  as `fs-sm-15`, `fs-lg-26`. Weights `fw-medium|semibold|extrabold|black`; leading `lh-relaxed`.
+- **Sizing** `w-N` / `h-N` on the spacing scale, `mw-md|xl|2xl|radix|admin` for max-width.
+- **CSS grid** `d-grid grid-cols-sm-2 gap-4` with `grid-col-span-sm-2` for form layouts.
+- **Breakpoints** are `sm 640 / lg 1024 / xl 1280` — only those three exist, on purpose; each
+  extra one multiplies the compiled CSS.
 
 The text ramp looks long, but each step is a distinct value the concept actually uses —
 they were kept faithful rather than collapsed, so pixel-matching the design doesn't require
@@ -158,18 +178,21 @@ arbitrary hexes.
 
 **Contrast is enforced, not assumed.** `npm run check:contrast` audits every
 foreground/background pair the UI actually uses against WCAG AA and exits non-zero on a
-failure. Run it after touching any colour token. Several of the concept's values failed and
-were adjusted — see §6.1.
+failure (it reads `_tokens.scss`). Run it after touching any colour token. Several of the
+concept's values failed and were adjusted — see §6.1.
 
-**Two Blade gotchas** that cost real debugging time here:
+**Gotchas** that cost real debugging time here:
 
 - Never name a `@foreach` variable `$component`. Blade reserves it inside a component's
   slot, and a nested `<x-…>` tag reassigns it mid-loop.
-- Tailwind v4 puts the important modifier at the **end** (`py-12!`), not the start. The v3
-  `!py-12` form silently compiles to nothing. Prefer a component prop over `!` either way.
-
-Tailwind only sees literal class strings, so `bg-{{ $token }}` never compiles. For genuinely
-dynamic colour, set the CSS variable inline: `style="background: var(--color-{{ $token }})"`.
+- Bootstrap utilities carry `!important`, so a utility always beats a component class. Put
+  one-off overrides in a utility, not a competing rule.
+- When extending `$utilities`, **merge** into Bootstrap's existing entry (see the `@each` in
+  `app.scss`); replacing it silently deletes `w-100`, `rounded-pill`, `fw-bold` and friends.
+- Don't use `<template x-if>` inside an `<svg>` — it renders nothing. Use `x-show`.
+- Bootstrap compiles class names from Sass, so a class built at runtime
+  (`bg-{{ $token }}`) only works for tokens that exist in the palette map. For genuinely
+  dynamic colour set the CSS variable inline: `style="background: var(--color-{{ $token }})"`.
 
 ### 6.1 Deviations from the approved concept
 
@@ -276,7 +299,7 @@ resources/views/components/site/     Header, footer, quick actions
 resources/views/components/map/      GENERATED — see npm run build:maps
 scripts/                    Build-time tooling (maps, contrast audit)
 resources/views/pages/      Public page templates
-resources/css/app.css       Tailwind v4 theme tokens
+resources/scss/            Bootstrap build: _tokens (source of truth), _components, _admin, app.scss
 design_handoff/             Client brief + approved design concept (reference, not built code)
 docs/PROJECT_PLAN.md        Phase-wise delivery plan — check before starting work
 ```
