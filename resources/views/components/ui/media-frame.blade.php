@@ -6,7 +6,7 @@
     'alt' => '',
     /** Small mono badge in the top-left corner. */
     'badge' => null,
-    /** Extra classes for the frame's height — see .rx-media in scss/_components.scss. */
+    /** Extra classes for the frame's height — see .rx-media in scss/app.scss. */
     'height' => 'rx-media--default',
     /** Adds a bottom scrim so an overlaid badge stays legible. */
     'scrim' => true,

@@ -1,30 +1,468 @@
-// Radix Power Solutions — public + admin stylesheet.
+// Radix Power Solutions — the whole front-end stylesheet (public site + admin).
 //
 // Bootstrap 5.3 is compiled from source so the design tokens drive its
-// variables, breakpoints and utilities. The order is load-bearing:
+// variables, breakpoints and utilities. Everything lives in this one file,
+// in this order (the order is load-bearing):
 //
-//   tokens → Bootstrap functions → variable overrides → Bootstrap variables,
-//   maps and mixins → utility extensions → Bootstrap components → Radix layers
+//    1. Design tokens            — the palette, type, radii: source of truth
+//    2. Bootstrap variables      — our overrides, then Bootstrap's own
+//    3. Utility extensions       — brand colours, type scale, grid helpers
+//    4. Bootstrap components     — only the ones the site uses
+//    5. Tokens as CSS variables  — --color-* for the editor skin and swatches
+//    6. Radix components         — layout, buttons, type, cards, header, forms
+//    7. Content                  — rich-text article body, scroll reveal, maps
+//    8. Admin                    — the panel shell and its shared controls
 //
 // Bootstrap still documents Sass `@import`, so that is what is used here; the
-// resulting deprecation warnings are silenced in vite.config.js.
+// resulting deprecation warnings are silenced in vite.config.js. The CKEditor
+// skin (resources/css/rich-text.css) is deliberately separate: it ships in the
+// editor's own lazy chunk so no page without a rich-text field downloads it.
+// scripts/check-contrast.mjs reads the `$name: #hex;` lines in section 1.
 
-// 1. Design tokens (source of truth) and Bootstrap's functions.
-@import 'tokens';
+@use 'sass:map';
+
+// ============================================================================
+// 1. Design tokens
+// ============================================================================
+
+//
+// Radix design tokens
+// -----------------------------------------------------------------------------
+// Single source of truth for the approved "Editorial Red" direction. See
+// design_handoff/homepage-concept/ for the reference render and CLAUDE.md §6
+// for the rules around using these.
+//
+// Never hardcode a hex value in a Blade template. If a colour you need is not
+// here, add it here first so the palette stays reviewable in one place.
+//
+// scripts/check-contrast.mjs parses the `$name: #hex;` lines in this file, so
+// keep each colour on one line in that exact shape.
+
+// Typography ------------------------------------------------------------------
+// Self-hosted via laravel-vite-plugin/fonts (see vite.config.js). Families are
+// named literally so type degrades gracefully if a layout ever renders without
+// Vite::fonts().
+$font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+$font-display: 'Archivo', ui-sans-serif, system-ui, sans-serif;
+$font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+// Brand -----------------------------------------------------------------------
+// Three reds, because one cannot be legible everywhere. Verified by
+// `npm run check:contrast` — change a value there and the build tells you.
+$radix-red: #e0231c; // fills: CTAs, badges, large numerals
+$radix-red-deep: #c41d17; // hover/pressed, and red *small text* on light
+$radix-red-on-dark: #ff5a4d; // red small text on $radix-dark
+$radix-dark: #12233b;
+$radix-dark-2: #1b2f4d; // insets within dark sections
+
+// Text ramp, darkest to lightest ------------------------------------------------
+// The concept's caption greys (#8a97a8 / #9aa6b5) fail WCAG AA on white, so they
+// are darkened here. Hierarchy below `muted` is carried by size and weight
+// rather than lightness — there is no lighter grey that stays legible at 4.5:1.
+$ink: #16202e; // headings, primary body
+$ink-soft: #2c3a4d; // pull-quote body
+$nav: #42506b; // nav links
+$lead: #4a5768; // hero and section lead paragraphs
+$muted: #5c6a7e; // secondary body
+$meta: #63707f; // captions, bylines, timestamps
+$placeholder: #667487; // unfilled form values
+$on-dark: #eef2f7; // primary text on $radix-dark
+$on-dark-muted: #a8b4c4; // secondary text on dark — use instead of opacity
+
+// Surfaces --------------------------------------------------------------------
+$surface: #f7f8fa; // alternating section background
+$surface-raised: #fbfbfc; // finder panel
+$surface-sunken: #f4f6f9; // product thumbnail wells
+
+// Lines -----------------------------------------------------------------------
+// `hairline`, `line` and `line-strong` are decorative only — dividers and rules
+// that carry no meaning. Anything that forms the visible boundary of an
+// interactive control (button outlines, input underlines) must use
+// `line-control`, which meets the 3:1 non-text contrast requirement. The
+// concept's #d3d9e2 button border sits at 1.42:1 and cannot be used there.
+$hairline: #eef1f5; // section dividers, list rules
+$line: #e0e5ec; // decorative borders, inactive underlines
+$line-strong: #d3d9e2; // heavier decorative rules
+$line-control: #8090a1; // borders of interactive controls
+
+// Status ----------------------------------------------------------------------
+// Admin feedback only. The brand red already means "error" on a form, so a
+// confirmation cannot borrow it — green is the one semantic the palette was
+// missing.
+$success: #1a7f4b; // confirmation text and icons
+$success-soft: #edf7f1; // confirmation banner fill
+$danger-soft: #fdecea; // error banner fill — text uses radix-red-deep
+
+// Third party -----------------------------------------------------------------
+$whatsapp: #25d366;
+
+// Layout ----------------------------------------------------------------------
+$container-radix: 1060px; // the public content column
+$container-admin: 1240px; // admin content column; wider because data tables, not
+                          // prose, set the measure here
+
+// Radii -----------------------------------------------------------------------
+$radius-btn: 10px;
+$radius-card: 16px;
+$radius-frame: 18px; // media frames, map panels
+
+// Tracking --------------------------------------------------------------------
+$tracking-display: -0.02em; // Archivo headings
+$tracking-eyebrow: 0.14em; // uppercase mono labels
+
+// Every colour above, by the name templates use: text-<name>, bg-<name>,
+// border-<name>. Built into Bootstrap's colour utilities in section 3 and
+// exposed as CSS custom properties (--color-<name>) in :root for the editor skin.
+$radix-colors: (
+    'radix-red': $radix-red,
+    'radix-red-deep': $radix-red-deep,
+    'radix-red-on-dark': $radix-red-on-dark,
+    'radix-dark': $radix-dark,
+    'radix-dark-2': $radix-dark-2,
+    'ink': $ink,
+    'ink-soft': $ink-soft,
+    'nav': $nav,
+    'lead': $lead,
+    'muted': $muted,
+    'meta': $meta,
+    'placeholder': $placeholder,
+    'on-dark': $on-dark,
+    'on-dark-muted': $on-dark-muted,
+    'surface': $surface,
+    'surface-raised': $surface-raised,
+    'surface-sunken': $surface-sunken,
+    'hairline': $hairline,
+    'line': $line,
+    'line-strong': $line-strong,
+    'line-control': $line-control,
+    'success-soft': $success-soft,
+    'danger-soft': $danger-soft,
+    'whatsapp': $whatsapp,
+);
+
+// Decorative-only values ------------------------------------------------------
+// Used by the dark map panels and the avatar placeholder in section 6.
+// Not text or UI boundaries, so they sit outside the contrast audit.
+$map-land-dark: #22364f;
+$map-line-dark: #2e4664;
+$placeholder-stripe-a: #e7ebf1;
+$placeholder-stripe-b: #f1f4f8;
+
 @import 'bootstrap/scss/functions';
 
-// 2. Our variable overrides, then Bootstrap's own variables, maps and mixins.
-@import 'variables';
+// ============================================================================
+// 2. Bootstrap variables
+// ============================================================================
+
+// Bootstrap variable overrides.
+//
+// Loaded after the design tokens and Bootstrap's functions but before its
+// variables, so every `!default` in Bootstrap yields to what is set here.
+
+// --- Breakpoints -------------------------------------------------------------
+// They follow the design handoff (640 / 1024 / 1280), not Bootstrap's defaults,
+// and only the ones the site uses: every extra breakpoint multiplies the
+// compiled responsive-utility CSS.
+$grid-breakpoints: (xs: 0, sm: 640px, lg: 1024px, xl: 1280px);
+$container-max-widths: (sm: 640px, lg: 1024px, xl: 1060px);
+
+// --- Spacing -----------------------------------------------------------------
+// A 4px-based scale (0.25rem steps), so `mt-6` is 1.5rem and `py-3-5` is
+// 0.875rem; Bootstrap's own 0–5 scale is too coarse for the concept. Half steps
+// use a dash (`2-5` → `.p-2-5`) because a dot would need escaping in markup.
+$spacers: (
+    0: 0,
+    px: 1px,
+    '0-5': 0.125rem,
+    1: 0.25rem,
+    '1-5': 0.375rem,
+    2: 0.5rem,
+    '2-5': 0.625rem,
+    3: 0.75rem,
+    '3-5': 0.875rem,
+    4: 1rem,
+    '4-5': 1.125rem,
+    5: 1.25rem,
+    6: 1.5rem,
+    7: 1.75rem,
+    8: 2rem,
+    9: 2.25rem,
+    10: 2.5rem,
+    11: 2.75rem,
+    12: 3rem,
+    13: 3.25rem,
+    14: 3.5rem,
+    16: 4rem,
+    20: 5rem,
+);
+
+$enable-negative-margins: true;
+$enable-shadows: false;
+$enable-rfs: false;
+
+// --- Colour ------------------------------------------------------------------
+// Only the theme colours Bootstrap's own components read. The rest of the palette
+// reaches templates through the utility maps in section 3, not $theme-colors.
+$primary: $radix-red;
+$secondary: $radix-dark;
+$danger: $radix-red-deep;
+$light: $surface;
+$dark: $radix-dark;
+
+$body-bg: #fff;
+$body-color: $ink;
+
+// --- Type --------------------------------------------------------------------
+$body-font-size: 1rem;
+$line-height-base: 1.6;
+$font-family-sans-serif: $font-sans;
+$font-family-monospace: $font-mono;
+
+$headings-font-family: $font-display;
+$headings-color: $radix-dark;
+$headings-font-weight: 800;
+$headings-line-height: 1.15;
+
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+$font-weight-bolder: 800;
+
+$link-color: $radix-red-deep;
+$link-hover-color: $radix-red-deep;
+$link-decoration: none;
+$link-hover-decoration: underline;
+
+// --- Shape -------------------------------------------------------------------
+$border-color: $line;
+$border-radius: 0.5rem;
+$border-radius-sm: 0.375rem;
+$border-radius-lg: $radius-card;
+$border-radius-xl: $radius-frame;
+$border-radius-pill: 50rem;
+
+$focus-ring-color: rgba($radix-red, 0.5);
+$component-active-bg: $radix-red;
+
+// --- Components --------------------------------------------------------------
+// Form controls: the concept uses underline inputs, restyled in section 6.
+$input-color: $ink;
+$input-border-color: $line-control;
+$input-placeholder-color: $placeholder;
+$input-focus-border-color: $radix-red;
+$input-focus-box-shadow: none;
+$form-label-color: $meta;
+
+$btn-border-radius: $radius-btn;
+$btn-font-weight: 600;
+$btn-padding-y: 0.625rem;
+$btn-padding-x: 1rem;
+$btn-font-size: 0.875rem;
+$btn-focus-width: 0;
+$btn-focus-box-shadow: none;
+
+$pagination-color: $ink;
+$pagination-active-bg: $radix-red;
+$pagination-active-border-color: $radix-red;
+$pagination-border-color: $line;
+$pagination-hover-color: $radix-red-deep;
+$pagination-focus-color: $radix-red-deep;
+
+$table-border-color: $line;
+
 @import 'bootstrap/scss/variables';
 @import 'bootstrap/scss/variables-dark';
 @import 'bootstrap/scss/maps';
 @import 'bootstrap/scss/mixins';
 @import 'bootstrap/scss/utilities';
 
-// 3. Utility extensions (must precede utilities/api, which emits the classes).
-@import 'utilities';
+// ============================================================================
+// 3. Utility extensions
+// ============================================================================
 
-// 4. Only the Bootstrap components the site uses.
+// Utility extensions, built with Bootstrap's `$utilities` API.
+//
+// Loaded after Bootstrap's own utilities map exists and before
+// `utilities/api` generates the classes. Two rules keep this safe:
+//   1. MERGE into Bootstrap's entries, never replace them — replacing the
+//      `width` map once deleted `w-100`, `rounded-pill` and `fw-bold`.
+//   2. Brand colours join the colour utilities (text-ink, bg-surface,
+//      border-hairline …) without being added to $theme-colors, which would
+//      generate a full button/alert/list-group variant set per palette entry.
+
+
+// --- Value scales ------------------------------------------------------------
+
+// Sizes: the spacing scale plus a few fixed widths (`w-6`, `h-24`, `w-fit`).
+$rx-sizes: map.merge($spacers, (
+    'auto': auto,
+    'full': 100%,
+    'fit': fit-content,
+    '18': 4.5rem,
+    '24': 6rem,
+    '32': 8rem,
+    '36': 9rem,
+    '56': 14rem,
+    '60': 15rem,
+    '64': 16rem,
+    '72': 18rem,
+));
+
+// Max-widths: `mw-md` … `mw-4xl`, the reading measure, and the two page columns.
+$rx-max-widths: (
+    'xs': 20rem,
+    'sm': 24rem,
+    'md': 28rem,
+    'lg': 32rem,
+    'xl': 36rem,
+    '2xl': 42rem,
+    '3xl': 48rem,
+    '4xl': 56rem,
+    'prose': 65ch,
+    'radix': $container-radix,
+    'admin': $container-admin,
+    'full': 100%,
+);
+
+// Font sizes in the concept's exact rem values, named by pixel size
+// (`fs-13` = 0.8125rem, `fs-13-5` = 0.84375rem …) and responsive (`fs-sm-15`).
+$rx-font-sizes: (
+    '9': 0.5625rem,
+    '9-5': 0.59375rem,
+    '10': 0.625rem,
+    '11': 0.6875rem,
+    '11-5': 0.71875rem,
+    '12': 0.75rem,
+    '12-5': 0.78125rem,
+    '13': 0.8125rem,
+    '13-5': 0.84375rem,
+    '14': 0.875rem,
+    '14-5': 0.90625rem,
+    '15': 0.9375rem,
+    '16': 1rem,
+    '16-5': 1.03125rem,
+    '17': 1.0625rem,
+    '18': 1.125rem,
+    '19': 1.1875rem,
+    '20': 1.25rem,
+    '22': 1.375rem,
+    '24': 1.5rem,
+    '26': 1.625rem,
+    '28': 1.75rem,
+    '30': 1.875rem,
+    '32': 2rem,
+    '34': 2.125rem,
+    '36': 2.25rem,
+    '38': 2.375rem,
+    '40': 2.5rem,
+    '44': 2.75rem,
+    '48': 3rem,
+    '56': 3.5rem,
+);
+
+$rx-hover-colors: map.merge($radix-colors, ('white': #fff));
+
+// --- New and extended utilities ---------------------------------------------------
+
+$rx-extra-utilities: (
+    'width': (property: width, class: w, responsive: true, values: $rx-sizes),
+    'height': (property: height, class: h, responsive: true, values: map.merge($rx-sizes, ('screen': 100vh))),
+    'min-width': (property: min-width, class: min-w, values: (0: 0, 'full': 100%)),
+    'min-height': (property: min-height, class: min-h, values: ('screen': 100vh)),
+    'max-width': (property: max-width, class: mw, responsive: true, values: $rx-max-widths),
+    'font-size': (rfs: false, responsive: true, property: font-size, class: fs, values: $rx-font-sizes),
+    'font-weight': (property: font-weight, class: fw, values: (
+        'light': $font-weight-light,
+        'normal': $font-weight-normal,
+        'medium': $font-weight-medium,
+        'semibold': $font-weight-semibold,
+        'bold': $font-weight-bold,
+        'extrabold': 800,
+        'black': 900,
+    )),
+    'line-height': (property: line-height, class: lh, values: (
+        'none': 1,
+        '1': 1,
+        'tight': 1.25,
+        'snug': 1.375,
+        'base': 1.5,
+        'relaxed': 1.625,
+    )),
+    'rounded': (property: border-radius, class: rounded, values: (
+        null: $border-radius,
+        'btn': $radius-btn,
+        'card': $radius-card,
+        'frame': $radius-frame,
+        'md': 0.375rem,
+        'lg': 0.5rem,
+        'pill': $border-radius-pill,
+        'circle': 50%,
+        '0': 0,
+    )),
+    'flex-basis': (property: flex, class: flex, values: ('1': '1 1 0%', 'none': 'none')),
+    'inset': (property: top right bottom left, class: inset, values: (0: 0)),
+    'letter-spacing': (property: letter-spacing, class: tracking, values: (
+        'display': $tracking-display,
+        'eyebrow': $tracking-eyebrow,
+    )),
+    'font-family': (property: font-family, class: font, values: (
+        'display': $font-display,
+        'sans': $font-sans,
+        'mono': $font-mono,
+    )),
+    'nowrap': (property: white-space, class: text, values: ('nowrap': nowrap)),
+
+    // CSS grid: `d-grid grid-cols-sm-2 gap-4` is the two-column form grid.
+    'grid-cols': (property: grid-template-columns, class: grid-cols, responsive: true, values: (
+        1: repeat(1, minmax(0, 1fr)),
+        2: repeat(2, minmax(0, 1fr)),
+        3: repeat(3, minmax(0, 1fr)),
+        4: repeat(4, minmax(0, 1fr)),
+        6: repeat(6, minmax(0, 1fr)),
+        'fr-auto': 1fr auto,
+        'fr-fr-auto': 1fr 1fr auto,
+        'fr-auto-fr-auto': 1fr auto 1fr auto,
+    )),
+    'grid-col-span': (property: grid-column, class: grid-col-span, responsive: true, values: (
+        1: span 1 / span 1,
+        2: span 2 / span 2,
+        3: span 3 / span 3,
+        'full': 1 / -1,
+    )),
+
+    // Hover states for the brand palette: .text-ink-hover, .bg-surface-hover, …
+    'color-hover': (property: color, class: text, state: hover, values: $rx-hover-colors),
+    'bg-hover': (property: background-color, class: bg, state: hover, values: $rx-hover-colors),
+    'border-hover': (property: border-color, class: border, state: hover, values: $rx-hover-colors),
+);
+
+@each $name, $config in $rx-extra-utilities {
+    @if map.has-key($utilities, $name) {
+        $existing: map.get($utilities, $name);
+        $values: map.merge(map.get($existing, 'values'), map.get($config, 'values'));
+        $utilities: map.merge($utilities, ($name: map.merge($existing, map.merge($config, ('values': $values)))));
+    } @else {
+        $utilities: map.merge($utilities, ($name: $config));
+    }
+}
+
+// --- Brand colours: text-*, bg-*, border-* -----------------------------------------
+
+@each $name, $class-values in (
+    'color': map.merge($radix-colors, ('white': #fff)),
+    'background-color': $radix-colors,
+    'border-color': $radix-colors
+) {
+    $existing: map.get($utilities, $name);
+    $values: map.merge(map.get($existing, 'values'), $class-values);
+    $utilities: map.merge($utilities, ($name: map.merge($existing, ('values': $values))));
+}
+
+// ============================================================================
+// 4. Bootstrap components in use
+// ============================================================================
+
 @import 'bootstrap/scss/root';
 @import 'bootstrap/scss/reboot';
 @import 'bootstrap/scss/type';
@@ -39,10 +477,1423 @@
 @import 'bootstrap/scss/navbar';
 @import 'bootstrap/scss/pagination';
 @import 'bootstrap/scss/helpers';
+// Emits the utility classes — must come after every extension in section 3.
 @import 'bootstrap/scss/utilities/api';
 
-// 5. Radix layers.
-@import 'tokens-root';
-@import 'components';
-@import 'content';
-@import 'admin';
+// ============================================================================
+// 5. Tokens as CSS custom properties
+// ============================================================================
+
+// Tokens as CSS custom properties. CKEditor's skin (resources/css/rich-text.css),
+// the generated SVG maps and the content styles read these; Sass variables stay
+// the source of truth in section 1.
+:root {
+    --font-sans: #{$font-sans};
+    --font-display: #{$font-display};
+    --font-mono: #{$font-mono};
+
+    @each $name, $value in $radix-colors {
+        --color-#{$name}: #{$value};
+    }
+    --color-success: #{$success};
+    --color-white: #fff;
+
+    --container-radix: #{$container-radix};
+    --container-admin: #{$container-admin};
+    --radius-btn: #{$radius-btn};
+    --radius-card: #{$radius-card};
+    --radius-frame: #{$radius-frame};
+    --tracking-display: #{$tracking-display};
+    --tracking-eyebrow: #{$tracking-eyebrow};
+}
+
+// ============================================================================
+// 6. Radix components
+// ============================================================================
+
+// Radix components, built on top of Bootstrap 5.
+//
+// Everything here is either brand-specific (eyebrows, index rows, stats, the
+// media frame) or a Bootstrap component restyled to the approved "Editorial Red"
+// direction (buttons, form controls, navbar, tables). Colours, radii and type
+// come from section 1 — never a hex literal in a template.
+
+// --- Base ------------------------------------------------------------------------
+// Bootstrap's reboot adds margins, bullets and underlined links that the design
+// never had. Reset them once so templates opt in with utilities.
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+p, dl, dd, figure, blockquote, h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+}
+
+ul, ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+        color: inherit;
+    }
+}
+
+// Bare <button>s were unstyled by the design; .btn and friends opt back in.
+button {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+}
+
+img, video, svg {
+    display: block;
+}
+
+img, video {
+    max-width: 100%;
+    height: auto;
+}
+
+// Visible focus is an accessibility requirement in the brief (§7), so it is set
+// once here rather than left to each component.
+:focus-visible {
+    outline: 2px solid $radix-red;
+    outline-offset: 2px;
+}
+
+// Keeps Alpine-controlled panels hidden until Alpine initialises.
+[x-cloak] {
+    display: none !important;
+}
+
+.resize-none {
+    resize: none;
+}
+
+.rx-rule-on-dark {
+    border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+// --- Layout ----------------------------------------------------------------------
+
+.rx-container {
+    max-width: $container-radix;
+    margin-inline: auto;
+}
+
+// Concept spec is 74px/56px on desktop; scaled down for mobile, where the brief
+// says 60–70% of traffic lives.
+.rx-section {
+    padding: 3.5rem 1.5rem;
+
+    @include media-breakpoint-up(sm) {
+        padding: 4rem 2.5rem;
+    }
+
+    @include media-breakpoint-up(lg) {
+        padding: 4.625rem 3.5rem;
+    }
+
+    &--tight {
+        padding-block: 2.5rem;
+
+        @include media-breakpoint-up(sm) {
+            padding-block: 3rem;
+        }
+
+        @include media-breakpoint-up(lg) {
+            padding-block: 3rem;
+        }
+    }
+
+    &--flush-top {
+        padding-top: 2.5rem;
+
+        @include media-breakpoint-up(sm) {
+            padding-top: 3rem;
+        }
+
+        @include media-breakpoint-up(lg) {
+            padding-top: 3rem;
+        }
+    }
+
+    &--band {
+        padding-block: 3rem;
+
+        @include media-breakpoint-up(sm) {
+            padding-block: 3.25rem;
+        }
+
+        @include media-breakpoint-up(lg) {
+            padding-block: 3.25rem;
+        }
+    }
+
+    // A section that runs straight into the next (the article header).
+    &--no-bottom {
+        padding-bottom: 2rem !important;
+    }
+}
+
+.rx-skip-link {
+    &:focus {
+        position: absolute !important;
+        top: 1rem;
+        left: 1rem;
+        z-index: 50;
+        width: auto;
+        height: auto;
+        margin: 0;
+        clip: auto;
+        padding: 0.625rem 1rem;
+        border-radius: $radius-btn;
+        background: $radix-red;
+        color: #fff;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+}
+
+// --- Buttons -----------------------------------------------------------------------
+
+.btn {
+    --bs-btn-border-radius: #{$radius-btn};
+    --bs-btn-font-size: 0.875rem;
+    transition: color 150ms, background-color 150ms, border-color 150ms;
+
+    &:focus-visible {
+        outline: 2px solid var(--rx-btn-outline, #{$radix-red-deep});
+        outline-offset: 2px;
+    }
+}
+
+.btn-lg {
+    --bs-btn-padding-y: 0.875rem;
+    --bs-btn-padding-x: 1.25rem;
+    --bs-btn-font-size: 0.875rem;
+    --bs-btn-border-radius: #{$radius-btn};
+
+    @include media-breakpoint-up(sm) {
+        --bs-btn-font-size: 0.9375rem;
+    }
+}
+
+.btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #{$radix-red};
+    --bs-btn-border-color: #{$radix-red};
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #{$radix-red-deep};
+    --bs-btn-hover-border-color: #{$radix-red-deep};
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #{$radix-red-deep};
+    --bs-btn-active-border-color: #{$radix-red-deep};
+    --bs-btn-font-weight: 700;
+}
+
+.btn-outline-radix {
+    --bs-btn-color: #{$radix-dark};
+    --bs-btn-bg: transparent;
+    --bs-btn-border-color: #{$line-control};
+    --bs-btn-hover-color: #{$radix-dark};
+    --bs-btn-hover-bg: #{$surface};
+    --bs-btn-hover-border-color: #{$radix-dark};
+    --bs-btn-active-color: #{$radix-dark};
+    --bs-btn-active-bg: #{$surface};
+    --bs-btn-active-border-color: #{$radix-dark};
+}
+
+.btn-inverse {
+    --bs-btn-color: #{$radix-red-deep};
+    --bs-btn-bg: #fff;
+    --bs-btn-border-color: #fff;
+    --bs-btn-hover-color: #{$radix-red-deep};
+    --bs-btn-hover-bg: #{$surface};
+    --bs-btn-hover-border-color: #{$surface};
+    --bs-btn-active-color: #{$radix-red-deep};
+    --bs-btn-active-bg: #{$surface};
+    --bs-btn-active-border-color: #{$surface};
+    --bs-btn-font-weight: 700;
+    --rx-btn-outline: #fff;
+}
+
+.btn-on-dark {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: rgba(255, 255, 255, 0.15);
+    --bs-btn-border-color: transparent;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: rgba(255, 255, 255, 0.25);
+    --bs-btn-hover-border-color: transparent;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: rgba(255, 255, 255, 0.25);
+    --bs-btn-active-border-color: transparent;
+    --rx-btn-outline: #fff;
+}
+
+// --- Type ----------------------------------------------------------------------------
+
+.rx-eyebrow {
+    font-family: $font-mono;
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: $tracking-eyebrow;
+    color: $radix-red-deep;
+
+    &--xs {
+        font-size: 0.59375rem;
+    }
+
+    &--dark {
+        color: $radix-red-on-dark;
+    }
+}
+
+// Archivo, tight tracking. Mobile sizes are roughly 60–70% of desktop so the
+// display type stays impactful without overflowing a 360px viewport.
+.rx-heading {
+    // Inherit, so a heading on a dark section stays legible; pages add text-radix-dark
+    // where they want it (Bootstrap's own heading colour would otherwise win).
+    color: inherit;
+    font-family: $font-display;
+    letter-spacing: $tracking-display;
+
+    &--hero {
+        font-size: 2.125rem;
+        line-height: 1.05;
+        font-weight: 800;
+
+        @include media-breakpoint-up(sm) {
+            font-size: 3rem;
+            line-height: 1.02;
+        }
+
+        @include media-breakpoint-up(lg) {
+            font-size: 3.5rem;
+            line-height: 1;
+        }
+    }
+
+    &--xl {
+        font-size: 1.75rem;
+        line-height: 1.1;
+        font-weight: 900;
+
+        @include media-breakpoint-up(sm) {
+            font-size: 2.25rem;
+        }
+
+        @include media-breakpoint-up(lg) {
+            font-size: 2.75rem;
+            line-height: 1.02;
+        }
+    }
+
+    &--lg {
+        font-size: 1.625rem;
+        line-height: 1.15;
+        font-weight: 900;
+
+        @include media-breakpoint-up(sm) {
+            font-size: 2rem;
+        }
+
+        @include media-breakpoint-up(lg) {
+            font-size: 2.5rem;
+            line-height: 1.05;
+        }
+    }
+
+    &--md {
+        font-size: 1.375rem;
+        line-height: 1.2;
+        font-weight: 800;
+
+        @include media-breakpoint-up(sm) {
+            font-size: 1.625rem;
+        }
+
+        @include media-breakpoint-up(lg) {
+            font-size: 2rem;
+        }
+    }
+}
+
+// --- Lists, stats, chips ---------------------------------------------------------------
+
+.rx-index-row {
+    color: inherit;
+
+    &__num {
+        width: 1.5rem;
+    }
+
+    &__thumb {
+        width: 4.5rem;
+        height: 3.5rem;
+        padding: 0.375rem;
+        border-radius: 0.5rem;
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+    }
+
+    &--link {
+        transition: transform 200ms;
+
+        &:hover {
+            text-decoration: none;
+
+            @media (prefers-reduced-motion: no-preference) {
+                transform: translateX(0.5rem);
+            }
+        }
+    }
+}
+
+.rx-numbered__num {
+    &--dark {
+        width: 2.75rem;
+    }
+
+    &--light {
+        width: 3rem;
+    }
+}
+
+.rx-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+
+    @include media-breakpoint-up(sm) {
+        gap: 0;
+    }
+
+    @include media-breakpoint-up(lg) {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.rx-stat {
+    border-top: 1px solid $hairline;
+    padding-top: 1.25rem;
+
+    &:first-child {
+        border-top: 0;
+    }
+
+    @include media-breakpoint-up(sm) {
+        border-top: 0;
+        border-left: 1px solid $hairline;
+        padding: 0 0 0 1.5rem;
+
+        &:first-child {
+            border-left: 0;
+            padding-left: 0;
+        }
+    }
+
+    @include media-breakpoint-up(lg) {
+        padding-left: 2rem;
+
+        &:first-child {
+            padding-left: 0;
+        }
+    }
+
+    &__value {
+        font-size: 2rem;
+
+        @include media-breakpoint-up(lg) {
+            font-size: 2.5rem;
+        }
+    }
+}
+
+.rx-chip {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid $line;
+    border-radius: $border-radius-pill;
+    background: #fff;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: $ink;
+
+    &--on-dark {
+        border-color: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.05);
+        color: $on-dark;
+    }
+
+    &--link {
+        transition: border-color 150ms;
+
+        &:hover {
+            border-color: $line-control;
+        }
+    }
+
+    &--active,
+    &--active:hover {
+        border-color: $radix-dark;
+        background: $radix-dark;
+        color: $on-dark;
+    }
+}
+
+.rx-pull-quote {
+    box-shadow: 0 20px 46px rgba(15, 27, 45, 0.08);
+}
+
+.rx-avatar {
+    width: 2.75rem;
+    height: 2.75rem;
+
+    &--placeholder {
+        background: repeating-linear-gradient(135deg, $placeholder-stripe-a 0 8px, $placeholder-stripe-b 8px 16px);
+    }
+}
+
+// --- Media -----------------------------------------------------------------------------
+
+.rx-media {
+    box-shadow: 0 20px 46px rgba(15, 27, 45, 0.18);
+    height: 14rem;
+
+    @include media-breakpoint-up(sm) {
+        height: 18rem;
+    }
+
+    @include media-breakpoint-up(lg) {
+        height: 21.25rem;
+    }
+
+    &--short {
+        height: 12rem;
+
+        @include media-breakpoint-up(sm) {
+            height: 15rem;
+        }
+
+        @include media-breakpoint-up(lg) {
+            height: 15rem;
+        }
+    }
+
+    &--tall {
+        height: 16rem;
+
+        @include media-breakpoint-up(sm) {
+            height: 20rem;
+        }
+
+        @include media-breakpoint-up(lg) {
+            height: 20rem;
+        }
+    }
+
+    &__fill {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    &__scrim {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, transparent 55%, rgba($radix-dark, 0.4));
+    }
+
+    &__badge {
+        top: 1rem;
+        left: 1rem;
+        padding: 0.375rem 0.625rem;
+        font-family: $font-mono;
+        font-size: 0.625rem;
+        text-transform: uppercase;
+        letter-spacing: $tracking-eyebrow;
+    }
+}
+
+.rx-map-panel {
+    svg {
+        width: 100%;
+        height: 100%;
+    }
+
+    &--dark {
+        --map-land: #{$map-land-dark};
+        --map-line: #{$map-line-dark};
+    }
+}
+
+.rx-blog-lead {
+    height: 14rem;
+
+    @include media-breakpoint-up(sm) {
+        height: 18rem;
+    }
+
+    @include media-breakpoint-up(lg) {
+        height: 18.75rem;
+    }
+}
+
+.rx-blog-thumb {
+    width: 6rem;
+    height: 4.5rem;
+}
+
+.rx-ratio-16x10 {
+    --bs-aspect-ratio: 62.5%;
+}
+
+// --- Cards -------------------------------------------------------------------------------
+
+.rx-card {
+    img {
+        transition: transform 500ms;
+    }
+
+    &:hover img {
+        transform: scale(1.03);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        &:hover img {
+            transform: none;
+        }
+    }
+}
+
+.rx-title-link {
+    color: inherit;
+
+    &:hover {
+        color: $radix-red-deep;
+    }
+}
+
+.rx-crumb-link:hover {
+    color: $ink;
+}
+
+.rx-market-card {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.rx-doc-link {
+    transition: border-color 150ms;
+
+    &:hover {
+        border-color: $line-control !important;
+    }
+}
+
+.rx-spec-row + .rx-spec-row {
+    border-top: 1px solid $hairline;
+}
+
+.rx-measure {
+    max-width: 68ch;
+}
+
+.rx-swatch {
+    width: 2rem;
+    height: 2rem;
+}
+
+// --- Header / footer -------------------------------------------------------------------------
+
+.rx-header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    z-index: 40;
+
+    &__inner {
+        max-width: $container-admin;
+        padding: 0.75rem 1.5rem;
+
+        @include media-breakpoint-up(lg) {
+            padding: 1rem 3.5rem;
+        }
+    }
+
+    &__logo {
+        height: 2.25rem;
+
+        @include media-breakpoint-up(lg) {
+            height: 70px;
+        }
+    }
+
+    .navbar-toggler {
+        color: $ink;
+
+        &:focus {
+            box-shadow: none;
+        }
+
+        &:focus-visible {
+            outline: 2px solid $radix-red;
+            outline-offset: 2px;
+        }
+    }
+
+    // Open mobile panel: stacked rows separated by hairlines.
+    .navbar-collapse {
+        margin-inline: -1.5rem;
+        padding: 0 1.5rem 1rem;
+        border-top: 1px solid $hairline;
+
+        @include media-breakpoint-up(xl) {
+            margin-inline: 0;
+            padding: 0;
+            border-top: 0;
+        }
+    }
+
+    .rx-nav-link {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid $hairline;
+        color: $ink;
+        transition: color 150ms;
+
+        &:hover,
+        &:focus,
+        &.active {
+            color: $radix-red-deep;
+        }
+
+        &.active {
+            font-weight: 600;
+        }
+
+        @include media-breakpoint-up(xl) {
+            padding: 0.25rem 0;
+            border-bottom: 0;
+            color: $nav;
+        }
+    }
+}
+
+.rx-footer {
+    padding: 3rem 1.5rem 2rem;
+
+    @include media-breakpoint-up(sm) {
+        padding-inline: 2.5rem;
+    }
+
+    @include media-breakpoint-up(lg) {
+        padding-inline: 3.5rem;
+    }
+
+    &__link:hover {
+        color: #fff;
+    }
+}
+
+.rx-quick-actions {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 30;
+}
+
+.rx-whatsapp {
+    width: 3.25rem;
+    height: 3.25rem;
+    background: $whatsapp;
+    box-shadow: $box-shadow-lg;
+
+    &:hover {
+        color: #fff;
+    }
+}
+
+.rx-auth-card {
+    box-shadow: 0 20px 46px rgba(15, 27, 45, 0.08);
+}
+
+// --- Forms ---------------------------------------------------------------------------------------
+
+.rx-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-family: $font-mono;
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: $tracking-eyebrow;
+    color: $meta;
+}
+
+// Underline-style fields from the concept: a Bootstrap .form-control /
+// .form-select with the box stripped away. The underline is `line-control`
+// (3:1 against white) because it is the control's only visible boundary.
+.rx-input {
+    padding: 0 0 0.5rem;
+    border: 0;
+    border-bottom: 2px solid $line-control;
+    border-radius: 0;
+    background-color: transparent;
+    font-size: 0.9375rem;
+    color: $ink;
+    box-shadow: none;
+
+    &::placeholder {
+        color: $placeholder;
+    }
+
+    &:focus,
+    &:focus-visible {
+        border-bottom-color: $radix-red;
+        background-color: transparent;
+        color: $ink;
+        outline: 0;
+        box-shadow: none;
+    }
+
+    &.is-invalid,
+    &.is-invalid:focus {
+        border-bottom-color: $radix-red;
+        padding-right: 0;
+        background-image: none;
+    }
+}
+
+.form-select.rx-input {
+    padding-right: 1.5rem;
+    background-position: right 0 center;
+
+    &:has(option[value='']:checked) {
+        color: $placeholder;
+    }
+
+    &.is-invalid {
+        background-image: escape-svg($form-select-indicator);
+        padding-right: 1.5rem;
+    }
+}
+
+.rx-file {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-size: 0.84375rem;
+    color: $ink;
+    box-shadow: none;
+
+    &::file-selector-button {
+        margin: 0 0.75rem 0 0;
+        padding: 0.5rem 0.875rem;
+        border: 0;
+        border-radius: $radius-btn;
+        background: $surface;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: $radix-dark;
+    }
+
+    &:hover::file-selector-button {
+        background: $surface-sunken;
+    }
+}
+
+.rx-inline-search {
+    border-bottom: 2px solid $line-control;
+
+    &:focus-within {
+        border-bottom-color: $radix-red;
+    }
+
+    input {
+        padding: 0 0 0.625rem;
+        border: 0;
+        background: transparent;
+        font-size: 0.9375rem;
+        color: $ink;
+
+        &:focus,
+        &:focus-visible {
+            outline: 0;
+        }
+
+        &::placeholder {
+            color: $placeholder;
+        }
+    }
+
+    &__submit {
+        padding: 0 0 0.625rem;
+        border: 0;
+        background: transparent;
+    }
+}
+
+.rx-notice {
+    padding: 0.625rem 0.875rem;
+    border-radius: 0.5rem;
+    background: $surface-sunken;
+    font-size: 0.8125rem;
+    color: $ink-soft;
+
+    &--error {
+        background: rgba($radix-red, 0.1);
+        color: $radix-red-deep;
+    }
+}
+
+// --- Tables --------------------------------------------------------------------------------------
+
+.rx-table {
+    --bs-table-bg: transparent;
+    --bs-table-color: #{$ink-soft};
+    min-width: 640px;
+
+    > :not(caption) > * > * {
+        padding: 0.625rem 1rem;
+        border-bottom: 1px solid $hairline;
+        background-color: transparent;
+        box-shadow: none;
+        vertical-align: middle;
+    }
+
+    thead > tr > * {
+        background-color: $surface;
+        font-size: 0.71875rem;
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: $tracking-eyebrow;
+        color: $meta;
+    }
+
+    tbody > tr:last-child > * {
+        border-bottom: 0;
+    }
+}
+
+// ============================================================================
+// 7. Content
+// ============================================================================
+
+// Content styling: rich-text article body, scroll reveal, map animations.
+// Ported verbatim from the previous stylesheet; it only reads the custom
+// properties declared in section 5.
+
+/*
+ |----------------------------------------------------------------------------
+ | Rich text article body
+ |----------------------------------------------------------------------------
+ | The HTML a CKEditor field produces, styled once for both places it appears:
+ | `.rich-content` on the public post page, `.ck-content` inside the editor
+ | (CKEditor puts that class on its editable). Same rules, so an author is
+ | looking at the shipped article while they write it.
+ |
+ | There is no typography plugin in this project, and this is a short
+ | enough list of tags — every one of them is on the allowlist in
+ | App\Support\Html\RichText — that adding a dependency for it would cost more
+ | than it saves.
+ */
+.rich-content,
+.ck-content {
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+}
+
+.rich-content h2,
+.ck-content h2,
+.rich-content h3,
+.ck-content h3,
+.rich-content h4,
+.ck-content h4 {
+    font-family: var(--font-display);
+    letter-spacing: var(--tracking-display);
+    color: var(--color-radix-dark);
+    font-weight: 800;
+    line-height: 1.2;
+    margin: 1.75em 0 0.5em;
+}
+
+.rich-content h2,
+.ck-content h2 {
+    font-size: 1.375rem;
+}
+
+.rich-content h3,
+.ck-content h3 {
+    font-size: 1.125rem;
+}
+
+.rich-content h4,
+.ck-content h4 {
+    font-size: 1rem;
+}
+
+.rich-content p,
+.ck-content p {
+    margin: 0 0 1em;
+}
+
+.rich-content a,
+.ck-content a {
+    color: var(--color-radix-red-deep);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.rich-content ul,
+.ck-content ul,
+.rich-content ol,
+.ck-content ol {
+    margin: 0 0 1em;
+    padding-left: 1.35em;
+}
+
+.rich-content ul,
+.ck-content ul {
+    list-style: disc;
+}
+
+.rich-content ol,
+.ck-content ol {
+    list-style: decimal;
+}
+
+.rich-content li,
+.ck-content li {
+    margin-bottom: 0.35em;
+}
+
+.rich-content blockquote,
+.ck-content blockquote {
+    border-left: 3px solid var(--color-radix-red);
+    margin: 1.5em 0;
+    padding: 0.15em 0 0.15em 1.15em;
+    color: var(--color-ink-soft);
+    font-style: normal;
+}
+
+.rich-content code,
+.ck-content code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    background: var(--color-surface-sunken);
+    border-radius: 4px;
+    padding: 0.1em 0.35em;
+}
+
+.rich-content pre,
+.ck-content pre {
+    background: var(--color-surface-sunken);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-btn);
+    padding: 0.9em 1em;
+    overflow-x: auto;
+}
+
+.rich-content hr,
+.ck-content hr {
+    border: 0;
+    border-top: 1px solid var(--color-line);
+    margin: 2em 0;
+}
+
+/* Tables scroll inside their own wrapper rather than widening the page. */
+.rich-content figure.table,
+.ck-content figure.table {
+    margin: 1.5em 0;
+    overflow-x: auto;
+}
+
+.rich-content table,
+.ck-content table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.875rem;
+}
+
+.rich-content th,
+.ck-content th,
+.rich-content td,
+.ck-content td {
+    border: 1px solid var(--color-line);
+    padding: 0.5em 0.7em;
+    text-align: left;
+}
+
+.rich-content th,
+.ck-content th {
+    background: var(--color-surface);
+    font-weight: 600;
+}
+
+/* Images: uploaded through the editor, sized by CKEditor's style classes.
+   No inline `style` survives the sanitiser, so alignment is class-based. */
+.rich-content img,
+.ck-content img {
+    max-width: 100%;
+    height: auto;
+}
+
+.rich-content figure.image,
+.ck-content figure.image {
+    margin: 1.75em 0;
+}
+
+.rich-content figure.image img,
+.ck-content figure.image img {
+    border-radius: var(--radius-card);
+}
+
+.rich-content figure.image figcaption,
+.ck-content figure.image figcaption {
+    margin-top: 0.55em;
+    font-size: 0.8125rem;
+    color: var(--color-meta);
+}
+
+.rich-content .image-inline,
+.ck-content .image-inline {
+    vertical-align: middle;
+}
+
+/* A side image only floats where there is room for it to; on a phone it
+   becomes a full-width block like any other. */
+@media (min-width: 40rem) {
+    .rich-content figure.image-style-side,
+    .ck-content figure.image-style-side {
+        float: right;
+        width: 45%;
+        margin-left: 1.5rem;
+    }
+}
+
+/*
+ | Scroll reveal.
+ |
+ | Sections are only hidden once JS has set data-rev="out" — see resources/js/app.js.
+ | A bare [data-rev] stays fully visible, so if the script never runs, the page still
+ | renders normally instead of going blank.
+ */
+[data-rev='out'] {
+    opacity: 0;
+    transform: translateY(26px);
+}
+
+[data-rev='in'] {
+    opacity: 1;
+    transform: none;
+    transition:
+        opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Pulsing ring on the map pins and the WhatsApp button. */
+@keyframes radix-ping {
+    0% {
+        transform: scale(1);
+        opacity: 0.55;
+    }
+    100% {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+.radix-map__ping {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: radix-ping 2.4s ease-out infinite;
+}
+
+/*
+ | Export page: hovering/focusing a served country (path or pin) or its
+ | matching market card highlights both — see resources/js/app.js's
+ | exportMarketMap Alpine component, which toggles this class on the
+ | matching [data-iso] elements in both directions.
+ */
+[data-iso] {
+    cursor: pointer;
+    transition: opacity 150ms ease, filter 150ms ease;
+}
+
+.radix-map__market--active {
+    opacity: 1;
+    filter: brightness(1.3);
+}
+
+@keyframes radix-pulse {
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgb(37 211 102 / 0.5);
+    }
+    70% {
+        box-shadow: 0 0 0 13px rgb(37 211 102 / 0);
+    }
+}
+
+.radix-pulse {
+    animation: radix-pulse 2.4s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+// ============================================================================
+// 8. Admin
+// ============================================================================
+
+// Admin panel: the shell (drawer + rail, topbar, account menu) and the
+// controls/tables its Livewire screens share. Built on Bootstrap utilities;
+// only what Bootstrap has no equivalent for lives here.
+
+$rx-admin-rail: 16rem;
+$rx-admin-bar: 3.5rem;
+
+.rx-admin-aside {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 50;
+    width: $rx-admin-rail;
+    transform: translateX(-100%);
+    transition: transform 200ms ease-out;
+
+    &.is-open {
+        transform: none;
+    }
+
+    @include media-breakpoint-up(lg) {
+        transform: none;
+    }
+
+    &__bar {
+        height: $rx-admin-bar;
+    }
+}
+
+.rx-admin-scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: rgba($radix-dark, 0.6);
+}
+
+.rx-admin-main {
+    @include media-breakpoint-up(lg) {
+        padding-left: $rx-admin-rail;
+    }
+}
+
+.rx-admin-topbar {
+    height: $rx-admin-bar;
+    z-index: 30;
+}
+
+.rx-admin-content {
+    max-width: $container-admin;
+}
+
+// Shared geometry for every nav row, active or not, so the active state is a
+// pure colour change and nothing shifts by a pixel when you navigate.
+.rx-nav-row {
+    padding: 0.5rem 0.75rem;
+    border-radius: $radius-btn;
+    font-size: 0.84375rem;
+    font-weight: 500;
+    color: $on-dark-muted;
+    transition: color 150ms, background-color 150ms;
+
+    &:hover {
+        background: $radix-dark-2;
+        color: $on-dark;
+    }
+
+    &.is-active {
+        background: $radix-dark-2;
+        color: $on-dark;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 2px;
+            height: 1.25rem;
+            transform: translateY(-50%);
+            border-radius: 0 2px 2px 0;
+            background: $radix-red;
+        }
+    }
+
+    &.is-disabled {
+        cursor: default;
+
+        &:hover {
+            background: transparent;
+            color: $on-dark-muted;
+        }
+    }
+}
+
+.rx-icon-btn {
+    display: inline-flex;
+    padding: 0.375rem;
+    border: 0;
+    border-radius: $radius-btn;
+    background: transparent;
+    color: $nav;
+
+    &:hover {
+        background: $surface;
+        color: $ink;
+    }
+
+    &--on-dark {
+        color: $on-dark-muted;
+
+        &:hover {
+            background: $radix-dark-2;
+            color: $on-dark;
+        }
+    }
+}
+
+.rx-avatar-sm {
+    width: 1.75rem;
+    height: 1.75rem;
+
+    &--dark-2 {
+        width: 2rem;
+        height: 2rem;
+        background: $radix-dark-2;
+    }
+}
+
+.rx-account-name {
+    max-width: 9rem;
+}
+
+.rx-account-menu {
+    z-index: 40;
+    width: 15rem;
+    box-shadow: 0 18px 40px rgba(15, 27, 45, 0.12);
+}
+
+.rx-menu-item {
+    color: $nav;
+
+    &:hover {
+        background: $surface;
+        color: $ink;
+    }
+}
+
+// Boxed controls for admin filters and inline edits. The public site uses the
+// underline style (.rx-input); data-dense screens read better with a box.
+.rx-ctl {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid $line-control;
+    border-radius: $radius-btn;
+    background-color: #fff;
+    font-size: 0.84375rem;
+    color: $ink;
+    box-shadow: none;
+
+    &:focus,
+    &:focus-visible {
+        border-color: $radix-red;
+        outline: 0;
+        box-shadow: none;
+    }
+
+    &::placeholder {
+        color: $placeholder;
+    }
+}
+
+.rx-check {
+    border-color: $line-control;
+
+    &:focus {
+        box-shadow: none;
+        border-color: $radix-red;
+    }
+}
+
+.rx-table--fluid {
+    min-width: 0;
+}
+
+.rx-bullets {
+    list-style: disc;
+}
+
+.rx-cursor-default {
+    cursor: default;
+}
+
+.rx-transition {
+    transition: color 150ms, background-color 150ms, border-color 150ms;
+}
+
+.rx-hover-underline:hover {
+    text-decoration: underline;
+}
+
+.rx-aspect-video {
+    aspect-ratio: 16 / 9;
+}
+
+.rx-divide-y > * + * {
+    border-top: 1px solid $hairline;
+}
+
+// A control that only appears while its parent is hovered or focused.
+.rx-hover-reveal {
+    background: rgba($radix-dark, 0.8);
+    opacity: 0;
+    transition: opacity 150ms;
+}
+
+.rx-hover-group:hover .rx-hover-reveal,
+.rx-hover-reveal:focus-visible {
+    opacity: 1;
+}

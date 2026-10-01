@@ -34,7 +34,7 @@
 {{--
     Underline-style text input/textarea, matching x-ui.select-field's visual
     language so a mixed form (Contact page) reads as one system. A Bootstrap
-    .form-control restyled by .rx-input (scss/_components.scss).
+    .form-control restyled by .rx-input (scss/app.scss).
 
     Only `class` reaches the outer wrapper (for grid placement like
     `class="col-sm-12"`) — everything else the caller passes

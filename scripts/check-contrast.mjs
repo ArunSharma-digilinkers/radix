@@ -1,5 +1,5 @@
 /**
- * Checks the design tokens in resources/scss/_tokens.scss against WCAG 2.1 AA.
+ * Checks the design tokens in resources/scss/app.scss against WCAG 2.1 AA.
  *
  * The brief requires "proper contrast ratios" (§7), and accessibility is easiest
  * to keep once it is mechanical. This reads the tokens straight out of app.css so
@@ -17,7 +17,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const CSS = resolve(ROOT, 'resources/scss/_tokens.scss');
+const CSS = resolve(ROOT, 'resources/scss/app.scss');
 
 const THRESHOLDS = { normal: 4.5, large: 3, ui: 3 };
 
@@ -134,7 +134,7 @@ for (const [fg, bg, level, use] of PAIRS) {
 console.table(rows);
 
 if (failed) {
-    console.error(`\n${failed} contrast check(s) failed. Adjust the tokens in resources/scss/_tokens.scss.`);
+    console.error(`\n${failed} contrast check(s) failed. Adjust the tokens in resources/scss/app.scss.`);
     process.exit(1);
 }
 

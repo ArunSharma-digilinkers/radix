@@ -14,7 +14,7 @@
         <x-ui.heading size="lg" class="mt-3 text-radix-dark">Style guide</x-ui.heading>
         <p class="mb-0 mt-4 mw-xl fs-15 lh-relaxed text-muted">
             Every component in the design system, rendered live. Tokens come from
-            <code class="font-mono fs-13-5 text-ink">resources/scss/_tokens.scss</code>;
+            <code class="font-mono fs-13-5 text-ink">resources/scss/app.scss</code>;
             colour combinations are verified by <code class="font-mono fs-13-5 text-ink">npm run check:contrast</code>.
         </p>
     </x-ui.section>
@@ -35,7 +35,7 @@
                     <ul class="vstack gap-2 mt-3">
                         @foreach ($tokens as $token)
                             {{-- The swatch colour is read from the --color-* custom
-                                 property that scss/_tokens-root.scss emits for every token. --}}
+                                 property that scss/app.scss emits for every token. --}}
                             <li class="d-flex align-items-center gap-3">
                                 <span
                                     class="rx-swatch flex-shrink-0 rounded border border-hairline"

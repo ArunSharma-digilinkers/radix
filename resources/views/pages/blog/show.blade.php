@@ -3,7 +3,7 @@
 
     The body is the sanitised HTML written in the admin's CKEditor field, echoed
     unescaped and wrapped in `.rich-content` — the same rules the editor itself
-    uses (see resources/scss/_content.scss), so what the author saw is what ships.
+    uses (see resources/scss/app.scss), so what the author saw is what ships.
     It is safe to echo because App\Support\Html\RichText allowlisted it on save,
     not because anything here re-checks it.
 --}}

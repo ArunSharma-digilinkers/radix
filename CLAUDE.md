@@ -140,16 +140,18 @@ Charcoal/Blue direction is kept for reference only; **do not** take styling from
 Bootstrap's variables, breakpoints and utilities. Prefer Bootstrap's own classes (`d-flex`,
 `row`/`col-*`, `gap-*`, `btn`, `form-control`, `table`, `ratio`, `stretched-link`, …); reach for
 an `rx-*` class only for something brand-specific (eyebrow, index row, stat, media frame) or a
-Bootstrap component restyled to the concept (see `resources/scss/_components.scss`,
-`_admin.scss`). Bootstrap JS is imported per plugin in `resources/js/app.js` (collapse only).
+Bootstrap component restyled to the concept (sections 6 and 8 of `resources/scss/app.scss`).
+Bootstrap JS is imported per plugin in `resources/js/app.js` (collapse only).
 
-**Tokens live in `resources/scss/_tokens.scss`** as Sass variables, each with a comment
-explaining its role. That file is the source of truth — the summary below is orientation,
-not a second copy to keep in sync. `_tokens-root.scss` also exposes every token as a
+**All front-end CSS lives in one file, `resources/scss/app.scss`** (the CKEditor skin in
+`resources/css/rich-text.css` is the one deliberate exception: it ships in the editor's lazy
+chunk). Section 1 holds the tokens as Sass variables, each with a comment
+explaining its role. That section is the source of truth — the summary below is orientation,
+not a second copy to keep in sync. Section 5 also exposes every token as a
 `--color-*` CSS custom property (used by the CKEditor skin and inline swatches).
 
 Never hardcode a hex value in a Blade template. If the colour you need isn't a token, add
-it to `_tokens.scss` first so the palette stays reviewable in one place.
+it to section 1 of `app.scss` first so the palette stays reviewable in one place.
 
 | Group | Utilities |
 |---|---|
@@ -161,7 +163,7 @@ it to `_tokens.scss` first so the palette stays reviewable in one place.
 | Radii | `rounded-btn` (10px), `rounded-card` (16px), `rounded-frame` (18px) |
 | Hover | `text-ink-hover`, `bg-surface-hover`, `border-line-control-hover` (palette only) |
 
-Our utility extensions (in `app.scss`, all via Bootstrap's `$utilities` API):
+Our utility extensions (section 3 of `app.scss`, all via Bootstrap's `$utilities` API):
 
 - **Spacing** is a 4px-based scale, so `mt-6` is 1.5rem. Half steps use a dash: `py-2-5`,
   `gap-3-5`, `mt-1-5` (a dot would need escaping). Negative margins: `me-n2`.
@@ -178,7 +180,7 @@ arbitrary hexes.
 
 **Contrast is enforced, not assumed.** `npm run check:contrast` audits every
 foreground/background pair the UI actually uses against WCAG AA and exits non-zero on a
-failure (it reads `_tokens.scss`). Run it after touching any colour token. Several of the
+failure (it reads section 1 of `app.scss`). Run it after touching any colour token. Several of the
 concept's values failed and were adjusted — see §6.1.
 
 **Gotchas** that cost real debugging time here:
@@ -299,7 +301,7 @@ resources/views/components/site/     Header, footer, quick actions
 resources/views/components/map/      GENERATED — see npm run build:maps
 scripts/                    Build-time tooling (maps, contrast audit)
 resources/views/pages/      Public page templates
-resources/scss/            Bootstrap build: _tokens (source of truth), _components, _admin, app.scss
+resources/scss/            Bootstrap build — one file, app.scss (tokens, variables, utilities, components, admin)
 design_handoff/             Client brief + approved design concept (reference, not built code)
 docs/PROJECT_PLAN.md        Phase-wise delivery plan — check before starting work
 ```

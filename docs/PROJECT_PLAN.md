@@ -43,7 +43,7 @@ starting data entry early is the schedule's biggest lever.
 - [x] `docs/PROJECT_PLAN.md` — this document
 - [x] Install deps: Livewire 4.3, `spatie/laravel-permission` 8.3, `spatie/laravel-translatable` 6.14
 - [x] Self-host Archivo / IBM Plex Sans / IBM Plex Mono via `laravel-vite-plugin/fonts`
-- [x] Design tokens as Sass variables in `resources/scss/_tokens.scss`, compiled with Bootstrap 5.3 (see CLAUDE.md §6)
+- [x] Design tokens as Sass variables in `resources/scss/app.scss`, compiled with Bootstrap 5.3 (see CLAUDE.md §6)
 - [x] Confirm MySQL connection and baseline `php artisan migrate` runs clean
 - [x] Empty `DatabaseSeeder` (scaffold's test-user seed removed)
 - [x] Minimal public layout + holding page + smoke tests; project README

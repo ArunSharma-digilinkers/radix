@@ -20,7 +20,7 @@
 
     // Concept spec is 74px/56px on desktop; scaled down for mobile, where the
     // brief says 60–70% of traffic lives. The paddings themselves are in
-    // scss/_components.scss (.rx-section--*).
+    // scss/app.scss (.rx-section--*).
     //
     // Consecutive same-tone sections would otherwise stack two full paddings and
     // read as a gap, so `flush-top` exists for sections that continue the one

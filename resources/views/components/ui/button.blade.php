@@ -16,7 +16,7 @@
     // component's default.
     $tag = $href ? 'a' : 'button';
 
-    // Bootstrap's .btn plus the Radix variants defined in scss/_components.scss.
+    // Bootstrap's .btn plus the Radix variants defined in scss/app.scss.
     $variants = [
         'primary' => 'btn-primary',
         'secondary' => 'btn-outline-radix',
