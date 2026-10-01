@@ -25,9 +25,6 @@
 // 1. Design tokens
 // ============================================================================
 
-//
-// Radix design tokens
-// -----------------------------------------------------------------------------
 // Single source of truth for the approved "Editorial Red" direction. See
 // design_handoff/homepage-concept/ for the reference render and CLAUDE.md §6
 // for the rules around using these.
@@ -154,8 +151,6 @@ $placeholder-stripe-b: #f1f4f8;
 // 2. Bootstrap variables
 // ============================================================================
 
-// Bootstrap variable overrides.
-//
 // Loaded after the design tokens and Bootstrap's functions but before its
 // variables, so every `!default` in Bootstrap yields to what is set here.
 
@@ -290,7 +285,6 @@ $table-border-color: $line;
 //   2. Brand colours join the colour utilities (text-ink, bg-surface,
 //      border-hairline …) without being added to $theme-colors, which would
 //      generate a full button/alert/list-group variant set per palette entry.
-
 
 // --- Value scales ------------------------------------------------------------
 
@@ -484,7 +478,7 @@ $rx-extra-utilities: (
 // 5. Tokens as CSS custom properties
 // ============================================================================
 
-// Tokens as CSS custom properties. CKEditor's skin (resources/css/rich-text.css),
+// CKEditor's skin (resources/css/rich-text.css),
 // the generated SVG maps and the content styles read these; Sass variables stay
 // the source of truth in section 1.
 :root {
@@ -511,8 +505,6 @@ $rx-extra-utilities: (
 // 6. Radix components
 // ============================================================================
 
-// Radix components, built on top of Bootstrap 5.
-//
 // Everything here is either brand-specific (eyebrows, index rows, stats, the
 // media frame) or a Bootstrap component restyled to the approved "Editorial Red"
 // direction (buttons, form controls, navbar, tables). Colours, radii and type
@@ -1402,24 +1394,19 @@ img, video {
 // 7. Content
 // ============================================================================
 
-// Content styling: rich-text article body, scroll reveal, map animations.
-// Ported verbatim from the previous stylesheet; it only reads the custom
-// properties declared in section 5.
+// Rich-text article body, scroll reveal and map animations. It only reads the
+// custom properties declared in section 5.
 
-/*
- |----------------------------------------------------------------------------
- | Rich text article body
- |----------------------------------------------------------------------------
- | The HTML a CKEditor field produces, styled once for both places it appears:
- | `.rich-content` on the public post page, `.ck-content` inside the editor
- | (CKEditor puts that class on its editable). Same rules, so an author is
- | looking at the shipped article while they write it.
- |
- | There is no typography plugin in this project, and this is a short
- | enough list of tags — every one of them is on the allowlist in
- | App\Support\Html\RichText — that adding a dependency for it would cost more
- | than it saves.
- */
+// Rich text article body
+// The HTML a CKEditor field produces, styled once for both places it appears:
+// `.rich-content` on the public post page, `.ck-content` inside the editor
+// (CKEditor puts that class on its editable). Same rules, so an author is
+// looking at the shipped article while they write it.
+//
+// There is no typography plugin in this project, and this is a short
+// enough list of tags — every one of them is on the allowlist in
+// App\Support\Html\RichText — that adding a dependency for it would cost more
+// than it saves.
 .rich-content,
 .ck-content {
     color: var(--color-ink);
@@ -1526,7 +1513,7 @@ img, video {
     margin: 2em 0;
 }
 
-/* Tables scroll inside their own wrapper rather than widening the page. */
+// Tables scroll inside their own wrapper rather than widening the page.
 .rich-content figure.table,
 .ck-content figure.table {
     margin: 1.5em 0;
@@ -1555,8 +1542,8 @@ img, video {
     font-weight: 600;
 }
 
-/* Images: uploaded through the editor, sized by CKEditor's style classes.
-   No inline `style` survives the sanitiser, so alignment is class-based. */
+// Images: uploaded through the editor, sized by CKEditor's style classes.
+// No inline `style` survives the sanitiser, so alignment is class-based.
 .rich-content img,
 .ck-content img {
     max-width: 100%;
@@ -1585,8 +1572,8 @@ img, video {
     vertical-align: middle;
 }
 
-/* A side image only floats where there is room for it to; on a phone it
-   becomes a full-width block like any other. */
+// A side image only floats where there is room for it to; on a phone it
+// becomes a full-width block like any other.
 @media (min-width: 40rem) {
     .rich-content figure.image-style-side,
     .ck-content figure.image-style-side {
@@ -1596,13 +1583,11 @@ img, video {
     }
 }
 
-/*
- | Scroll reveal.
- |
- | Sections are only hidden once JS has set data-rev="out" — see resources/js/app.js.
- | A bare [data-rev] stays fully visible, so if the script never runs, the page still
- | renders normally instead of going blank.
- */
+// Scroll reveal.
+//
+// Sections are only hidden once JS has set data-rev="out" — see resources/js/app.js.
+// A bare [data-rev] stays fully visible, so if the script never runs, the page still
+// renders normally instead of going blank.
 [data-rev='out'] {
     opacity: 0;
     transform: translateY(26px);
@@ -1616,7 +1601,7 @@ img, video {
         transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Pulsing ring on the map pins and the WhatsApp button. */
+// Pulsing ring on the map pins and the WhatsApp button.
 @keyframes radix-ping {
     0% {
         transform: scale(1);
@@ -1634,12 +1619,10 @@ img, video {
     animation: radix-ping 2.4s ease-out infinite;
 }
 
-/*
- | Export page: hovering/focusing a served country (path or pin) or its
- | matching market card highlights both — see resources/js/app.js's
- | exportMarketMap Alpine component, which toggles this class on the
- | matching [data-iso] elements in both directions.
- */
+// Export page: hovering/focusing a served country (path or pin) or its
+// matching market card highlights both — see resources/js/app.js's
+// exportMarketMap Alpine component, which toggles this class on the
+// matching [data-iso] elements in both directions.
 [data-iso] {
     cursor: pointer;
     transition: opacity 150ms ease, filter 150ms ease;

@@ -49,7 +49,7 @@ export default defineConfig({
                 // Bootstrap 5.3 is still written against Sass @import; its own
                 // deprecation noise is not ours to fix.
                 quietDeps: true,
-                silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'mixed-decls', 'if-function'],
+                silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'if-function'],
             },
         },
     },
